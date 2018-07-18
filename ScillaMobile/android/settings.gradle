@@ -1,0 +1,3 @@
+rootProject.name = 'ScillaMobile'
+
+include ':app'
