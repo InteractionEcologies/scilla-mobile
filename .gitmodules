@@ -1,0 +1,3 @@
+[submodule "ScillaMobile/app/lib/intecojs"]
+	path = ScillaMobile/app/lib/intecojs
+	url = https://github.com/sprite728/intecojs
