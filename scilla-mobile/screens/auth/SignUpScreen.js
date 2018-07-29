@@ -3,6 +3,7 @@ import {
   StyleSheet, Text, TextInput, View, Button
 } from "react-native"
 import firebase from 'firebase';
+import Auth from "../../utils/Auth";
 
 export default class SignUpScreen extends React.Component {
   state = {
@@ -13,12 +14,23 @@ export default class SignUpScreen extends React.Component {
 
   handleSignUp = () => {
     console.log("handleSignUp");
-
-    firebase
-      .auth()
-      .createUserWithEmailAndPassword(this.state.email, this.state.password)
+    Auth.createUserWithEmailAndPassword(this.state.email, this.state.password)
       .then(() => this.props.navigation.navigate('Main'))
       .catch( error => this.setState({ errorMessage: error.message }))
+    
+      // firebase
+      // .auth()
+      // .createUserWithEmailAndPassword(this.state.email, this.state.password)
+  }
+
+  _createUserProfile = async () => {
+    let user = firebase.auth().currentUser;
+    let profile = {
+      uid: user.uid,
+      email: user.email, 
+      first_name: "",
+      last_name: ""
+    }
   }
 
   render() {
@@ -29,7 +41,6 @@ export default class SignUpScreen extends React.Component {
         <Text style={styles.errorMessage}>
           {this.state.errorMessage}
         </Text>}
-      
         <TextInput
           placeholder="Email"
           autoCapitalize="none"
