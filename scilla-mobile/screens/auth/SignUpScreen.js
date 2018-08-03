@@ -1,11 +1,14 @@
+// @flow
 import React from "react";
 import {
   StyleSheet, Text, TextInput, View, Button
 } from "react-native"
-import firebase from 'firebase';
-import Auth from "../../utils/Auth";
+// import Auth from "../../libs/Auth";
+import appService from "../../AppService";
+import { ScreenNames } from "../../constants/Screens";
+import BaseScreen from "../BaseScreen";
 
-export default class SignUpScreen extends React.Component {
+export default class SignUpScreen extends BaseScreen {
   state = {
     email: '', 
     password: '', 
@@ -14,17 +17,14 @@ export default class SignUpScreen extends React.Component {
 
   handleSignUp = () => {
     console.log("handleSignUp");
-    Auth.createUserWithEmailAndPassword(this.state.email, this.state.password)
-      .then(() => this.props.navigation.navigate('Main'))
+    appService.auth.createUserWithEmailAndPassword(this.state.email, this.state.password)
+      .then(() => this.navigate(ScreenNames.Main))
       .catch( error => this.setState({ errorMessage: error.message }))
     
-      // firebase
-      // .auth()
-      // .createUserWithEmailAndPassword(this.state.email, this.state.password)
   }
 
   _createUserProfile = async () => {
-    let user = firebase.auth().currentUser;
+    let user = appService.auth.currentUser;
     let profile = {
       uid: user.uid,
       email: user.email, 
@@ -59,7 +59,7 @@ export default class SignUpScreen extends React.Component {
         <Button title="Sign Up" onPress={this.handleSignUp} />
         <Button 
           title="Already have an account? Login"
-          onPress={ () => this.props.navigation.navigate('SignIn')}
+          onPress={ () => this.navigate(ScreenNames.Login)}
         />
       </View>
     )

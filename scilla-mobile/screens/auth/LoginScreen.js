@@ -1,3 +1,4 @@
+// @flow
 import React from "react";
 import {
   Text,
@@ -9,7 +10,7 @@ import {
 } from 'react-native';
 import * as firebase from 'firebase'; 
 
-export default class LoginScreen extends React.Component {
+export default class LoginScreen extends React.Component<any, any> {
   state = {
     email: '', 
     password: '', 

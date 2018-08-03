@@ -1,0 +1,17 @@
+[ignore]
+.*/node_modules/.*
+.*/__tests__/.*
+
+[include]
+
+[libs]
+;./flow-typed
+./libs//intecojs/flowLibs.js
+
+[lints]
+
+[options]
+; all=true
+module.system=haste
+
+[strict]

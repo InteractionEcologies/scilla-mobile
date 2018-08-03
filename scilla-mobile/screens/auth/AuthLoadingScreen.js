@@ -1,3 +1,4 @@
+// @flow
 import React from "react";
 import { View, Text} from "react-native";
 import {
@@ -8,18 +9,25 @@ import {
 } from "react-native";
 
 import * as firebase from "firebase";
+import BaseScreen from "../BaseScreen";
+import appService from "../../AppService";
+import { ScreenNames } from "../../constants/Screens";
 
 
-export default class AuthLoadingScreen extends React.Component {
+export default class AuthLoadingScreen extends BaseScreen {
   constructor() {
     super();
     this._bootstrapAsync();
   }
 
   componentDidMount() {
-    firebase.auth().onAuthStateChanged(user => {
-      this.props.navigation.navigate(user ? 'Main': 'Login');
-    });
+    // firebase.auth().onAuthStateChanged(user => {
+    //   this.props.navigation.navigate(user ? 'Main': 'Login');
+    // });
+
+    var user = appService.auth.currentUser;
+    this.navigate(user? ScreenNames.Main: ScreenNames.Login);
+    
   }
 
   _bootstrapAsync = async() => {

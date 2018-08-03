@@ -1,24 +1,25 @@
+// @flow
 import React from 'react';
 import {
   View, 
   Button
 } from 'react-native';
-import { ExpoConfigView } from '@expo/samples';
-import Auth from "../utils/Auth";
-import firebase from "firebase";
+// import { ExpoConfigView } from '@expo/samples';
+// import Auth from "../libs/Auth";
+// import firebase from "firebase";
+import appService from "../AppService";
 
-export default class SettingsScreen extends React.Component {
+export default class SettingsScreen extends React.Component<any, any> {
   static navigationOptions = {
     title: 'app.json',
   };
 
-  constructor(props) {
+  constructor(props: any) {
     super(props);
-    // this.auth = new Auth();
   }
 
   signOut = () => {
-    Auth.signOut()
+    appService.auth.signOut()
       .then( () => this.props.navigation.navigate("Auth") );
     // firebase
     //   .auth()
