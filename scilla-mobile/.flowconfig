@@ -6,7 +6,6 @@
 
 [libs]
 ;./flow-typed
-./libs//intecojs/flowLibs.js
 
 [lints]
 

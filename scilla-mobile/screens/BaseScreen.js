@@ -3,7 +3,11 @@ import React from "react";
 
 export default class BaseScreen extends React.Component<any, any> {
 
-  navigate = (screenName: string) => {
-    this.props.navigation.navigate(screenName);
+  navigate = (routeName: string, params?: any) => {
+    this.props.navigation.navigate(routeName, params);
+  }
+
+  get navParams() {
+    return this.props.navigation.state.params;
   }
 }

@@ -1,0 +1,11 @@
+
+{
+  "1ae03543e7626152d5ea": {
+    "uid":  "HXSDwVIT2WRbTeRVAjpFHnzjIGY2",
+    "dep_vars": ["sleep_quality", ""],
+    "ind_vars": [],
+    "start_date": "",
+    "end_date": "",
+    "status": "active"
+  }
+}

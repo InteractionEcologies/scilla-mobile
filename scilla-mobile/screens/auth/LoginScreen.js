@@ -9,8 +9,11 @@ import {
   AsyncStorage
 } from 'react-native';
 import * as firebase from 'firebase'; 
+import BaseScreen from "../BaseScreen";
+import appService from "../../AppService";
+import { ScreenNames } from "../../constants/Screens";
 
-export default class LoginScreen extends React.Component<any, any> {
+export default class LoginScreen extends BaseScreen {
   state = {
     email: '', 
     password: '', 
@@ -24,12 +27,10 @@ export default class LoginScreen extends React.Component<any, any> {
   handleLogin = () => {
     console.log("handle login");
 
-    firebase
-      .auth()
+    appService.auth
       .signInWithEmailAndPassword(this.state.email, this.state.password)
-      .then( () => this.props.navigation.navigate('Main'))
-      .catch( error => this.setState({ errorMessage: error.message }))
-
+      .then( () => this.navigate(ScreenNames.Main))
+      .catch( error => this.setState({ errorMessage: error.message }));
   }
 
   render() {
@@ -40,7 +41,6 @@ export default class LoginScreen extends React.Component<any, any> {
           <Text style={styles.errorMessage}>
             {this.state.errorMessage}  
           </Text>}
-        {/* <Button title="Sign In" onPress={this._signInAsync} /> */}
         <TextInput
           style={styles.textInput}
           autoCapitalize="none"
@@ -59,16 +59,12 @@ export default class LoginScreen extends React.Component<any, any> {
         <Button title="Login" onPress={this.handleLogin}/>
         <Button 
           title="Don't have an account? Sign Up"
-          onPress={() => this.props.navigation.navigate('SignUp')}
+          onPress={() => this.navigate(ScreenNames.SignUp)}
         />
       </View>
     )
   }
 
-  _signInAsync = async () => {
-    await AsyncStorage.setItem('userToken', 'abc');
-    this.props.navigation.navigate('App');
-  }
 }
 
 const styles = StyleSheet.create({

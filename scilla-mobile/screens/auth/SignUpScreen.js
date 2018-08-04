@@ -1,7 +1,7 @@
 // @flow
 import React from "react";
 import {
-  StyleSheet, Text, TextInput, View, Button
+  StyleSheet, Text, TextInput, View, Button, AsyncStorage
 } from "react-native"
 // import Auth from "../../libs/Auth";
 import appService from "../../AppService";
@@ -18,9 +18,17 @@ export default class SignUpScreen extends BaseScreen {
   handleSignUp = () => {
     console.log("handleSignUp");
     appService.auth.createUserWithEmailAndPassword(this.state.email, this.state.password)
+      .then(() => {
+        appService.ds.createUserProfile({
+          uid: appService.auth.currentUser.uid, 
+          firstName: "",
+          lastName: "",
+          email: appService.auth.currentUser.email,
+          role: "patient"
+        })
+      })
       .then(() => this.navigate(ScreenNames.Main))
       .catch( error => this.setState({ errorMessage: error.message }))
-    
   }
 
   _createUserProfile = async () => {
