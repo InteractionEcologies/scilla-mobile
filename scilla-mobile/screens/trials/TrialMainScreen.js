@@ -6,6 +6,13 @@ import {
   StyleSheet,
   Button,
 } from "react-native";
+import {
+  Container, 
+  Header, 
+  Content, 
+  Footer
+} from "native-base";
+
 import { connect } from "react-redux";
 import { fetchTrials } from "../../redux/trials/trialActions";
 
@@ -31,16 +38,31 @@ class TrialMainScreen extends BaseScreen {
     this.props.dispatch(fetchTrials());
   }
 
-  createTrial = () => {
+  goToCreateTrial = () => {
     this.navigate(ScreenNames.TrialCreate);
   }
 
+  goToUpdateTrial = (trialId: string) => {
+    console.dir(trialId);
+  }
+
   render() {
+    // return (
+    //   <View style={styles.trial}>
+    //     <TrialList items={this.props.trials}/>
+    //     <Button title="Create Trial" onPress={this.createTrial}/>
+    //   </View>
+    // )
     return (
-      <View style={styles.trial}>
-        <TrialList items={this.props.trials}/>
-        <Button title="Create Trial" onPress={this.createTrial}/>
-      </View>
+      <Container >
+        <Content>
+          <TrialList 
+            items={this.props.trials}
+            goToUpdateTrial={this.goToUpdateTrial}
+          />
+          <Button title="Create Trial" onPress={this.goToCreateTrial}/>
+        </Content>
+      </Container>
     )
   }
 }

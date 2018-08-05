@@ -6,7 +6,6 @@ export const FETCH_TRIALS_BEGIN = "FETCH_TRIALS_BEGIN";
 export const FETCH_TRIALS_SUCCESS = "FETCH_TRIALS_SUCCESS";
 export const FETCH_TRIALS_FAILURE = "FETCH_TRIALS_FAILURE";
 
-
 /**
  * Action Creators
  */
