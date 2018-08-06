@@ -17,6 +17,7 @@ import {
   TrialConfigKeys,
   TrialGoals,
   TreatmentTypes,
+  ReminderTypes,
 } from "./intecojs/types";
 
 import { generatePushIDFunc, DateFormatISO8601 } from "./intecojs/utils";
@@ -29,16 +30,27 @@ const TRIAL_BACLOFEN_DAYS: number = 7 * 6; // 42
 
 /**
  * A class responsible for generating 
+ * Call sequence: 
+ *  1. setUserId(uid)
+ *  2. setTrialType(...)
+ *  3. setTrialConfig(...)
+ *  4. confirmTrialConfig(...)
+ *  5. setStartDate(...)
+ *  6. confirmStartDate(...)
+ *  7. make()
  */
-export class TrialHelper {
+export class TrialMaker {
   _data: TYTrial
-  prelimTrial: any
+  prelimTrialDays: number
+  generatePushID: () => string
 
   constructor(data?: TYTrial) {
     let defaultTrial: TYTrial;
+
+    this.generatePushID = generatePushIDFunc();
     if (data === undefined) {
       defaultTrial = {
-        tid: generatePushIDFunc()(), 
+        tid: this.generatePushID(), 
         uid: "", 
         name: "My New Trial", 
         startDate: moment().format(DateFormatISO8601),
@@ -62,24 +74,51 @@ export class TrialHelper {
     }
   }
 
-  setUserId(uid: string): TrialHelper {
+  setUserId(uid: string): TrialMaker {
     this._data.uid = uid;
     return this;
   }
 
-  setTrialName(name: string): TrialHelper {
+  setTrialName(name: string): TrialMaker {
     this._data.name = name;
     return this;
   }
 
   
-  setTrialType(type: TYTrialType): TrialHelper {
+  setTrialType(type: TYTrialType): TrialMaker {
     this._data.type = type;
-    this._generateDefaultTrackedVars(type);
     return this;
   }
 
-  setTrialConfig(config: TYTrialConfig): TrialHelper {
+  getTrialType(): TYTrialType {
+    return this._data.type;
+  }
+
+  getTrialDescription(): string {
+    let desc: string = "";
+    let type = this._data.type;
+    console.log(type);
+    switch(type) {
+      case TrialTypes.incBaclofen: 
+      desc = "In this trial, you will experiment how increasing Baclofen " + 
+          "dosage affects your body such as severity of spasticity and tiredness." + 
+          "This trial will take 1-6 weeks depending on your current Baclofen intake.";
+          break;
+      case TrialTypes.decBaclofen:
+        desc = "In this trial, you will experiment how reducing Baclofen " + 
+          "dosage affects your body such as severity of spasticity and tiredness." + 
+          "This trial will take 1-6 weeks depending on your current Baclofen intake.";
+          break;
+      case TrialTypes.none:
+        desc = "No type of trial is selected.";
+        break;
+      default:
+        desc = "No type of trial is selected."
+    }
+    return desc
+  }
+
+  setTrialConfig(config: TYTrialConfig): TrialMaker {
     
     // validate config
     if( this._data.type === TrialTypes.decBaclofen || 
@@ -94,13 +133,35 @@ export class TrialHelper {
     return this;
   }
 
-  generateTrialGoal(): TrialHelper {
-    let goal;
+  
+  /**
+   * Generate personalized trial goal depending on the 
+   * trial configuration, including the `type` of trial, 
+   * and the detail `config`. 
+   * @returns TrialMaker
+   */
+  confirmTrialConfig(): TrialMaker {
+    this._data.trialGoal = this._generateTrialGoal(
+      this._data.type, 
+      this._data.trialConfig
+    );
+    this.prelimTrialDays = this._generateTrialLength(
+      this._data.type, 
+      this._data.trialConfig
+    );
+    this._data.trackedVars = this._generateDefaultTrackedVars(
+      this._data.type
+    );
+    return this
+  }
 
-    switch(this._data.type) {
+  _generateTrialGoal(type: TYTrialType, config: TYTrialConfig): TYTrialGoal {
+    let goal = TrialGoals.baclofen30mg;
+
+    switch(type) {
       case TrialTypes.incBaclofen: {
         // force casting, first case to any then to the desired type. 
-        let currentDoseMg = ((this._data.trialConfig.currentDoseMg: any): number);
+        let currentDoseMg = ((config.currentDoseMg: any): number);
         if(currentDoseMg < 30) {
           // increase to 30mg
           goal = TrialGoals.baclofen30mg;
@@ -108,9 +169,11 @@ export class TrialHelper {
           // increase to 60mg
           goal = TrialGoals.baclofen60mg;
         }
+        break;
       }
+      
       case TrialTypes.decBaclofen: {
-        let currentDoseMg = ((this._data.trialConfig.currentDoseMg: any): number);
+        let currentDoseMg = ((config.currentDoseMg: any): number);
         if(currentDoseMg > 30) {
           // decrease to 30mg
           goal = TrialGoals.baclofen30mg;
@@ -118,27 +181,20 @@ export class TrialHelper {
           // decrease to 0mg
           goal = TrialGoals.baclofen0mg;
         }
+        break;
       }
       default: 
         goal = TrialGoals.baclofen30mg;
     }
-    this._data.trialGoal = goal;
-    
-    this._generatePrelimTrial()
-    return this;
+    return goal;
   }
 
-  _generateDefaultTrialLength() {
-
-  }
-
-  _generatePrelimTrial(): TrialHelper {
+  _generateTrialLength(type: TYTrialType, config: TYTrialConfig): number {
     let days = TRIAL_BACLOFEN_DAYS;
-
-    switch(this._data.type) {
+    switch(type) {
       case TrialTypes.incBaclofen: {
         // force casting, first case to any then to the desired type. 
-        let currentDoseMg = ((this._data.trialConfig.currentDoseMg: any): number);
+        let currentDoseMg = ((config.currentDoseMg: any): number);
         if(currentDoseMg < 30) {
           // increase to 30mg
           let weeks = parseInt( (30 - currentDoseMg)/5, 10); 
@@ -148,9 +204,10 @@ export class TrialHelper {
           let weeks = parseInt( (60 - currentDoseMg)/5, 10);
           days = weeks * 7;
         }
+        break;
       }
       case TrialTypes.decBaclofen: {
-        let currentDoseMg = ((this._data.trialConfig.currentDoseMg: any): number);
+        let currentDoseMg = ((config.currentDoseMg: any): number);
         if(currentDoseMg > 30) {
           // decrease to 30mg
           let weeks = parseInt( (currentDoseMg - 30)/5, 10); 
@@ -160,38 +217,45 @@ export class TrialHelper {
           let weeks = parseInt( (currentDoseMg)/5, 10);
           days = weeks * 7;
         }
+        break;
       }
       default: 
         days = TRIAL_BACLOFEN_DAYS;
     }
 
-    this.prelimTrial = {
-      days: days
-    }
-    return this;
+    return days;
   }
 
-  _generateDefaultTrackedVars(type: TYTrialType): TrialHelper {
-    this._data.trackedVars = [
+  _generateDefaultTrackedVars(type: TYTrialType): TYVarType[] {
+    let trackedVars = [
       VarTypes.sleepQuality, 
       VarTypes.spasticitySeverity,
       VarTypes.baclofenAmount,
       VarTypes.tiredness
     ];
-    return this;
+    return trackedVars;
   }
 
-  addTrackedVar(v: TYVarType): TrialHelper {
+  addTrackedVar(v: TYVarType): TrialMaker {
     this._data.trackedVars = _.union(this._data.trackedVars, [v]);
     return this;
   }
 
-  removeTrackedVar(v: TYVarType): TrialHelper {
+  removeTrackedVar(v: TYVarType): TrialMaker {
     this._data.trackedVars = _.pull(this._data.trackedVars, v);
     return this;
   }
 
-  setStartDate(date: string): TrialHelper {
+  getTrackedVars(): TYVarType[] {
+    // clone the trackedVars array intead of returning the ref.
+    return Array.from(this._data.trackedVars);
+  }
+  /**
+   * Currently 
+   * @param  {string} date: the start date of the trial
+   * @returns TrialMaker
+   */
+  setStartDate(date: string): TrialMaker {
     this._data.startDate = date;
 
     // Automatically generate an endDate based on config. 
@@ -199,10 +263,21 @@ export class TrialHelper {
     let days = TRIAL_BACLOFEN_DAYS;
     
     this._data.endDate = moment(date)
-      .add(this.prelimTrial.days, 'days')
+      .add(this.prelimTrialDays, 'days')
       .format(DateFormatISO8601);
     
     return this;
+  }
+
+  confirmTrialDate(): TrialMaker {
+    this._data.reminderConfigs = this._generateDefaultReminderConfigs(this._data.type);
+    return this;
+  }
+
+  getTreatmentAndReminderSlots() {
+    switch(this._data.type) {
+
+    }
   }
 
   _generateTreatmentPeriods(
@@ -234,7 +309,7 @@ export class TrialHelper {
           fromDateMoment = fromDateMoment.add(7, 'days');
           currentSubGoalMg += 5;
         }
-        
+        break;
       }
       case TrialTypes.decBaclofen: {
         let currentDoseMg = ((config.currentDoseMg: any): number);
@@ -257,6 +332,7 @@ export class TrialHelper {
           fromDateMoment = fromDateMoment.add(7, 'days');
           currentSubGoalMg -= 5;
         }
+        break;
       }
       default: {
 
@@ -274,33 +350,44 @@ export class TrialHelper {
   // filter makes more sense, but that requires some 
   // heuristic to filter treatment (e.g., send reminder 
   // for treatment in the morning but not in the afternoon).
-  _generateDefaultReminderConfigs(): TYReminderConfig[] {
-    return [
-      {
-        id: 1,
-        type: "daily",
-        time: "08:30",
-        actionOrTreatmentType: "baclofen"
-      },
-      {
-        id: 2,
-        type: "daily",
-        time: "12:30",
-        actionOrTreatmentType: "baclofen"
-      },
-      {
-        id: 3,
-        type: "daily",
-        time: "18:30",
-        actionOrTreatmentType: "baclofen"
-      }
-    ]
+  _generateDefaultReminderConfigs(type: TYTrialType): TYReminderConfig[] {
+    let reminderConfigs: TYReminderConfig[] = []
+    switch(type) {
+      case TrialTypes.incBaclofen:
+      case TrialTypes.decBaclofen:
+        let treatmentSlots = BaclofenTreatmentDef.slots;
+        reminderConfigs = treatmentSlots.map((slot) => {
+          return {
+            id: this.generatePushID(),
+            slotId: slot.id, 
+            order: slot.order, 
+            type: ReminderTypes.daily,
+            time: slot.defaultTime, 
+            actionOrTreatmentType: slot.actionType
+          }
+        });
+        break;
+      default: 
+        reminderConfigs = [];
+    }
+    return reminderConfigs;
   }
 
-  setReminderConfig(id: number, newConfig: TYReminderConfig): TrialHelper {
+  setReminderConfig(id: string, newConfig: TYReminderConfig): TrialMaker {
     this._data.reminderConfigs = this._data.reminderConfigs.map( (config) => {
-      if(config.id == id) {
+      if(config.id === id) {
         return newConfig;
+      } 
+      return config;
+    })
+    return this;
+  }
+
+  setReminderTime(id: string, time: string) {
+    this._data.reminderConfigs = this._data.reminderConfigs.map( (config) => {
+      if(config.id === id) {
+        config.time = time;
+        return config;
       } 
       return config;
     })
@@ -310,16 +397,14 @@ export class TrialHelper {
   /**
    * Auto-fill the treatment periods 
    */
-  make(): TrialHelper {
+  make(): TYTrial {
     this._data.treatmentPeriods = this._generateTreatmentPeriods(
       this._data.type, 
       this._data.trialGoal,
       this._data.trialConfig,
       this._data.startDate
     )
-    this._data.reminderConfigs = this._generateDefaultReminderConfigs();
-
-    return this;
+    return this._data;
   }
 
   /**

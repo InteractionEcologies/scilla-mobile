@@ -1,6 +1,6 @@
 import 'react-native';
 import React from 'react';
-import { TrialHelper } from "../Trial";
+import { TrialMaker } from "../Trial";
 import { 
   TrialTypes, 
   VarTypes,
@@ -10,11 +10,11 @@ import {
 import moment from "moment";
 import { DateFormatISO8601 } from "../intecojs/utils";
 
-describe("TrialHelper", () => {
+describe("TrialMaker", () => {
   let uid = "12345"
 
   beforeEach( () => {
-    let trialHelper;
+    let trialMaker;
   });
 
   afterEach( () => {
@@ -22,12 +22,12 @@ describe("TrialHelper", () => {
   });
 
   it('init', () => {
-    trialHelper = new TrialHelper();
-    expect(trialHelper._data.tid).not.toEqual("");
-    expect(trialHelper._data.uid).toEqual("");
-    expect(trialHelper._data.type).toEqual(TrialTypes.none);
-    expect(trialHelper._data.startDate).toEqual(moment().format(DateFormatISO8601));
-    // expect(trialHelper._data.)
+    trialMaker = new TrialMaker();
+    expect(trialMaker._data.tid).not.toEqual("");
+    expect(trialMaker._data.uid).toEqual("");
+    expect(trialMaker._data.type).toEqual(TrialTypes.none);
+    expect(trialMaker._data.startDate).toEqual(moment().format(DateFormatISO8601));
+    // expect(trialMaker._data.)
   });
 
   it('init from data', () => {
@@ -35,50 +35,51 @@ describe("TrialHelper", () => {
   });
 
   it('set user id', () => {
-    trialHelper = new TrialHelper();
-    trialHelper.setUserId(uid);
-    expect(trialHelper._data.uid).toEqual(uid);
+    trialMaker = new TrialMaker();
+    trialMaker.setUserId(uid);
+    expect(trialMaker._data.uid).toEqual(uid);
   });
 
   it('set trial type', () => {
-    trialHelper = new TrialHelper();
-    trialHelper.setTrialType(TrialTypes.incBaclofen);
-    expect(trialHelper._data.type).toEqual(TrialTypes.incBaclofen);
+    trialMaker = new TrialMaker();
+    trialMaker.setTrialType(TrialTypes.incBaclofen);
+    expect(trialMaker._data.type).toEqual(TrialTypes.incBaclofen);
   });
 
   it('set trial config', () => {
-    trialHelper = new TrialHelper();
-    trialHelper.setTrialType(TrialTypes.incBaclofen)
+    trialMaker = new TrialMaker();
+    trialMaker.setTrialType(TrialTypes.incBaclofen)
       .setTrialConfig({
         currentDoseMg: 0 
       });
     })
 
   it('set tracked variables', () => {
-    trialHelper = new TrialHelper();
-    trialHelper.setTrialType(TrialTypes.incBaclofen)
+    trialMaker = new TrialMaker();
+    trialMaker.setTrialType(TrialTypes.incBaclofen)
       .removeTrackedVar(VarTypes.sleepQuality);
-    expect(trialHelper._data.trackedVars).toHaveLength(3);
-    expect(trialHelper._data.trackedVars).not.toContain(VarTypes.sleepQuality);
+    expect(trialMaker._data.trackedVars).toHaveLength(3);
+    expect(trialMaker._data.trackedVars).not.toContain(VarTypes.sleepQuality);
     
-    trialHelper.addTrackedVar(VarTypes.sleepQuality);
-    expect(trialHelper._data.trackedVars).toContain(VarTypes.sleepQuality);
+    trialMaker.addTrackedVar(VarTypes.sleepQuality);
+    expect(trialMaker._data.trackedVars).toContain(VarTypes.sleepQuality);
   });
 
   it('generate treatment periods', () => {
-    trialHelper = new TrialHelper();
-    trialHelper
+    trialMaker = new TrialMaker();
+    trialMaker
       .setUserId(uid)
       .setTrialType(TrialTypes.incBaclofen)
       .setTrialConfig({
         currentDoseMg: 0
       })
       .setTrialName("Try out Baclofen")
-      .generateTrialGoal()
+      .confirmTrialConfig()
       .setStartDate(moment().format(DateFormatISO8601))
+      .confirmTrialDate()
       .make()
 
-    expect(trialHelper._data.treatmentPeriods).toHaveLength(6);
+    expect(trialMaker._data.treatmentPeriods).toHaveLength(6);
   });
 
   // it('set reminders', () => {

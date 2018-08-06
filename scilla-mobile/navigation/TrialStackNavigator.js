@@ -5,7 +5,12 @@ import { createStackNavigator } from "react-navigation";
 import TabBarIcon from '../components/TabBarIcon';
 
 import TrialMainScreen from "../screens/trials/TrialMainScreen";
-import TrialCreateScreen from "../screens/trials/TrialCreateScreen";
+import TrialTypeSelectionScreen from "../screens/trials/TrialTypeSelectionScreen";
+import TrialTypeOverviewScreen from "../screens/trials/TrialTypeOverviewScreen";
+import TrialVarSelectionScreen from "../screens/trials/TrialVarSelectionScreen";
+import TrialDateSelectionScreen from "../screens/trials/TrialDateSelectionScreen";
+import TrialReminderConfigScreen from "../screens/trials/TrialReminderConfigScreen";
+import TrialSummaryScreen from "../screens/trials/TrialSummaryScreen";
 import {ScreenNames} from "../constants/Screens";
 
 // let routeConfigs = {};
@@ -15,7 +20,12 @@ import {ScreenNames} from "../constants/Screens";
 let TrialStack = createStackNavigator(
   {
     TrialMain: TrialMainScreen, 
-    TrialCreate: TrialCreateScreen,
+    TrialTypeSelection: TrialTypeSelectionScreen,
+    TrialTypeOverview: TrialTypeOverviewScreen,
+    TrialVarSelection: TrialVarSelectionScreen,
+    TrialDateSelection: TrialDateSelectionScreen,
+    TrialReminderConfig: TrialReminderConfigScreen,
+    TrialSummary: TrialSummaryScreen
   },
   {
     initialRouteName: ScreenNames.TrialMain

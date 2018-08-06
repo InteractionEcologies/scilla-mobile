@@ -7,7 +7,11 @@ export default class BaseScreen extends React.Component<any, any> {
     this.props.navigation.navigate(routeName, params);
   }
 
-  get navParams() {
+  getNavParams() {
     return this.props.navigation.state.params;
+  }
+
+  setNavParams(params: Object) {
+    this.props.navigation.setParams(params);
   }
 }

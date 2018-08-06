@@ -39,7 +39,7 @@ class TrialMainScreen extends BaseScreen {
   }
 
   goToCreateTrial = () => {
-    this.navigate(ScreenNames.TrialCreate);
+    this.navigate(ScreenNames.TrialTypeSelection);
   }
 
   goToUpdateTrial = (trialId: string) => {
@@ -54,7 +54,7 @@ class TrialMainScreen extends BaseScreen {
     //   </View>
     // )
     return (
-      <Container >
+      <Container>
         <Content>
           <TrialList 
             items={this.props.trials}
