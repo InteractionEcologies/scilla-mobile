@@ -1,8 +1,8 @@
 import { combineReducers } from "redux";
-import trialReducer from "./trials/trialReducer";
+import regimenReducer from "./regimens/regimenReducer";
 
 const rootReducer = combineReducers({
-  trialReducer,
+  regimenReducer,
 })
 
 export default rootReducer; 

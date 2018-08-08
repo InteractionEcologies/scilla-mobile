@@ -5,15 +5,15 @@ export let ScreenNames = {
   Login: "Login",
   SignUp: "SignUp",
 
-  // Trial 
-  TrialMain: "TrialMain",
-  TrialCreate: 'TrialCreate',
-  // Trial creation
-  TrialTypeSelection: 'TrialTypeSelection',
-  TrialTypeOverview: 'TrialTypeOverview',
-  TrialVarSelection: 'TrialVarSelection',
-  TrialDateSelection: 'TrialDateSelection',
-  TrialReminderConfig: "TrialReminderConfig",
-  TrialSummary: "TrialSummary"
+  // Regimen 
+  RegimenMain: "RegimenMain",
+  RegimenCreate: 'RegimenCreate',
+  // Regimen creation
+  RegimenTypeSelection: 'RegimenTypeSelection',
+  RegimenTypeOverview: 'RegimenTypeOverview',
+  RegimenVarSelection: 'RegimenVarSelection',
+  RegimenDateSelection: 'RegimenDateSelection',
+  RegimenReminderConfig: "RegimenReminderConfig",
+  RegimenSummary: "RegimenSummary"
 
 }

@@ -1,6 +1,6 @@
 // @flow
 const InitialAppState = {
-  trials: {
+  regimens: {
     isFetching: false, 
     items: []
   },

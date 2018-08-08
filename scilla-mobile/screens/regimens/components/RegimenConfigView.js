@@ -1,11 +1,12 @@
 // @flow
 import React from "react";
 import { View, Text, Item, Input } from "native-base";
-import type { TYTrialType } from "../libs/intecojs/types";
-import { TrialTypes } from "../libs/intecojs/types";
+import type { RegimentOption } from "../../../libs/intecojs/types";
+import { RegimenOptions } from "../../../libs/intecojs/types";
 
-export default class TrialConfigView extends React.Component<any, any> {
+export default class RegimenConfigView extends React.Component<any, any> {
   state = {
+    type: RegimenOptions.undefined,
     desc: ""
   }
   constructor(props: Object) {
@@ -14,33 +15,32 @@ export default class TrialConfigView extends React.Component<any, any> {
   }
   componentDidMount() {
     console.log(this.props);
-    this.prepareDesc();
+    
   }
 
-  prepareDesc(): Text {
-    let type = this.props.type;
+  prepareDesc(type: RegimentOption): Text {
     switch(type) {
-      case TrialTypes.incBaclofen: {
-        let desc = "In this trial, you will experiment how increasing Baclofen " + 
+      case RegimenOptions.incBaclofen: {
+        let desc = "In this regimen, you will experiment how increasing Baclofen " + 
           "dosage affects your body such as severity of spasticity and tiredness. " + 
-          "This trial will take 1-6 weeks depending on your current Baclofen intake.";
+          "This regimen will take 1-6 weeks depending on your current Baclofen intake.";
         this.setState({desc: desc})
         break;
       }
-      case TrialTypes.decBaclofen: {
-        let desc = "In this trial, you will experiment how reducing Baclofen " + 
+      case RegimenOptions.decBaclofen: {
+        let desc = "In this regimen, you will experiment how reducing Baclofen " + 
           "dosage affects your body such as severity of spasticity and tiredness. " + 
-          "This trial will take 1-6 weeks depending on your current Baclofen intake.";
+          "This regimen will take 1-6 weeks depending on your current Baclofen intake.";
         this.setState({desc: desc});
         break;
       }
-      case TrialTypes.none: {
-        let desc = "No type of trial is selected.";
+      case RegimenOptions.undefined: {
+        let desc = "No type of regimen is selected.";
         this.setState({desc: desc});
         break;
       }
       default: {
-        let desc = "No type of trial is selected.";
+        let desc = "No type of regimen is selected.";
         this.setState({desc: desc});
         break;
       }
@@ -50,7 +50,7 @@ export default class TrialConfigView extends React.Component<any, any> {
   prepareConfigComps(): any {
     let type = this.props.type;
     switch(type) {
-      case TrialTypes.incBaclofen: {
+      case RegimenOptions.incBaclofen: {
         return (
           <View>
             <Item>
@@ -59,7 +59,7 @@ export default class TrialConfigView extends React.Component<any, any> {
           </View>
         )
       }
-      case TrialTypes.decBaclofen: {
+      case RegimenOptions.decBaclofen: {
         return (
           <View>
             <Item>
@@ -68,17 +68,28 @@ export default class TrialConfigView extends React.Component<any, any> {
           </View>
         )
       }
-      case TrialTypes.none: 
+      case RegimenOptions.undefined: 
       default: 
         return null
       
     }
   }
 
-  render() {
-    let type: TYTrialType = this.props.type;
-    let view = this.prepareConfigComps();
+  componentWillReceiveProps(nextProps: any, nextContext: any) {
+    this.prepareDesc(nextProps.type);
+  }
 
+  componentWillUpdate(nextProps: any, nextState: any) {
+    
+  }
+
+  componentDidUpdate(prevProps: any, prevState: any) {
+
+  }
+
+  render() {
+    let type: RegimentOption = this.props.type;
+    let view = this.prepareConfigComps();
     return (
       <View>
         <Text>{this.state.desc}</Text>

@@ -9,30 +9,30 @@ export const FETCH_TRIALS_FAILURE = "FETCH_TRIALS_FAILURE";
 /**
  * Action Creators
  */
-export function fetchTrials() {
+export function fetchRegimens() {
   return (dispatch: any) => {
     let uid = appService.auth.currentUser.uid;
-    return appService.ds.fetchTrials(uid)
-      .then( (trials) => {
-        dispatch(fetchTrialsSuccess(trials));
+    return appService.ds.fetchRegimens(uid)
+      .then( (regimens) => {
+        dispatch(fetchRegimensSuccess(regimens));
       })
   }
   // return (dispatch: any) => {
-  //   dispatch(fetchTrialsBegin());
+  //   dispatch(fetchRegimensBegin());
   //   return 
   // }
 }
 
-export const fetchTrialsBegin = () => ({
+export const fetchRegimensBegin = () => ({
   type: FETCH_TRIALS_BEGIN
 })
 
-export const fetchTrialsSuccess = (trials: any) => ({
+export const fetchRegimensSuccess = (regimens: any) => ({
   type: FETCH_TRIALS_SUCCESS,
-  payload: { trials }
+  payload: { regimens }
 })
 
-export const fetchTrialsFailure = (error: any) => ({
+export const fetchRegimensFailure = (error: any) => ({
   type: FETCH_TRIALS_FAILURE,
   payload: { error }
 })

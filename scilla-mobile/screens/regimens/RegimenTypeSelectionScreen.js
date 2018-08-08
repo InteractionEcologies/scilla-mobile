@@ -4,45 +4,45 @@ import { StyleSheet } from "react-native";
 import {  Container, Content, Button, Text, List, 
   ListItem, Card, CardItem, Body, Header
 } from "native-base";
-import TrialBaseScreen from "./TrialBaseScreen";
+import RegimenBaseScreen from "./RegimenBaseScreen";
 import styles from "./styles";
-import { TrialMaker } from "../../libs/Trial";
+import { RegimenMaker } from "../../libs/RegimenMaker";
 import appService from "../../AppService";
-import type { TYTrial, TYTrialType} from "../../libs/intecojs/types"
-import { TrialTypes,  } from "../../libs/intecojs/types";
+import type { RegimenObject, RegimentOption} from "../../libs/intecojs/types"
+import { RegimenOptions,  } from "../../libs/intecojs/types";
 import _ from "lodash";
 import { ScreenNames } from "../../constants/Screens";
 
-export default class TrialTypeSelectionScreen extends TrialBaseScreen {
+export default class RegimenTypeSelectionScreen extends RegimenBaseScreen {
   state = {
-    trialType: null
+    regimenType: null
   }
   static navigationOptions: any = {
-    title: "Select Trial"
+    title: "Select Regimen"
   }
-  trialMaker: TrialMaker;
+  regimenMaker: RegimenMaker;
 
   componentDidMount() {
-    this.trialMaker = new TrialMaker();
+    this.regimenMaker = new RegimenMaker();
     let uid = appService.auth.currentUser.uid;
-    this.trialMaker.setUserId(uid);
+    this.regimenMaker.setUserId(uid);
   }
 
   goToNext = () => {
     this.goToTypeOverviewScreen();
   }
 
-  selectTrialType = (type: TYTrialType) => {
-    console.log(`Select trial type = ${type}`);
-    this.trialMaker.setTrialType(type);
-    console.log(`Current trial type = ${this.trialMaker._data.type}`);
-    this.navigate(ScreenNames.TrialTypeOverview, { trialMaker: this.trialMaker });
+  selectRegimenType = (type: RegimentOption) => {
+    console.log(`Select regimen type = ${type}`);
+    this.regimenMaker.setRegimenType(type);
+    console.log(`Current regimen type = ${this.regimenMaker._data.type}`);
+    this.navigate(ScreenNames.RegimenTypeOverview, { regimenMaker: this.regimenMaker });
   }
 
-  _getTrialTypeCards = (): List => {
-    // const trialTypeList = TrialTypes.
+  _getRegimenTypeCards = (): List => {
+    // const regimenTypeList = RegimenOptions.
     // _.
-    let types = _.values(TrialTypes);
+    let types = _.values(RegimenOptions);
     console.log(types);
     let cards: Card[] = [];
     types.forEach( (type) => {
@@ -50,25 +50,25 @@ export default class TrialTypeSelectionScreen extends TrialBaseScreen {
       console.log(type);
 
       switch(type) {
-        case TrialTypes.incBaclofen: 
+        case RegimenOptions.incBaclofen: 
           cards.push(
             <Card key={type}>
-              <CardItem key={type} button onPress={ () => this.selectTrialType(type) }>
+              <CardItem key={type} button onPress={ () => this.selectRegimenType(type) }>
                 <Text>Start or Increase Baclofen Dosage</Text>
               </CardItem>
             </Card>
           )
           break;
-        case TrialTypes.decBaclofen:
+        case RegimenOptions.decBaclofen:
           cards.push(
             <Card key={type}>
-              <CardItem key={type} button onPress={ () => this.selectTrialType(type) } >
+              <CardItem key={type} button onPress={ () => this.selectRegimenType(type) } >
                 <Text>Stop or Decrease Baclofen Dosage</Text>
               </CardItem>
             </Card>
           )
           break;
-        case TrialTypes.none:
+        case RegimenOptions.undefined:
           break;
       }
 
@@ -77,10 +77,10 @@ export default class TrialTypeSelectionScreen extends TrialBaseScreen {
     return cards
   }
 
-  _getTrialTypeButtons = (): Button[] => {
-    // const trialTypeList = TrialTypes.
+  _getRegimenTypeButtons = (): Button[] => {
+    // const regimenTypeList = RegimenOptions.
     // _.
-    let types = _.values(TrialTypes);
+    let types = _.values(RegimenOptions);
     console.log(types);
     let buttons: Button[] = [];
     types.forEach( (type) => {
@@ -88,21 +88,21 @@ export default class TrialTypeSelectionScreen extends TrialBaseScreen {
       console.log(type);
 
       switch(type) {
-        case TrialTypes.incBaclofen: 
+        case RegimenOptions.incBaclofen: 
           buttons.push(
             <Button title="Start or Increase Baclofen Dosage" key={type}>
               <Text>Start or Increase Baclofen Dosage</Text>
             </Button>
           )
           break;
-        case TrialTypes.decBaclofen:
+        case RegimenOptions.decBaclofen:
           buttons.push(
             <Button key={type}>
               <Text>Stop or Decrease Baclofen Dosage</Text>
             </Button>
           )
           break;
-        case TrialTypes.none:
+        case RegimenOptions.undefined:
           break;
       }
 
@@ -112,16 +112,16 @@ export default class TrialTypeSelectionScreen extends TrialBaseScreen {
   }
 
   render() {
-    const trialTypeCards = this._getTrialTypeCards();
-    // const trialTypeButtons = this._getTrialTypeButtons();
+    const regimenTypeCards = this._getRegimenTypeCards();
+    // const regimenTypeButtons = this._getRegimenTypeButtons();
     return (
       <Container>
         <Content>
           {/* <Header>
-            <Text style={styles.header2}>Trial Type Selection Screen</Text>
+            <Text style={styles.header2}>Regimen Type Selection Screen</Text>
           </Header> */}
-          {/* {trialTypeList} */}
-          {trialTypeCards}
+          {/* {regimenTypeList} */}
+          {regimenTypeCards}
           <Button title="Next" onPress={this.goToNext} />
         </Content>
       </Container>

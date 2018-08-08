@@ -7,7 +7,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center', // distribution of children along the primary axis
     alignItems: 'center', // alignment for secondary axis
   },
-  trial: {
+  regimen: {
     flex: 1, 
     alignItems: 'center', 
     justifyContent: 'center'

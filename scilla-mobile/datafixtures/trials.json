@@ -6,11 +6,11 @@
     "startDate": "2018-08-02",
     "endDate": "2018-09-12",
     "type": "incBaclofen",
-    "trialConfig": {
+    "regimenParam": {
       "fromDoseMg": 0, 
       "toDoseMg": 10
     },
-    "trialGoal": "baclofen30mg",
+    "regimenGoal": "baclofen30mg",
     "trackedVars": [
       "SleepQuality", 
       "SpasticitySeverity", 

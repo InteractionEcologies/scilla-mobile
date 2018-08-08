@@ -9,9 +9,9 @@ import {
   Container, List, ListItem, Body, Card,
   CardItem, Right, Icon
 } from "native-base";
-import type { TYTrial } from "../libs/intecojs/types";
+import type { RegimenObject } from "../../../libs/intecojs/types";
 
-export default class TrialList extends React.Component<any, any> {
+export default class RegimenList extends React.Component<any, any> {
 
   // prepareItem = (item: Object) => {
   //   return (
@@ -19,19 +19,19 @@ export default class TrialList extends React.Component<any, any> {
   //   )
   // }
 
-  // updateTrial = () => {
-  //   console.log("updateTrial");
+  // updateRegimen = () => {
+  //   console.log("updateRegimen");
   // }
 
-  _prepareCards = (items: TYTrial[]) => {
-    const Cards: any = items.map( (item: TYTrial, index: number): any => { 
+  _prepareCards = (items: RegimenObject[]) => {
+    const Cards: any = items.map( (item: RegimenObject, index: number): any => { 
       return this._prepareACard(item);
     });
     return Cards;
     
   }
 
-  _prepareACard = (item: TYTrial): any => {
+  _prepareACard = (item: RegimenObject): any => {
     return (
       <Card key={item.tid}>
         <CardItem header>
@@ -40,7 +40,7 @@ export default class TrialList extends React.Component<any, any> {
         <CardItem bordered>
           <Text> Follow these instructions. </Text>
           <Right>
-            <Icon name="arrow-forward" button onPress={ () => this.props.goToUpdateTrial(item.tid)}/>
+            <Icon name="arrow-forward" button onPress={ () => this.props.goToUpdateRegimen(item.tid)}/>
           </Right>
         </CardItem>
       </Card>

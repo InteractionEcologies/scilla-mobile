@@ -1,30 +1,30 @@
 // @flow
 import type { 
-  TYTrial, 
-  TYTreatmentType,
-  TYTrialType,
-  TYTrialConfig,
-  TYReminderConfig,
-  TYVarType,
-  TYTrialGoal, 
-  TYTreatmentPeriod,
-  TYTreatment, 
+  RegimenObject, 
+  TreatmentDetailOption,
+  RegimentOption,
+  RegimenParamObject,
+  ReminderConfigObject,
+  MeasurementType,
+  RegimenGoalOption, 
+  RegimenPhaseObject,
+  TreatmentObject, 
 } from "./intecojs/types";
 import { 
-  TrialTypes,
-  VarTypes, 
+  RegimenOptions,
+  MeasurementTypes, 
   StatusOptions,
-  TrialConfigKeys,
-  TrialGoals,
-  TreatmentTypes,
-  ReminderTypes,
+  RegimenParamKeys,
+  RegimenGoalOptions,
+  TreatmentDetailOptions,
+  ReminderFrequencyOptions,
 } from "./intecojs/types";
 
 import { generatePushIDFunc, DateFormatISO8601 } from "./intecojs/utils";
 // import appService from "../AppService";
 import moment from "moment";
 import _ from "lodash";
-import { BaclofenTreatmentDef } from "./BaclofenTreatmentDef";
+import { BaclofenRegimenPhaseDef } from "./BaclofenRegimenPhaseDef";
 
 const TRIAL_BACLOFEN_DAYS: number = 7 * 6; // 42
 
@@ -32,122 +32,100 @@ const TRIAL_BACLOFEN_DAYS: number = 7 * 6; // 42
  * A class responsible for generating 
  * Call sequence: 
  *  1. setUserId(uid)
- *  2. setTrialType(...)
- *  3. setTrialConfig(...)
- *  4. confirmTrialConfig(...)
+ *  2. setRegimenType(...)
+ *  3. setRegimenConfig(...)
+ *  4. confirmRegimenConfig(...)
  *  5. setStartDate(...)
  *  6. confirmStartDate(...)
  *  7. make()
  */
-export class TrialMaker {
-  _data: TYTrial
-  prelimTrialDays: number
+export class RegimenMaker {
+  _data: RegimenObject
+  prelimRegimenDays: number
   generatePushID: () => string
 
-  constructor(data?: TYTrial) {
-    let defaultTrial: TYTrial;
+  constructor(data?: RegimenObject) {
+    let defaultRegimen: RegimenObject;
 
     this.generatePushID = generatePushIDFunc();
     if (data === undefined) {
-      defaultTrial = {
+      defaultRegimen = {
         tid: this.generatePushID(), 
         uid: "", 
-        name: "My New Trial", 
+        name: "My New Regimen", 
         startDate: moment().format(DateFormatISO8601),
         endDate: moment().add(7, 'days').format(DateFormatISO8601),
-        type: TrialTypes.none,
-        trialConfig: {},
-        trialGoal: TrialGoals.baclofen30mg,
+        type: RegimenOptions.undefined,
+        regimenParam: {},
+        regimenGoal: RegimenGoalOptions.baclofen30mg,
         trackedVars: [
-          VarTypes.sleepQuality, 
-          VarTypes.spasticitySeverity,
-          VarTypes.baclofenAmount,
-          VarTypes.tiredness
+          MeasurementTypes.sleepQuality, 
+          MeasurementTypes.spasticitySeverity,
+          MeasurementTypes.baclofenAmount,
+          MeasurementTypes.tiredness
         ], 
         status: StatusOptions.active, 
         treatmentPeriods: [], 
         reminderConfigs: []
       }
-      this._data = defaultTrial;
+      this._data = defaultRegimen;
     } else {
       this._data = data;
     }
   }
 
-  setUserId(uid: string): TrialMaker {
+  setUserId(uid: string): RegimenMaker {
     this._data.uid = uid;
     return this;
   }
 
-  setTrialName(name: string): TrialMaker {
+  setRegimenName(name: string): RegimenMaker {
     this._data.name = name;
     return this;
   }
 
   
-  setTrialType(type: TYTrialType): TrialMaker {
+  setRegimenType(type: RegimentOption): RegimenMaker {
     this._data.type = type;
     return this;
   }
 
-  getTrialType(): TYTrialType {
+  getRegimenType(): RegimentOption {
     return this._data.type;
   }
 
-  getTrialDescription(): string {
-    let desc: string = "";
-    let type = this._data.type;
-    console.log(type);
-    switch(type) {
-      case TrialTypes.incBaclofen: 
-      desc = "In this trial, you will experiment how increasing Baclofen " + 
-          "dosage affects your body such as severity of spasticity and tiredness." + 
-          "This trial will take 1-6 weeks depending on your current Baclofen intake.";
-          break;
-      case TrialTypes.decBaclofen:
-        desc = "In this trial, you will experiment how reducing Baclofen " + 
-          "dosage affects your body such as severity of spasticity and tiredness." + 
-          "This trial will take 1-6 weeks depending on your current Baclofen intake.";
-          break;
-      case TrialTypes.none:
-        desc = "No type of trial is selected.";
-        break;
-      default:
-        desc = "No type of trial is selected."
-    }
-    return desc
-  }
+  
 
-  setTrialConfig(config: TYTrialConfig): TrialMaker {
+  setRegimenConfig(config: RegimenParamObject): RegimenMaker {
     
     // validate config
-    if( this._data.type === TrialTypes.decBaclofen || 
-      this._data.type === TrialTypes.incBaclofen
+    if( this._data.type === RegimenOptions.decBaclofen || 
+      this._data.type === RegimenOptions.incBaclofen
     ) {
-      if(!config.hasOwnProperty(TrialConfigKeys.currentDoseMg)) {
-        throw TypeError(`Config key ${TrialConfigKeys.currentDoseMg} does not exist`); 
+      if(!config.hasOwnProperty(RegimenParamKeys.currentDoseMg)) {
+        throw TypeError(`Config key ${RegimenParamKeys.currentDoseMg} does not exist`); 
       }
     }
 
-    this._data.trialConfig = config;
+    this._data.regimenParam = config;
     return this;
   }
 
   
   /**
-   * Generate personalized trial goal depending on the 
-   * trial configuration, including the `type` of trial, 
+   * Generate personalized regimen goal depending on the 
+   * regimen configuration, including the `type` of regimen, 
    * and the detail `config`. 
-   * @returns TrialMaker
+   * @returns RegimenMaker
    */
-  confirmTrialConfig(): TrialMaker {
-    this._data.trialGoal = this._generateTrialGoal(
+  confirmRegimenConfig(): RegimenMaker {
+    this._data.regimenGoal = this._generateRegimenGoal(
       this._data.type, 
-      this._data.trialConfig
+      this._data.regimenParam
     );
-    this.prelimTrialDays = this._generateTrialLength(
+    this.prelimRegimenDays = this._generateRegimenLength(
       this._data.type, 
-      this._data.trialConfig
+      this._data.regimenParam
     );
     this._data.trackedVars = this._generateDefaultTrackedVars(
       this._data.type
@@ -155,44 +133,44 @@ export class TrialMaker {
     return this
   }
 
-  _generateTrialGoal(type: TYTrialType, config: TYTrialConfig): TYTrialGoal {
-    let goal = TrialGoals.baclofen30mg;
+  _generateRegimenGoal(type: RegimentOption, config: RegimenParamObject): RegimenGoalOption {
+    let goal = RegimenGoalOptions.baclofen30mg;
 
     switch(type) {
-      case TrialTypes.incBaclofen: {
+      case RegimenOptions.incBaclofen: {
         // force casting, first case to any then to the desired type. 
         let currentDoseMg = ((config.currentDoseMg: any): number);
         if(currentDoseMg < 30) {
           // increase to 30mg
-          goal = TrialGoals.baclofen30mg;
+          goal = RegimenGoalOptions.baclofen30mg;
         } else if (currentDoseMg < 60 ) {
           // increase to 60mg
-          goal = TrialGoals.baclofen60mg;
+          goal = RegimenGoalOptions.baclofen60mg;
         }
         break;
       }
       
-      case TrialTypes.decBaclofen: {
+      case RegimenOptions.decBaclofen: {
         let currentDoseMg = ((config.currentDoseMg: any): number);
         if(currentDoseMg > 30) {
           // decrease to 30mg
-          goal = TrialGoals.baclofen30mg;
+          goal = RegimenGoalOptions.baclofen30mg;
         } else {
           // decrease to 0mg
-          goal = TrialGoals.baclofen0mg;
+          goal = RegimenGoalOptions.baclofen0mg;
         }
         break;
       }
       default: 
-        goal = TrialGoals.baclofen30mg;
+        goal = RegimenGoalOptions.baclofen30mg;
     }
     return goal;
   }
 
-  _generateTrialLength(type: TYTrialType, config: TYTrialConfig): number {
+  _generateRegimenLength(type: RegimentOption, config: RegimenParamObject): number {
     let days = TRIAL_BACLOFEN_DAYS;
     switch(type) {
-      case TrialTypes.incBaclofen: {
+      case RegimenOptions.incBaclofen: {
         // force casting, first case to any then to the desired type. 
         let currentDoseMg = ((config.currentDoseMg: any): number);
         if(currentDoseMg < 30) {
@@ -206,7 +184,7 @@ export class TrialMaker {
         }
         break;
       }
-      case TrialTypes.decBaclofen: {
+      case RegimenOptions.decBaclofen: {
         let currentDoseMg = ((config.currentDoseMg: any): number);
         if(currentDoseMg > 30) {
           // decrease to 30mg
@@ -226,36 +204,36 @@ export class TrialMaker {
     return days;
   }
 
-  _generateDefaultTrackedVars(type: TYTrialType): TYVarType[] {
+  _generateDefaultTrackedVars(type: RegimentOption): MeasurementType[] {
     let trackedVars = [
-      VarTypes.sleepQuality, 
-      VarTypes.spasticitySeverity,
-      VarTypes.baclofenAmount,
-      VarTypes.tiredness
+      MeasurementTypes.sleepQuality, 
+      MeasurementTypes.spasticitySeverity,
+      MeasurementTypes.baclofenAmount,
+      MeasurementTypes.tiredness
     ];
     return trackedVars;
   }
 
-  addTrackedVar(v: TYVarType): TrialMaker {
+  addTrackedVar(v: MeasurementType): RegimenMaker {
     this._data.trackedVars = _.union(this._data.trackedVars, [v]);
     return this;
   }
 
-  removeTrackedVar(v: TYVarType): TrialMaker {
+  removeTrackedVar(v: MeasurementType): RegimenMaker {
     this._data.trackedVars = _.pull(this._data.trackedVars, v);
     return this;
   }
 
-  getTrackedVars(): TYVarType[] {
+  getTrackedVars(): MeasurementType[] {
     // clone the trackedVars array intead of returning the ref.
     return Array.from(this._data.trackedVars);
   }
   /**
    * Currently 
-   * @param  {string} date: the start date of the trial
-   * @returns TrialMaker
+   * @param  {string} date: the start date of the regimen
+   * @returns RegimenMaker
    */
-  setStartDate(date: string): TrialMaker {
+  setStartDate(date: string): RegimenMaker {
     this._data.startDate = date;
 
     // Automatically generate an endDate based on config. 
@@ -263,71 +241,71 @@ export class TrialMaker {
     let days = TRIAL_BACLOFEN_DAYS;
     
     this._data.endDate = moment(date)
-      .add(this.prelimTrialDays, 'days')
+      .add(this.prelimRegimenDays, 'days')
       .format(DateFormatISO8601);
     
     return this;
   }
 
-  confirmTrialDate(): TrialMaker {
+  confirmRegimenDate(): RegimenMaker {
     this._data.reminderConfigs = this._generateDefaultReminderConfigs(this._data.type);
     return this;
   }
 
-  getTreatmentAndReminderSlots() {
+  getRegimenAndReminderSlots() {
     switch(this._data.type) {
 
     }
   }
 
-  _generateTreatmentPeriods(
-    type: TYTrialType, 
-    goal: TYTrialGoal,
-    config: TYTrialConfig,
+  _generateRegimenPhases(
+    type: RegimentOption, 
+    goal: RegimenGoalOption,
+    config: RegimenParamObject,
     startDate: string
-  ): TYTreatmentPeriod[] {
-    let treatmentPeriods: TYTreatmentPeriod[] = [];
+  ): RegimenPhaseObject[] {
+    let regimenPhases: RegimenPhaseObject[] = [];
     switch(type) {
-      case TrialTypes.incBaclofen: {
+      case RegimenOptions.incBaclofen: {
         let currentDoseMg = ((config.currentDoseMg: any): number);
         let weeks = 0;
-        if(goal === TrialGoals.baclofen30mg) {
+        if(goal === RegimenGoalOptions.baclofen30mg) {
           weeks = parseInt( (30 - currentDoseMg)/5, 10);
-        } else if (goal === TrialGoals.baclofen60mg) {
+        } else if (goal === RegimenGoalOptions.baclofen60mg) {
           weeks = parseInt( (60 - currentDoseMg)/5, 10);
         }
         let fromDateMoment = moment(startDate);
         let currentSubGoalMg = (parseInt(currentDoseMg/5)+1) * 5;
-        for(let period=0; period < weeks; period++) {
+        for(let phase=0; phase < weeks; phase++) {
           
-          treatmentPeriods.push({
-            period: period, 
+          regimenPhases.push({
+            phase: phase, 
             fromDate: fromDateMoment.format(DateFormatISO8601),
             toDate: fromDateMoment.add(7, 'days').format(DateFormatISO8601),
-            treatments: BaclofenTreatmentDef[`${currentSubGoalMg}mg`]
+            treatments: BaclofenRegimenPhaseDef[`${currentSubGoalMg}mg`]
           })
           fromDateMoment = fromDateMoment.add(7, 'days');
           currentSubGoalMg += 5;
         }
         break;
       }
-      case TrialTypes.decBaclofen: {
+      case RegimenOptions.decBaclofen: {
         let currentDoseMg = ((config.currentDoseMg: any): number);
         let weeks = 0;
-        if(goal === TrialGoals.baclofen30mg) {
+        if(goal === RegimenGoalOptions.baclofen30mg) {
           weeks = parseInt( (currentDoseMg - 30)/5, 10);
-        } else if (goal === TrialGoals.baclofen0mg) {
+        } else if (goal === RegimenGoalOptions.baclofen0mg) {
           weeks = parseInt( (currentDoseMg)/5, 10);
         }
         let fromDateMoment = moment(startDate);
         let currentSubGoalMg = (parseInt(currentDoseMg/5)-1) * 5;
-        for(let period=0; period < weeks; period++) {
+        for(let phase=0; phase < weeks; phase++) {
           
-          treatmentPeriods.push({
-            period: period, 
+          regimenPhases.push({
+            phase: phase, 
             fromDate: fromDateMoment.format(DateFormatISO8601),
             toDate: fromDateMoment.add(7, 'days').format(DateFormatISO8601),
-            treatments: BaclofenTreatmentDef[`${currentSubGoalMg}mg`]
+            treatments: BaclofenRegimenPhaseDef[`${currentSubGoalMg}mg`]
           })
           fromDateMoment = fromDateMoment.add(7, 'days');
           currentSubGoalMg -= 5;
@@ -338,7 +316,7 @@ export class TrialMaker {
 
       }
     }
-    return treatmentPeriods
+    return regimenPhases
   }
   
   
@@ -350,18 +328,18 @@ export class TrialMaker {
   // filter makes more sense, but that requires some 
   // heuristic to filter treatment (e.g., send reminder 
   // for treatment in the morning but not in the afternoon).
-  _generateDefaultReminderConfigs(type: TYTrialType): TYReminderConfig[] {
-    let reminderConfigs: TYReminderConfig[] = []
+  _generateDefaultReminderConfigs(type: RegimentOption): ReminderConfigObject[] {
+    let reminderConfigs: ReminderConfigObject[] = []
     switch(type) {
-      case TrialTypes.incBaclofen:
-      case TrialTypes.decBaclofen:
-        let treatmentSlots = BaclofenTreatmentDef.slots;
+      case RegimenOptions.incBaclofen:
+      case RegimenOptions.decBaclofen:
+        let treatmentSlots = BaclofenRegimenPhaseDef.slots;
         reminderConfigs = treatmentSlots.map((slot) => {
           return {
             id: this.generatePushID(),
             slotId: slot.id, 
             order: slot.order, 
-            type: ReminderTypes.daily,
+            frequency: ReminderFrequencyOptions.daily,
             time: slot.defaultTime, 
             actionOrTreatmentType: slot.actionType
           }
@@ -373,7 +351,7 @@ export class TrialMaker {
     return reminderConfigs;
   }
 
-  setReminderConfig(id: string, newConfig: TYReminderConfig): TrialMaker {
+  setReminderConfig(id: string, newConfig: ReminderConfigObject): RegimenMaker {
     this._data.reminderConfigs = this._data.reminderConfigs.map( (config) => {
       if(config.id === id) {
         return newConfig;
@@ -397,24 +375,24 @@ export class TrialMaker {
   /**
    * Auto-fill the treatment periods 
    */
-  make(): TYTrial {
-    this._data.treatmentPeriods = this._generateTreatmentPeriods(
+  make(): RegimenObject {
+    this._data.treatmentPeriods = this._generateRegimenPhases(
       this._data.type, 
-      this._data.trialGoal,
-      this._data.trialConfig,
+      this._data.regimenGoal,
+      this._data.regimenParam,
       this._data.startDate
     )
     return this._data;
   }
 
   /**
-   * Pause a trial 
+   * Pause a regimen 
    */
   pause() {
 
   }
   
-  export(): TYTrial {
+  export(): RegimenObject {
     return this._data;
   }
 

@@ -1,20 +1,20 @@
 import 'react-native';
 import React from 'react';
-import { TrialMaker } from "../Trial";
+import { RegimenMaker } from "../Regimen";
 import { 
-  TrialTypes, 
-  VarTypes,
+  RegimenOptions, 
+  MeasurementTypes,
   StatusOptions,
-  TrialConfigKeys,
+  RegimenParamKeys,
 } from "../intecojs/types";
 import moment from "moment";
 import { DateFormatISO8601 } from "../intecojs/utils";
 
-describe("TrialMaker", () => {
+describe("RegimenMaker", () => {
   let uid = "12345"
 
   beforeEach( () => {
-    let trialMaker;
+    let regimenMaker;
   });
 
   afterEach( () => {
@@ -22,12 +22,12 @@ describe("TrialMaker", () => {
   });
 
   it('init', () => {
-    trialMaker = new TrialMaker();
-    expect(trialMaker._data.tid).not.toEqual("");
-    expect(trialMaker._data.uid).toEqual("");
-    expect(trialMaker._data.type).toEqual(TrialTypes.none);
-    expect(trialMaker._data.startDate).toEqual(moment().format(DateFormatISO8601));
-    // expect(trialMaker._data.)
+    regimenMaker = new RegimenMaker();
+    expect(regimenMaker._data.tid).not.toEqual("");
+    expect(regimenMaker._data.uid).toEqual("");
+    expect(regimenMaker._data.type).toEqual(RegimenOptions.none);
+    expect(regimenMaker._data.startDate).toEqual(moment().format(DateFormatISO8601));
+    // expect(regimenMaker._data.)
   });
 
   it('init from data', () => {
@@ -35,51 +35,51 @@ describe("TrialMaker", () => {
   });
 
   it('set user id', () => {
-    trialMaker = new TrialMaker();
-    trialMaker.setUserId(uid);
-    expect(trialMaker._data.uid).toEqual(uid);
+    regimenMaker = new RegimenMaker();
+    regimenMaker.setUserId(uid);
+    expect(regimenMaker._data.uid).toEqual(uid);
   });
 
-  it('set trial type', () => {
-    trialMaker = new TrialMaker();
-    trialMaker.setTrialType(TrialTypes.incBaclofen);
-    expect(trialMaker._data.type).toEqual(TrialTypes.incBaclofen);
+  it('set regimen type', () => {
+    regimenMaker = new RegimenMaker();
+    regimenMaker.setRegimenType(RegimenOptions.incBaclofen);
+    expect(regimenMaker._data.type).toEqual(RegimenOptions.incBaclofen);
   });
 
-  it('set trial config', () => {
-    trialMaker = new TrialMaker();
-    trialMaker.setTrialType(TrialTypes.incBaclofen)
-      .setTrialConfig({
+  it('set regimen config', () => {
+    regimenMaker = new RegimenMaker();
+    regimenMaker.setRegimenType(RegimenOptions.incBaclofen)
+      .setRegimenConfig({
         currentDoseMg: 0 
       });
     })
 
   it('set tracked variables', () => {
-    trialMaker = new TrialMaker();
-    trialMaker.setTrialType(TrialTypes.incBaclofen)
-      .removeTrackedVar(VarTypes.sleepQuality);
-    expect(trialMaker._data.trackedVars).toHaveLength(3);
-    expect(trialMaker._data.trackedVars).not.toContain(VarTypes.sleepQuality);
+    regimenMaker = new RegimenMaker();
+    regimenMaker.setRegimenType(RegimenOptions.incBaclofen)
+      .removeTrackedVar(MeasurementTypes.sleepQuality);
+    expect(regimenMaker._data.trackedVars).toHaveLength(3);
+    expect(regimenMaker._data.trackedVars).not.toContain(MeasurementTypes.sleepQuality);
     
-    trialMaker.addTrackedVar(VarTypes.sleepQuality);
-    expect(trialMaker._data.trackedVars).toContain(VarTypes.sleepQuality);
+    regimenMaker.addTrackedVar(MeasurementTypes.sleepQuality);
+    expect(regimenMaker._data.trackedVars).toContain(MeasurementTypes.sleepQuality);
   });
 
   it('generate treatment periods', () => {
-    trialMaker = new TrialMaker();
-    trialMaker
+    regimenMaker = new RegimenMaker();
+    regimenMaker
       .setUserId(uid)
-      .setTrialType(TrialTypes.incBaclofen)
-      .setTrialConfig({
+      .setRegimenType(RegimenOptions.incBaclofen)
+      .setRegimenConfig({
         currentDoseMg: 0
       })
-      .setTrialName("Try out Baclofen")
-      .confirmTrialConfig()
+      .setRegimenName("Try out Baclofen")
+      .confirmRegimenConfig()
       .setStartDate(moment().format(DateFormatISO8601))
-      .confirmTrialDate()
+      .confirmRegimenDate()
       .make()
 
-    expect(trialMaker._data.treatmentPeriods).toHaveLength(6);
+    expect(regimenMaker._data.treatmentPeriods).toHaveLength(6);
   });
 
   // it('set reminders', () => {

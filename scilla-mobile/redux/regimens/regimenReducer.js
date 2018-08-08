@@ -4,15 +4,15 @@ import {
   FETCH_TRIALS_BEGIN,
   FETCH_TRIALS_SUCCESS, 
   FETCH_TRIALS_FAILURE
-} from "./trialActions";
+} from "./regimenActions";
 
 const initialState = {
-  trials: [],
+  regimens: [],
   loading: false, 
   error: null
 };
 
-export default function trialReducer(state: any = initialState, action: any) {
+export default function regimenReducer(state: any = initialState, action: any) {
   switch(action.type) {
     case FETCH_TRIALS_BEGIN: 
       return {
@@ -24,14 +24,14 @@ export default function trialReducer(state: any = initialState, action: any) {
       return {
         ...state,
         loading: false, 
-        trials: action.payload.trials
+        regimens: action.payload.regimens
       }
     case FETCH_TRIALS_FAILURE:
       return {
         ...state,
         loading: false, 
         error: action.payload.error,
-        trials: []
+        regimens: []
       }
     default:
       return state

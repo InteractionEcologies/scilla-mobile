@@ -7,7 +7,7 @@ import HomeScreen from '../screens/HomeScreen';
 import LinksScreen from '../screens/LinksScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 
-import TrialStack from "./TrialStackNavigator";
+import RegimenStack from "./RegimenStackNavigator";
 
 // const HomeStack = createStackNavigator({
 //   Home: HomeScreen,
@@ -56,7 +56,7 @@ SettingsStack.navigationOptions = {
 };
 
 export default createBottomTabNavigator({
-  TrialStack,
+  RegimenStack,
   LinksStack,
   SettingsStack,
 });
