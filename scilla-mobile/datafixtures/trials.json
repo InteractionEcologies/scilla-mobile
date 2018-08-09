@@ -1,7 +1,7 @@
 {
   "1ae03543e7626152d5ea": {
     "uid":  "HXSDwVIT2WRbTeRVAjpFHnzjIGY2",
-    "tid": "1ae03543e7626152d5ea", 
+    "id": "1ae03543e7626152d5ea", 
     "name": "Increase Baclofen",
     "startDate": "2018-08-02",
     "endDate": "2018-09-12",
@@ -11,7 +11,7 @@
       "toDoseMg": 10
     },
     "regimenGoal": "baclofen30mg",
-    "trackedVars": [
+    "trackedMeasurementTypes": [
       "SleepQuality", 
       "SpasticitySeverity", 
       "BaclofenAmount",

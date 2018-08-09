@@ -8,9 +8,6 @@ import RegimenMainScreen from "../screens/regimens/RegimenMainScreen";
 import RegimenTypeSelectionScreen from "../screens/regimens/RegimenTypeSelectionScreen";
 import RegimenTypeOverviewScreen from "../screens/regimens/RegimenTypeOverviewScreen";
 import RegimenVarSelectionScreen from "../screens/regimens/RegimenVarSelectionScreen";
-import RegimenDateSelectionScreen from "../screens/regimens/RegimenDateSelectionScreen";
-import RegimenReminderConfigScreen from "../screens/regimens/RegimenReminderConfigScreen";
-import RegimenSummaryScreen from "../screens/regimens/RegimenSummaryScreen";
 import {ScreenNames} from "../constants/Screens";
 
 // let routeConfigs = {};
@@ -23,9 +20,6 @@ let RegimenStack = createStackNavigator(
     RegimenTypeSelection: RegimenTypeSelectionScreen,
     RegimenTypeOverview: RegimenTypeOverviewScreen,
     RegimenVarSelection: RegimenVarSelectionScreen,
-    RegimenDateSelection: RegimenDateSelectionScreen,
-    RegimenReminderConfig: RegimenReminderConfigScreen,
-    RegimenSummary: RegimenSummaryScreen
   },
   {
     initialRouteName: ScreenNames.RegimenMain

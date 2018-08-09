@@ -3,11 +3,8 @@
  */
 // @flow
 import * as firebase from 'firebase';
-import FirebaseAuth from "./libs/intecojs/backend/FirebaseAuth";
-import FirebaseConfig from "./constants/FirebaseConfig";
-import FirebaseDS from "./libs/intecojs/backend/FirebaseDS";
-import { IAuth } from './libs/intecojs/backend/IAuth';
-import { IDataSource } from "./libs/intecojs/backend/IDataSource";
+import { FirebaseConfig } from "./constants/FirebaseConfig";
+import { FirebaseAuth, FirebaseDS, IAuth, IDataSource } from "./libs/intecojs";
 
 
 class AppService {

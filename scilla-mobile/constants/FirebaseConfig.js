@@ -1,4 +1,5 @@
-const FirebaseConfig = {
+// @flow
+export let FirebaseConfig = {
   apiKey: "AIzaSyCvVXg0eRK4xPyCXTGOHyUJtLjLcRjtxmk",
   authDomain: "inteco-scilla.firebaseapp.com",
   databaseURL: "https://inteco-scilla.firebaseio.com",
@@ -7,4 +8,4 @@ const FirebaseConfig = {
   messagingSenderId: "609249543436"
 };
 
-export default FirebaseConfig; 
+// export FirebaseConfig; 

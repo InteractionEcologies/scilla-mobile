@@ -4,16 +4,22 @@ import { StyleSheet } from "react-native";
 import {  Container, Content, Button, Text, List, 
   ListItem, Card, CardItem, Body, Header
 } from "native-base";
-import RegimenBaseScreen from "./RegimenBaseScreen";
-import styles from "./styles";
-import { RegimenMaker } from "../../libs/RegimenMaker";
-import appService from "../../AppService";
-import type { RegimenObject, RegimentOption} from "../../libs/intecojs/types"
-import { RegimenOptions,  } from "../../libs/intecojs/types";
 import _ from "lodash";
+import type { NavigationNavigatorProps } from "react-navigation";
+import type { RegimenObject, RegimenType} from "../../libs/intecojs"
+
+import styles from "./styles";
+// import { RegimenMaker } from "../../models/RegimenMaker";
+import { 
+  RegimenMakerFactory, 
+  RegimenMaker
+} from "../../models/regimen";
+import appService from "../../AppService";
+import { RegimenTypes,  } from "../../libs/intecojs";
 import { ScreenNames } from "../../constants/Screens";
 
-export default class RegimenTypeSelectionScreen extends RegimenBaseScreen {
+
+export default class RegimenTypeSelectionScreen extends React.Component<NavigationNavigatorProps<any, any>, any> {
   state = {
     regimenType: null
   }
@@ -23,26 +29,26 @@ export default class RegimenTypeSelectionScreen extends RegimenBaseScreen {
   regimenMaker: RegimenMaker;
 
   componentDidMount() {
-    this.regimenMaker = new RegimenMaker();
-    let uid = appService.auth.currentUser.uid;
-    this.regimenMaker.setUserId(uid);
+    // this.regimenMaker = RegimenMakerFactory.create;
+    // let uid = appService.auth.currentUser.uid;
+    // this.regimenMaker.setUserId(uid);
   }
 
   goToNext = () => {
-    this.goToTypeOverviewScreen();
+    // this.goToTypeOverviewScreen();
   }
 
-  selectRegimenType = (type: RegimentOption) => {
+  selectRegimenType = (type: RegimenType) => {
     console.log(`Select regimen type = ${type}`);
-    this.regimenMaker.setRegimenType(type);
-    console.log(`Current regimen type = ${this.regimenMaker._data.type}`);
-    this.navigate(ScreenNames.RegimenTypeOverview, { regimenMaker: this.regimenMaker });
+    this.regimenMaker = RegimenMakerFactory.createRegimen(type);
+    console.log(`Current regimen type = ${this.regimenMaker._obj.type}`);
+    this.props.navigation.navigate(ScreenNames.RegimenTypeOverview, { regimenMaker: this.regimenMaker });
   }
 
   _getRegimenTypeCards = (): List => {
-    // const regimenTypeList = RegimenOptions.
+    // const regimenTypeList = RegimenTypes.
     // _.
-    let types = _.values(RegimenOptions);
+    let types = _.values(RegimenTypes);
     console.log(types);
     let cards: Card[] = [];
     types.forEach( (type) => {
@@ -50,7 +56,7 @@ export default class RegimenTypeSelectionScreen extends RegimenBaseScreen {
       console.log(type);
 
       switch(type) {
-        case RegimenOptions.incBaclofen: 
+        case RegimenTypes.incBaclofen: 
           cards.push(
             <Card key={type}>
               <CardItem key={type} button onPress={ () => this.selectRegimenType(type) }>
@@ -59,7 +65,7 @@ export default class RegimenTypeSelectionScreen extends RegimenBaseScreen {
             </Card>
           )
           break;
-        case RegimenOptions.decBaclofen:
+        case RegimenTypes.decBaclofen:
           cards.push(
             <Card key={type}>
               <CardItem key={type} button onPress={ () => this.selectRegimenType(type) } >
@@ -68,47 +74,12 @@ export default class RegimenTypeSelectionScreen extends RegimenBaseScreen {
             </Card>
           )
           break;
-        case RegimenOptions.undefined:
+        case RegimenTypes.undefined:
           break;
       }
-
     });
 
     return cards
-  }
-
-  _getRegimenTypeButtons = (): Button[] => {
-    // const regimenTypeList = RegimenOptions.
-    // _.
-    let types = _.values(RegimenOptions);
-    console.log(types);
-    let buttons: Button[] = [];
-    types.forEach( (type) => {
-
-      console.log(type);
-
-      switch(type) {
-        case RegimenOptions.incBaclofen: 
-          buttons.push(
-            <Button title="Start or Increase Baclofen Dosage" key={type}>
-              <Text>Start or Increase Baclofen Dosage</Text>
-            </Button>
-          )
-          break;
-        case RegimenOptions.decBaclofen:
-          buttons.push(
-            <Button key={type}>
-              <Text>Stop or Decrease Baclofen Dosage</Text>
-            </Button>
-          )
-          break;
-        case RegimenOptions.undefined:
-          break;
-      }
-
-    });
-
-    return buttons;
   }
 
   render() {
@@ -117,12 +88,7 @@ export default class RegimenTypeSelectionScreen extends RegimenBaseScreen {
     return (
       <Container>
         <Content>
-          {/* <Header>
-            <Text style={styles.header2}>Regimen Type Selection Screen</Text>
-          </Header> */}
-          {/* {regimenTypeList} */}
           {regimenTypeCards}
-          <Button title="Next" onPress={this.goToNext} />
         </Content>
       </Container>
     )

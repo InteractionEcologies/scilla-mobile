@@ -9,7 +9,7 @@ import {
   Container, List, ListItem, Body, Card,
   CardItem, Right, Icon
 } from "native-base";
-import type { RegimenObject } from "../../../libs/intecojs";
+import type { RegimenObject } from "../libs/intecojs";
 
 export default class RegimenList extends React.Component<any, any> {
 

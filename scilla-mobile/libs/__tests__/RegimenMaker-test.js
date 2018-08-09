@@ -1,10 +1,10 @@
 import 'react-native';
 import React from 'react';
-import { RegimenMaker } from "../Regimen";
+import { RegimenMaker } from "../RegimenMaker";
 import { 
-  RegimenOptions, 
+  RegimenTypes, 
   MeasurementTypes,
-  StatusOptions,
+  RegimenStatusOptions,
   RegimenParamKeys,
 } from "../intecojs/types";
 import moment from "moment";
@@ -23,11 +23,11 @@ describe("RegimenMaker", () => {
 
   it('init', () => {
     regimenMaker = new RegimenMaker();
-    expect(regimenMaker._data.tid).not.toEqual("");
-    expect(regimenMaker._data.uid).toEqual("");
-    expect(regimenMaker._data.type).toEqual(RegimenOptions.none);
-    expect(regimenMaker._data.startDate).toEqual(moment().format(DateFormatISO8601));
-    // expect(regimenMaker._data.)
+    expect(regimenMaker._obj.id).not.toEqual("");
+    expect(regimenMaker._obj.uid).toEqual("");
+    expect(regimenMaker._obj.type).toEqual(RegimenTypes.undefined);
+    expect(regimenMaker._obj.startDate).toEqual(moment().format(DateFormatISO8601));
+    // expect(regimenMaker._obj.)
   });
 
   it('init from data', () => {
@@ -37,18 +37,18 @@ describe("RegimenMaker", () => {
   it('set user id', () => {
     regimenMaker = new RegimenMaker();
     regimenMaker.setUserId(uid);
-    expect(regimenMaker._data.uid).toEqual(uid);
+    expect(regimenMaker._obj.uid).toEqual(uid);
   });
 
   it('set regimen type', () => {
     regimenMaker = new RegimenMaker();
-    regimenMaker.setRegimenType(RegimenOptions.incBaclofen);
-    expect(regimenMaker._data.type).toEqual(RegimenOptions.incBaclofen);
+    regimenMaker.setRegimenType(RegimenTypes.incBaclofen);
+    expect(regimenMaker._obj.type).toEqual(RegimenTypes.incBaclofen);
   });
 
   it('set regimen config', () => {
     regimenMaker = new RegimenMaker();
-    regimenMaker.setRegimenType(RegimenOptions.incBaclofen)
+    regimenMaker.setRegimenType(RegimenTypes.incBaclofen)
       .setRegimenConfig({
         currentDoseMg: 0 
       });
@@ -56,20 +56,20 @@ describe("RegimenMaker", () => {
 
   it('set tracked variables', () => {
     regimenMaker = new RegimenMaker();
-    regimenMaker.setRegimenType(RegimenOptions.incBaclofen)
+    regimenMaker.setRegimenType(RegimenTypes.incBaclofen)
       .removeTrackedVar(MeasurementTypes.sleepQuality);
-    expect(regimenMaker._data.trackedVars).toHaveLength(3);
-    expect(regimenMaker._data.trackedVars).not.toContain(MeasurementTypes.sleepQuality);
+    expect(regimenMaker._obj.trackedMeasurementTypes).toHaveLength(3);
+    expect(regimenMaker._obj.trackedMeasurementTypes).not.toContain(MeasurementTypes.sleepQuality);
     
     regimenMaker.addTrackedVar(MeasurementTypes.sleepQuality);
-    expect(regimenMaker._data.trackedVars).toContain(MeasurementTypes.sleepQuality);
+    expect(regimenMaker._obj.trackedMeasurementTypes).toContain(MeasurementTypes.sleepQuality);
   });
 
-  it('generate treatment periods', () => {
+  it('generate regimen periods', () => {
     regimenMaker = new RegimenMaker();
     regimenMaker
       .setUserId(uid)
-      .setRegimenType(RegimenOptions.incBaclofen)
+      .setRegimenType(RegimenTypes.incBaclofen)
       .setRegimenConfig({
         currentDoseMg: 0
       })
@@ -79,18 +79,18 @@ describe("RegimenMaker", () => {
       .confirmRegimenDate()
       .make()
 
-    expect(regimenMaker._data.treatmentPeriods).toHaveLength(6);
+    expect(regimenMaker._obj.regimenPhases).toHaveLength(6);
   });
 
   // it('set reminders', () => {
 
   // });
 
-  // it('pause treatment', () => {
+  // it('pause regimen', () => {
 
   // });
 
-  // it('stop treatment', () => {
+  // it('stop regimen', () => {
 
   // });
 

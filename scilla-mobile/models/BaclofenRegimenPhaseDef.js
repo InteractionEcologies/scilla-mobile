@@ -1,11 +1,11 @@
 // @flow
 import {
   TreatmentDetailOptions, TreatmentOptions, 
-} from "./intecojs/types";
+} from "../libs/intecojs";
 
 import type {
   TreatmentObject
-} from "./intecojs/types";
+} from "../libs/intecojs";
 
 export const BaclofenRegimenPhaseDef: {
   "slots": any, 
