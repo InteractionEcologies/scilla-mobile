@@ -40,7 +40,7 @@ export default class RegimenTypeSelectionScreen extends React.Component<Navigati
 
   selectRegimenType = (type: RegimenType) => {
     console.log(`Select regimen type = ${type}`);
-    this.regimenMaker = RegimenMakerFactory.createRegimen(type);
+    this.regimenMaker = RegimenMakerFactory.createRegimenMaker(type);
     console.log(`Current regimen type = ${this.regimenMaker._obj.type}`);
     this.props.navigation.navigate(ScreenNames.RegimenTypeOverview, { regimenMaker: this.regimenMaker });
   }

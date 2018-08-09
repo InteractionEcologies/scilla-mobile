@@ -1,20 +1,21 @@
+// @flow
 import 'react-native';
 import React from 'react';
-import { RegimenMaker } from "../RegimenMaker";
+import { RegimenMaker, RegimenMakerFactory } from "../regimen";
 import { 
   RegimenTypes, 
   MeasurementTypes,
   RegimenStatusOptions,
   RegimenParamKeys,
-} from "../intecojs/types";
+  DateFormatISO8601
+} from "../../libs/intecojs";
 import moment from "moment";
-import { DateFormatISO8601 } from "../intecojs/utils";
 
-describe("RegimenMaker", () => {
+describe("regimen", () => {
   let uid = "12345"
 
   beforeEach( () => {
-    let regimenMaker;
+    let regimenMaker: RegimenMaker;
   });
 
   afterEach( () => {
@@ -22,10 +23,10 @@ describe("RegimenMaker", () => {
   });
 
   it('init', () => {
-    regimenMaker = new RegimenMaker();
+    regimenMaker = new RegimenMakerFactory.createRegimenMaker(RegimenTypes.incBaclofen);
     expect(regimenMaker._obj.id).not.toEqual("");
     expect(regimenMaker._obj.uid).toEqual("");
-    expect(regimenMaker._obj.type).toEqual(RegimenTypes.undefined);
+    expect(regimenMaker._obj.type).toEqual(RegimenTypes.incBaclofen);
     expect(regimenMaker._obj.startDate).toEqual(moment().format(DateFormatISO8601));
     // expect(regimenMaker._obj.)
   });
@@ -35,46 +36,49 @@ describe("RegimenMaker", () => {
   });
 
   it('set user id', () => {
-    regimenMaker = new RegimenMaker();
+    regimenMaker = new RegimenMakerFactory.createRegimenMaker(RegimenTypes.incBaclofen);
     regimenMaker.setUserId(uid);
     expect(regimenMaker._obj.uid).toEqual(uid);
   });
 
   it('set regimen type', () => {
-    regimenMaker = new RegimenMaker();
-    regimenMaker.setRegimenType(RegimenTypes.incBaclofen);
-    expect(regimenMaker._obj.type).toEqual(RegimenTypes.incBaclofen);
+    regimenMaker = new RegimenMakerFactory.createRegimenMaker(RegimenTypes.decBaclofen);
+    expect(regimenMaker._obj.type).toEqual(RegimenTypes.decBaclofen);
   });
 
-  it('set regimen config', () => {
-    regimenMaker = new RegimenMaker();
-    regimenMaker.setRegimenType(RegimenTypes.incBaclofen)
-      .setRegimenConfig({
+  it('set regimen param', () => {
+    regimenMaker = new RegimenMakerFactory.createRegimenMaker(RegimenTypes.incBaclofen);
+    regimenMaker
+      .setRegimenParam({
         currentDoseMg: 0 
       });
     })
 
   it('set tracked variables', () => {
-    regimenMaker = new RegimenMaker();
-    regimenMaker.setRegimenType(RegimenTypes.incBaclofen)
-      .removeTrackedVar(MeasurementTypes.sleepQuality);
+    regimenMaker = new RegimenMakerFactory.createRegimenMaker(RegimenTypes.incBaclofen);
+    regimenMaker
+      .setRegimenParam({
+        currentDoseMg: 0
+      })
+      .confirmRegimenParam();
+
+    regimenMaker.removeTrackedMeasurementType(MeasurementTypes.sleepQuality);
     expect(regimenMaker._obj.trackedMeasurementTypes).toHaveLength(3);
     expect(regimenMaker._obj.trackedMeasurementTypes).not.toContain(MeasurementTypes.sleepQuality);
     
-    regimenMaker.addTrackedVar(MeasurementTypes.sleepQuality);
+    regimenMaker.addTrackedMeasurementType(MeasurementTypes.sleepQuality);
     expect(regimenMaker._obj.trackedMeasurementTypes).toContain(MeasurementTypes.sleepQuality);
   });
 
   it('generate regimen periods', () => {
-    regimenMaker = new RegimenMaker();
+    regimenMaker = new RegimenMakerFactory.createRegimenMaker(RegimenTypes.incBaclofen);
     regimenMaker
       .setUserId(uid)
-      .setRegimenType(RegimenTypes.incBaclofen)
-      .setRegimenConfig({
+      .setRegimenParam({
         currentDoseMg: 0
       })
       .setRegimenName("Try out Baclofen")
-      .confirmRegimenConfig()
+      .confirmRegimenParam()
       .setStartDate(moment().format(DateFormatISO8601))
       .confirmRegimenDate()
       .make()

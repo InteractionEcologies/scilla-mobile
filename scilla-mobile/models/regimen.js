@@ -27,7 +27,7 @@ import { BaclofenRegimenPhaseDef } from "./BaclofenRegimenPhaseDef";
 const REGIMEN_BACLOFEN_DAYS: number =  7 * 6; // 42 days, 6 weeks
 
 export class RegimenMakerFactory {
-  static createRegimen(type: RegimenType): RegimenMaker {
+  static createRegimenMaker(type: RegimenType): RegimenMaker {
     switch(type) {
       case RegimenTypes.incBaclofen:
         return new IncBaclofenRegimenMaker();
@@ -38,8 +38,8 @@ export class RegimenMakerFactory {
     }
   }
 
-  static createRegimenFromObj(obj: RegimenObject): RegimenMaker {
-    let regimenMaker = RegimenMakerFactory.createRegimen(obj.type);
+  static createRegimenMakerFromObj(obj: RegimenObject): RegimenMaker {
+    let regimenMaker = RegimenMakerFactory.createRegimenMaker(obj.type);
     regimenMaker.updateFromObj(obj);
     return regimenMaker;
   }
@@ -98,9 +98,10 @@ export class RegimenMaker {
     throw new NotImplementedError();
   }
 
-  personalizeRegimenGoalAndDuration(): RegimenMaker {
+  confirmRegimenParam(): RegimenMaker {
     this._obj.regimenGoal = this._personalizeRegimenGoal(this._obj.regimenParam);
     this.regimenDurationDays = this._personalizeRegimenDurationDays(this._obj.regimenParam);
+    this._obj.trackedMeasurementTypes = this._generateDefaultTrackedMeasurementTypes();
     return this;
   }
 
@@ -192,7 +193,7 @@ export class RegimenMaker {
     goal: RegimenGoalOption, 
     param: RegimenParamObject, 
     startDate: string
-  ) {
+  ): RegimenPhaseObject[] {
     throw new NotImplementedError();
   }
 
@@ -264,6 +265,8 @@ export class IncBaclofenRegimenMaker extends RegimenMaker {
       startDateMoment = startDateMoment.add(7, 'days');
       nextPhaseDoseMg = this._computeNextPhaseDoseMg(nextPhaseDoseMg);
     }
+
+    return regimenPhases;
   }
 
   _computeInitialPhaseDoseMg(currentDoseMg: number) {
@@ -336,7 +339,7 @@ export class DecBaclofenRegimenMaker extends RegimenMaker {
     goal: RegimenGoalOption, 
     param: RegimenParamObject, 
     startDate: string
-  ) {
+  ): RegimenPhaseObject {
     // Initialize
     let regimenPhases: RegimenPhaseObject[] = [];
     let startDateMoment = moment(startDate);
@@ -352,6 +355,8 @@ export class DecBaclofenRegimenMaker extends RegimenMaker {
       startDateMoment = startDateMoment.add(7, 'days');
       nextPhaseDoseMg = this._computeNextPhaseDoseMg(nextPhaseDoseMg);
     }
+
+    return regimenPhases;
   }
 
   _computeInitialPhaseDoseMg(currentDoseMg: number) {
