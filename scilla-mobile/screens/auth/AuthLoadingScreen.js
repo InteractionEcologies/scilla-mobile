@@ -1,56 +1,59 @@
 // @flow
 import React from "react";
-import { View, Text} from "react-native";
-import {
-  StyleSheet,
-  ActivityIndicator, 
-  StatusBar,
-  AsyncStorage
-} from "react-native";
-
 import * as firebase from "firebase";
-import BaseScreen from "../BaseScreen";
-import appService from "../../AppService";
+
 import { ScreenNames } from "../../constants/Screens";
+import appService from "../../AppService";
+
+import { View, Text,StyleSheet, ActivityIndicator, 
+  StatusBar, AsyncStorage,Image
+} from "react-native";
+import { Content  } from "native-base";
+
+import BaseScreen from "../BaseScreen";
+import { AppText, Title } from "../../components"
 
 
 export default class AuthLoadingScreen extends BaseScreen {
-  constructor() {
-    super();
-    this._bootstrapAsync();
-  }
 
   componentDidMount() {
     // firebase.auth().onAuthStateChanged(user => {
     //   this.props.navigation.navigate(user ? 'Main': 'Login');
     // });
-
-    var user = appService.auth.currentUser;
-    this.navigate(user? ScreenNames.Main: ScreenNames.Login);
+    appService.auth.onAuthStateChanged(user => {
+      this.props.navigation.navigate(user ? ScreenNames.Main: ScreenNames.Login);
+    })
+    // var user = appService.auth.currentUser;
+    // this.navigate(user? ScreenNames.Main: ScreenNames.Login);
     
-  }
-
-  _bootstrapAsync = async() => {
-    // const userToken = await AsyncStorage.getItem('userToken');
-    // this.props.navigation.navigate(userToken ? 'App': 'Auth');
-
   }
 
   render() {
     return (
-      <View styles={styles.container}>
-        <ActivityIndicator size="large" />
+      <Content contentContainerStyle={styles.content}>
+        <Image style={styles.welcomeImage} source={require('../../assets/images/scilla-icon.png')}/>
+        <Title>Find the Optimal Spasticity Care</Title>
+        <ActivityIndicator style={styles.ActivityIndicator} size="large" />
         <StatusBar barStatus="default" />
-        <Text>Loading</Text>
-      </View>
+      </Content>
     )
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
+  content: {
     flex: 1, 
     alignItems: 'center', 
     justifyContent: 'center',
+  },
+  welcomeImage: {
+    width: 200,
+    height: 160,
+    resizeMode: 'contain',
+    marginTop: 3,
+    marginLeft: -10,
+  },
+  ActivityIndicator: {
+    marginTop: 8
   }
 })

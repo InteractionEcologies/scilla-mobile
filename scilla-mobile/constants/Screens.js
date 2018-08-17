@@ -7,7 +7,7 @@ export let ScreenNames = {
 
   // Regimen 
   RegimenMain: "RegimenMain",
-  RegimenCreate: 'RegimenCreate',
+  RegimenCreation: 'RegimenCreation',
   // Regimen creation
   RegimenTypeSelection: 'RegimenTypeSelection',
   RegimenTypeOverview: 'RegimenTypeOverview',

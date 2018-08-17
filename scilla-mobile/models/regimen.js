@@ -26,27 +26,58 @@ import { BaclofenRegimenPhaseDef } from "./BaclofenRegimenPhaseDef";
 
 const REGIMEN_BACLOFEN_DAYS: number =  7 * 6; // 42 days, 6 weeks
 
-export class RegimenMakerFactory {
-  static createRegimenMaker(type: RegimenType): RegimenMaker {
+interface IRegimenCore {
+  generatePushID(): string;
+  updateFromObj(obj: RegimenObject): void;
+  setUserId(uid: UserId): Regimen;
+  setRegimenName(name: string): Regimen;
+  +type: RegimenType;
+  confirmRegimenParam(): Regimen;
+  addTrackedMeasurementType(mtype: MeasurementType): Regimen;
+  removeTrackedMeasurementType(mtype: MeasurementType): Regimen;
+  getTrackedMeasurementTypes(): MeasurementType[];
+  setStartDate(date: string): Regimen;
+  confirmRegimenDate(): Regimen;
+  setReminderConfig(reminderId: string, newConfig: ReminderConfigObject): Regimen;
+  setReminderTime(reminderId: string, time: string): Regimen;
+  make(): RegimenObject;
+  export(): RegimenObject;
+}
+
+interface IRegimenCustom {
+  setRegimenParam(param: RegimenParamObject): Regimen;
+  _personalizeRegimenGoal(param: RegimenParamObject): RegimenGoalOption;
+  _personalizeRegimenDurationDays(param: RegimenParamObject): number;
+  _generateDefaultTrackedMeasurementTypes(): MeasurementType[];
+  _generateDefaultReminderConfigs(): ReminderConfigObject[];
+  _generateRegimenPhases(
+    goal: RegimenGoalOption, 
+    param: RegimenParamObject, 
+    startDate: string
+  ): RegimenPhaseObject[]
+}
+
+export class RegimenFactory {
+  static createRegimen(type: RegimenType): Regimen {
     switch(type) {
       case RegimenTypes.incBaclofen:
-        return new IncBaclofenRegimenMaker();
+        return new IncBaclofenRegimen();
       case RegimenTypes.decBaclofen:
-        return new DecBaclofenRegimenMaker();
+        return new DecBaclofenRegimen();
       default:
         throw TypeError("No such regimen type exists");
     }
   }
 
-  static createRegimenMakerFromObj(obj: RegimenObject): RegimenMaker {
-    let regimenMaker = RegimenMakerFactory.createRegimenMaker(obj.type);
-    regimenMaker.updateFromObj(obj);
-    return regimenMaker;
+  static createRegimenFromObj(obj: RegimenObject): Regimen {
+    let regimen = RegimenFactory.createRegimen(obj.type);
+    regimen.updateFromObj(obj);
+    return regimen;
   }
 
 }
 
-export class RegimenMaker {
+export class Regimen implements IRegimenCore, IRegimenCustom {
   _obj: RegimenObject;
   generatePushID: () => string;
   regimenDurationDays: number;
@@ -80,25 +111,23 @@ export class RegimenMaker {
     this._obj = clonedObj;
   }
 
-  setUserId(uid: UserId): RegimenMaker {
+  setUserId(uid: UserId): Regimen {
     this._obj.uid = uid;
     return this;
   }
 
-  setRegimenName(name: string): RegimenMaker {
+  setRegimenName(name: string): Regimen {
     this._obj.name = name;
     return this;
   }
 
-  get type() {
-    return this._obj.type
-  }
+  get type() { return this._obj.type }
 
-  setRegimenParam(param: RegimenParamObject): RegimenMaker {
+  setRegimenParam(param: RegimenParamObject): Regimen {
     throw new NotImplementedError();
   }
 
-  confirmRegimenParam(): RegimenMaker {
+  confirmRegimenParam(): Regimen {
     this._obj.regimenGoal = this._personalizeRegimenGoal(this._obj.regimenParam);
     this.regimenDurationDays = this._personalizeRegimenDurationDays(this._obj.regimenParam);
     this._obj.trackedMeasurementTypes = this._generateDefaultTrackedMeasurementTypes();
@@ -123,13 +152,13 @@ export class RegimenMaker {
     return trackedMeasurementTypes;
   }
 
-  addTrackedMeasurementType(mtype: MeasurementType): RegimenMaker {
+  addTrackedMeasurementType(mtype: MeasurementType): Regimen {
     this._obj.trackedMeasurementTypes = _.union(
       this._obj.trackedMeasurementTypes, [mtype]);
     return this;
   }
 
-  removeTrackedMeasurementType(mtype: MeasurementType): RegimenMaker {
+  removeTrackedMeasurementType(mtype: MeasurementType): Regimen {
     this._obj.trackedMeasurementTypes = _.pull(this._obj.trackedMeasurementTypes, mtype);
     return this;
   }
@@ -139,16 +168,14 @@ export class RegimenMaker {
     return Array.from(this._obj.trackedMeasurementTypes);
   }
 
-  setStartDate(date: string): RegimenMaker {
+  setStartDate(date: string): Regimen {
     this._obj.endDate = moment(date)
-    .add(this.regimenDurationDays, 'days')
-    .format(DateFormatISO8601);
-  
-  return this;
-
+      .add(this.regimenDurationDays, 'days')
+      .format(DateFormatISO8601);
+    return this;
   }
 
-  confirmRegimenDate(): RegimenMaker {
+  confirmRegimenDate(): Regimen {
     this._obj.reminderConfigs = this._generateDefaultReminderConfigs();
     return this;
   }
@@ -157,7 +184,7 @@ export class RegimenMaker {
     return [];
   }
 
-  setReminderConfig(reminderId: string, newConfig: ReminderConfigObject): RegimenMaker {
+  setReminderConfig(reminderId: string, newConfig: ReminderConfigObject): Regimen {
     this._obj.reminderConfigs = this._obj.reminderConfigs.map( (oldConfig) => {
       if(oldConfig.id === reminderId) {
         return newConfig;
@@ -167,7 +194,7 @@ export class RegimenMaker {
     return this;
   }
 
-  setReminderTime(reminderId: string, time: string) {
+  setReminderTime(reminderId: string, time: string): Regimen {
     this._obj.reminderConfigs = this._obj.reminderConfigs.map( 
       (oldConfig: ReminderConfigObject): ReminderConfigObject => {
         if(oldConfig.id === reminderId) {
@@ -202,13 +229,13 @@ export class RegimenMaker {
   }
 }
 
-export class IncBaclofenRegimenMaker extends RegimenMaker {
+export class IncBaclofenRegimen extends Regimen {
   constructor() {
     super()
     this._obj.type = RegimenTypes.incBaclofen;
   }
   
-  setRegimenParam(param: RegimenParamObject): RegimenMaker {
+  setRegimenParam(param: RegimenParamObject): Regimen {
     // param.hasOwn
     if(!_.has(param, RegimenParamKeys.currentDoseMg)) {
       throw TypeError(`Key ${RegimenParamKeys.currentDoseMg} does not exist`);  
@@ -265,7 +292,6 @@ export class IncBaclofenRegimenMaker extends RegimenMaker {
       startDateMoment = startDateMoment.add(7, 'days');
       nextPhaseDoseMg = this._computeNextPhaseDoseMg(nextPhaseDoseMg);
     }
-
     return regimenPhases;
   }
 
@@ -273,7 +299,6 @@ export class IncBaclofenRegimenMaker extends RegimenMaker {
     let currentDoseLevel = parseInt(currentDoseMg/5, 10);
     let nextDoseLevel = currentDoseLevel + 1;
     return nextDoseLevel * 5;
-
   }
 
   _computeNextPhaseDoseMg(currentDoseMg: number) {
@@ -292,16 +317,15 @@ export class IncBaclofenRegimenMaker extends RegimenMaker {
       treatments: BaclofenRegimenPhaseDef[`${doseForThisPhaseMg}mg`]
     };
   }
-
 }
 
-export class DecBaclofenRegimenMaker extends RegimenMaker {
+export class DecBaclofenRegimen extends Regimen {
   constructor() {
     super()
     this._obj.type = RegimenTypes.decBaclofen;
   }
 
-  setRegimenParam(param: RegimenParamObject): RegimenMaker {
+  setRegimenParam(param: RegimenParamObject): Regimen {
     if(!_.has(param, RegimenParamKeys.currentDoseMg)) {
       throw TypeError(`Key ${RegimenParamKeys.currentDoseMg} does not exist`);  
     }

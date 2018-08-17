@@ -12,6 +12,7 @@
 
 [options]
 ; all=true
+esproposal.decorators=ignore
 module.system=haste
 
 [strict]

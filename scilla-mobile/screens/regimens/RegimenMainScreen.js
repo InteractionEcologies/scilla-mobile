@@ -1,16 +1,15 @@
 // @flow
 import React from "react";
-import { 
-  View, 
-  Text, 
-  StyleSheet,
-  Button,
-} from "react-native";
+// import { View, StyleSheet } from "react-native";
 import {
+  View,
+  StyleSheet,
   Container, 
   Header, 
   Content, 
-  Footer
+  Button,
+  Footer,
+  Text, 
 } from "native-base";
 
 import { connect } from "react-redux";
@@ -19,7 +18,9 @@ import { fetchRegimens } from "../../redux/regimens/regimenActions";
 import BaseScreen from "../BaseScreen";
 import { ScreenNames } from "../../constants/Screens";
 import appService from "../../AppService";
-import RegimenList from "./components/RegimenList";
+import RegimenList from "./views/RegimenList";
+import styles from "./RegimenStyles";
+import { AppText } from "../../components"
 
 class RegimenMainScreen extends BaseScreen {
   static navigationOptions: any = {
@@ -39,7 +40,7 @@ class RegimenMainScreen extends BaseScreen {
   }
 
   goToCreateRegimen = () => {
-    this.navigate(ScreenNames.RegimenTypeSelection);
+    this.navigate(ScreenNames.RegimenCreation);
   }
 
   goToUpdateRegimen = (regimenId: string) => {
@@ -47,36 +48,23 @@ class RegimenMainScreen extends BaseScreen {
   }
 
   render() {
-    // return (
-    //   <View style={styles.regimen}>
-    //     <RegimenList items={this.props.regimens}/>
-    //     <Button title="Create Regimen" onPress={this.createRegimen}/>
-    //   </View>
-    // )
     return (
       <Container>
-        <Content>
+        <Content contentContainerStyle={styles.content}>
           <RegimenList 
             items={this.props.regimens}
             goToUpdateRegimen={this.goToUpdateRegimen}
           />
-          <Button title="Create Regimen" onPress={this.goToCreateRegimen}/>
+          <View>
+          <Button full onPress={this.goToCreateRegimen}>
+            <AppText>Create Regimen</AppText>
+          </Button>
+          </View>
         </Content>
       </Container>
     )
   }
 }
-
-const styles = StyleSheet.create({
-  regimen: {
-    flex: 1, 
-    alignItems: 'center', 
-    justifyContent: 'center'
-  },
-  createButton: {
-
-  }
-});
 
 const mapStateToProps = state => {
   return {

@@ -1,12 +1,17 @@
 // @flow
 import React from "react";
 import {
-  StyleSheet, Text, TextInput, View, Button, AsyncStorage
+  StyleSheet, TextInput, View, AsyncStorage
 } from "react-native"
+import { Container, Content, Text, Button, Form, 
+  Label, Item, Input
+} from "native-base";
+import { AppText, Title } from "../../components"
 // import Auth from "../../libs/Auth";
 import appService from "../../AppService";
 import { ScreenNames } from "../../constants/Screens";
 import BaseScreen from "../BaseScreen";
+import AuthStyles from "./AuthStyles";
 
 export default class SignUpScreen extends BaseScreen {
   state = {
@@ -15,20 +20,29 @@ export default class SignUpScreen extends BaseScreen {
     errorMessage: null,
   }
 
+  componentDidMount() {
+    let user = appService.auth.currentUser;
+    console.log(user);
+  }
+
   handleSignUp = () => {
     console.log("handleSignUp");
     appService.auth.createUserWithEmailAndPassword(this.state.email, this.state.password)
       .then(() => {
-        appService.ds.createUserProfile({
-          uid: appService.auth.currentUser.uid, 
-          firstName: "",
-          lastName: "",
-          email: appService.auth.currentUser.email,
-          role: "patient"
-        })
+        this._createDefaultUserProfile();
       })
       .then(() => this.navigate(ScreenNames.Main))
       .catch( error => this.setState({ errorMessage: error.message }))
+  }
+
+  _createDefaultUserProfile() {
+    appService.ds.createUserProfile({
+      uid: appService.auth.currentUser.uid, 
+      firstName: "",
+      lastName: "",
+      email: appService.auth.currentUser.email,
+      role: "patient"
+    })
   }
 
   _createUserProfile = async () => {
@@ -43,51 +57,48 @@ export default class SignUpScreen extends BaseScreen {
 
   render() {
     return (
-      <View style={styles.container}>
-        <Text>Sign Up</Text>
+      <Container>
+      <Content contentContainerStyle={AuthStyles.content}>
+        <Title>Sign Up</Title>
+        
         {this.state.errorMessage && 
-        <Text style={styles.errorMessage}>
-          {this.state.errorMessage}
-        </Text>}
-        <TextInput
-          placeholder="Email"
-          autoCapitalize="none"
-          style={styles.textInput}
-          onChangeText={email => this.setState({email})}
-          value={this.state.email}
-        />
-        <TextInput
-          secureTextEntry
-          placeholder="Password"
-          autoCapitalize="none"
-          style={styles.textInput}
-          onChangeText={password => this.setState({password})}
-          value={this.state.password}
-        />
-        <Button title="Sign Up" onPress={this.handleSignUp} />
-        <Button 
-          title="Already have an account? Login"
-          onPress={ () => this.navigate(ScreenNames.Login)}
-        />
-      </View>
+          <AppText style={AuthStyles.errorMessage}>
+            {this.state.errorMessage}
+          </AppText>
+        }
+
+        <Form style={AuthStyles.form}>
+          <Item floatingLabel>
+            {/* <AppLabel>Email</AppLabel> */}
+            <Label>Email</Label>
+            <Input
+              autoCapitalize="none"
+              onChangeText={email => this.setState({ email })}
+              value={this.state.email}
+            />
+          </Item>
+          <Item floatingLabel>
+            {/* <AppLabel>Password</AppLabel> */}
+            <Label>Password</Label>
+            <Input 
+              secureTextEntry
+              autoCapitalize="none"
+              onChangeText={password => this.setState({ password })}
+              value={this.state.password}
+            />
+          </Item>
+          <Button full style={AuthStyles.button} onPress={this.handleSignUp}>
+            <AppText>Sign Up</AppText>
+          </Button>
+        </Form>
+
+        <AppText 
+          style={AuthStyles.clickableText} 
+          onPress={ () => this.navigate(ScreenNames.Login)}>
+          Already have an account? Login
+        </AppText>
+      </Content>
+      </Container>
     )
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1, 
-    justifyContent: 'center',
-    alignItems: 'center'
-  }, 
-  textInput: {
-    height: 40, 
-    width: '90%',
-    borderColor: 'gray',
-    borderWidth: 1, 
-    marginTop: 8
-  },
-  errorMessage: {
-    color: 'red'
-  }
-});
