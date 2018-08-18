@@ -1,14 +1,14 @@
 // @flow
 import {
   TreatmentDetailOptions, TreatmentOptions, 
-} from "../libs/intecojs";
+} from "../../libs/intecojs";
 
 import type {
   TreatmentObject
-} from "../libs/intecojs";
+} from "../../libs/intecojs";
 
 export const BaclofenRegimenPhaseDef: {
-  "slots": any, 
+  "reminderSlots": any, 
   "5mg": TreatmentObject[],
   "10mg": TreatmentObject[],
   "15mg": TreatmentObject[],
@@ -22,7 +22,7 @@ export const BaclofenRegimenPhaseDef: {
   "55mg": TreatmentObject[],
   "60mg": TreatmentObject[]
 } = {
-  "slots": [
+  "reminderSlots": [
     {
       id: "0", 
       order: 0,
@@ -47,7 +47,7 @@ export const BaclofenRegimenPhaseDef: {
   ],
   "5mg": [
     {
-      slotId: "0",
+      reminderSlotId: "0",
       time: '08:00',
       timeDesc: 'morning',
       option: TreatmentDetailOptions.baclofen5mg
@@ -55,13 +55,13 @@ export const BaclofenRegimenPhaseDef: {
   ],
   "10mg": [
     {
-      slotId: "0",
+      reminderSlotId: "0",
       time: '08:00',
       timeDesc: 'morning',
       option: TreatmentDetailOptions.baclofen5mg
     },
     {
-      slotId: "1",
+      reminderSlotId: "1",
       time: '12:00',
       timeDesc: 'afternoon',
       option: TreatmentDetailOptions.baclofen5mg
@@ -69,19 +69,19 @@ export const BaclofenRegimenPhaseDef: {
   ],
   "15mg": [
     {
-      slotId: "0",
+      reminderSlotId: "0",
       time: '08:00',
       timeDesc: 'morning',
       option: TreatmentDetailOptions.baclofen5mg
     },
     {
-      slotId: "1",
+      reminderSlotId: "1",
       time: '12:00',
       timeDesc: 'afternoon',
       option: TreatmentDetailOptions.baclofen5mg
     },
     {
-      slotId: "2",
+      reminderSlotId: "2",
       time: '18:00',
       timeDesc: 'evening',
       option: TreatmentDetailOptions.baclofen5mg
@@ -89,19 +89,19 @@ export const BaclofenRegimenPhaseDef: {
   ],
   "20mg": [
     {
-      slotId: "0",
+      reminderSlotId: "0",
       time: '08:00',
       timeDesc: 'morning',
       option: TreatmentDetailOptions.baclofen10mg
     },
     {
-      slotId: "1",
+      reminderSlotId: "1",
       time: '12:00',
       timeDesc: 'afternoon',
       option: TreatmentDetailOptions.baclofen5mg
     },
     {
-      slotId: "2",
+      reminderSlotId: "2",
       time: '18:00',
       timeDesc: 'evening',
       option: TreatmentDetailOptions.baclofen5mg
@@ -109,19 +109,19 @@ export const BaclofenRegimenPhaseDef: {
   ],
   "25mg": [
     {
-      slotId: "0",
+      reminderSlotId: "0",
       time: '08:00',
       timeDesc: 'morning',
       option: TreatmentDetailOptions.baclofen10mg
     },
     {
-      slotId: "1",
+      reminderSlotId: "1",
       time: '12:00',
       timeDesc: 'afternoon',
       option: TreatmentDetailOptions.baclofen10mg
     },
     {
-      slotId: "2",
+      reminderSlotId: "2",
       time: '18:00',
       timeDesc: 'evening',
       option: TreatmentDetailOptions.baclofen5mg
@@ -129,19 +129,19 @@ export const BaclofenRegimenPhaseDef: {
   ],
   "30mg": [
     {
-      slotId: "0",
+      reminderSlotId: "0",
       time: '08:00',
       timeDesc: 'morning',
       option: TreatmentDetailOptions.baclofen10mg
     },
     {
-      slotId: "1",
+      reminderSlotId: "1",
       time: '12:00',
       timeDesc: 'afternoon',
       option: TreatmentDetailOptions.baclofen10mg
     },
     {
-      slotId: "2",
+      reminderSlotId: "2",
       time: '18:00',
       timeDesc: 'evening',
       option: TreatmentDetailOptions.baclofen10mg
@@ -149,19 +149,19 @@ export const BaclofenRegimenPhaseDef: {
   ],
   "35mg": [
     {
-      slotId: "0",
+      reminderSlotId: "0",
       time: '08:00',
       timeDesc: 'morning',
       option: TreatmentDetailOptions.baclofen15mg
     },
     {
-      slotId: "1",
+      reminderSlotId: "1",
       time: '12:00',
       timeDesc: 'afternoon',
       option: TreatmentDetailOptions.baclofen10mg
     },
     {
-      slotId: "2",
+      reminderSlotId: "2",
       time: '18:00',
       timeDesc: 'evening',
       option: TreatmentDetailOptions.baclofen10mg
@@ -169,19 +169,19 @@ export const BaclofenRegimenPhaseDef: {
   ],
   "40mg": [
     {
-      slotId: "0",
+      reminderSlotId: "0",
       time: '08:00',
       timeDesc: 'morning',
       option: TreatmentDetailOptions.baclofen15mg
     },
     {
-      slotId: "1",
+      reminderSlotId: "1",
       time: '12:00',
       timeDesc: 'afternoon',
       option: TreatmentDetailOptions.baclofen15mg
     },
     {
-      slotId: "2",
+      reminderSlotId: "2",
       time: '18:00',
       timeDesc: 'evening',
       option: TreatmentDetailOptions.baclofen10mg
@@ -189,19 +189,19 @@ export const BaclofenRegimenPhaseDef: {
   ],
   "45mg": [
     {
-      slotId: "0",
+      reminderSlotId: "0",
       time: '08:00',
       timeDesc: 'morning',
       option: TreatmentDetailOptions.baclofen15mg
     },
     {
-      slotId: "1",
+      reminderSlotId: "1",
       time: '12:00',
       timeDesc: 'afternoon',
       option: TreatmentDetailOptions.baclofen15mg
     },
     {
-      slotId: "2",
+      reminderSlotId: "2",
       time: '18:00',
       timeDesc: 'evening',
       option: TreatmentDetailOptions.baclofen15mg
@@ -209,19 +209,19 @@ export const BaclofenRegimenPhaseDef: {
   ],
   "50mg": [
     {
-      slotId: "0",
+      reminderSlotId: "0",
       time: '08:00',
       timeDesc: 'morning',
       option: TreatmentDetailOptions.baclofen20mg
     },
     {
-      slotId: "1",
+      reminderSlotId: "1",
       time: '12:00',
       timeDesc: 'afternoon',
       option: TreatmentDetailOptions.baclofen15mg
     },
     {
-      slotId: "2",
+      reminderSlotId: "2",
       time: '18:00',
       timeDesc: 'evening',
       option: TreatmentDetailOptions.baclofen15mg
@@ -229,19 +229,19 @@ export const BaclofenRegimenPhaseDef: {
   ],
   "55mg": [
     {
-      slotId: "0",
+      reminderSlotId: "0",
       time: '08:00',
       timeDesc: 'morning',
       option: TreatmentDetailOptions.baclofen20mg
     },
     {
-      slotId: "1",
+      reminderSlotId: "1",
       time: '12:00',
       timeDesc: 'afternoon',
       option: TreatmentDetailOptions.baclofen20mg
     },
     {
-      slotId: "2",
+      reminderSlotId: "2",
       time: '18:00',
       timeDesc: 'evening',
       option: TreatmentDetailOptions.baclofen15mg
@@ -249,19 +249,19 @@ export const BaclofenRegimenPhaseDef: {
   ],
   "60mg": [
     {
-      slotId: "0",
+      reminderSlotId: "0",
       time: '08:00',
       timeDesc: 'morning',
       option: TreatmentDetailOptions.baclofen20mg
     },
     {
-      slotId: "1",
+      reminderSlotId: "1",
       time: '12:00',
       timeDesc: 'afternoon',
       option: TreatmentDetailOptions.baclofen20mg
     },
     {
-      slotId: "2",
+      reminderSlotId: "2",
       time: '18:00',
       timeDesc: 'evening',
       option: TreatmentDetailOptions.baclofen20mg

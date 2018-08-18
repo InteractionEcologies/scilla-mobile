@@ -1,10 +1,11 @@
-import 'react-native';
+// @flow
+import {} from 'react-native';
 import React from 'react';
-import { MonoText } from '../StyledText';
+import { MonoText, AppText } from '../StyledText';
 import renderer from 'react-test-renderer';
 
 it('renders correctly', () => {
-  const tree = renderer.create(<MonoText>Snapshot test!</MonoText>).toJSON();
+  const tree = renderer.create(<AppText>Snapshot test!</AppText>).toJSON();
 
   expect(tree).toMatchSnapshot();
 });

@@ -11,7 +11,7 @@ export class Title extends React.Component<any, any> {
   }
   render() {
     return (
-      <Text style={styles.title}>{this.props.children}</Text>
+      <Text style={[styles.title, this.props.style]}>{this.props.children}</Text>
     )
   }
 }

@@ -27,8 +27,18 @@ export class DotPageIndicator extends React.Component<Props, any> {
     let dots = [];
     for (let i = 0; i < this.props.totalDots; i++) {
       dots.push( i === this.props.currentDotIndex
-        ? <ActiveDot key={i} style={{backgroundColor: this.props.activeDotColor}}/>
-        : <Dot key={i} style={{backgroundColor: this.props.dotColor}}/>
+        ? <ActiveDot key={i} 
+            style={[
+              styles.activeDot, 
+              this.props.activeDotColor? {backgroundColor: this.props.activeDotColor}: {}
+            ]}
+          />
+        : <Dot key={i} 
+            style={[
+              styles.dot,
+              this.props.dotColor? {backgroundColor: this.props.dotColor}: {}
+            ]}
+          />
       )
     }
     return dots
@@ -53,7 +63,7 @@ const styles = StyleSheet.create({
     width: 8, 
     height: 8, 
     borderRadius: 4,
-    backgroundColor: 'white',
+    backgroundColor: 'black',
     marginRight: 4
   },
   dotPageIndicator: {

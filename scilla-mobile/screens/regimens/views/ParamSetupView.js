@@ -1,37 +1,64 @@
 // @flow
 import React from "react";
 import { View, StyleSheet } from "react-native";
-import { Button } from "native-base";
+import { Button, Form, Item, Label, Input } from "native-base";
 import { Title, AppText, DotPageIndicator
 } from "../../../components";
 import RegimenStyles from "../RegimenStyles";
 import { RegimenTypes } from "../../../libs/intecojs";
 import type { RegimenType } from "../../../libs/intecojs";
+import _ from "lodash";
 
 type Props = {
   numStates: number, 
   currentStateIndex: number,
+  currentDoseMg: number,
+  onCurrentDosageChanged: (number) => void
 }
 
 
 export default class ParamSetupView extends React.Component<Props, any> {
 
+  handleDosageChange = (dosageMgStr: string) => {
+    let dosageMg = parseInt(dosageMgStr, 10); 
+    this.props.onCurrentDosageChanged(dosageMg);
+  }
+
   render() {
+    let dosageMg;
+    if(_.isNaN(this.props.currentDoseMg)) {
+      dosageMg = ""
+    } else {
+      dosageMg = `${this.props.currentDoseMg}`
+    }
+
     return (
       <View style={RegimenStyles.mainView}>
         <Title>What's Your Current Dosage?</Title>
         <DotPageIndicator 
-          totalDots={7}
-          currentDotIndex={2}
+          totalDots={this.props.numStates}
+          currentDotIndex={this.props.currentStateIndex}
           dotColor='grey'
           activeDotColor='black'  
         />
+        <Form style={styles.form}>
+          <Item floatingLabel>
+            <Label>Baclofen Dosage Per Day (mg)</Label>
+            <Input
+              onChangeText={this.handleDosageChange}
+              value={ dosageMg }
+            />
+          </Item>
+        </Form>
       </View>
     )
   }
 }
 
 const styles = StyleSheet.create({
+  form: {
+    width: '90%'
+  },
   button: {
     marginBottom: 8
   }
