@@ -1,9 +1,10 @@
+// @flow
 import React from 'react';
 import { Ionicons, Entypo } from '@expo/vector-icons';
 
 import Colors from '../constants/Colors';
 
-export default class TabBarIcon extends React.Component {
+export default class TabBarIcon extends React.Component<any, any> {
   render() {
     return (
       <Ionicons

@@ -4,23 +4,31 @@ import {
 } from "../../libs/intecojs";
 
 import type {
-  TreatmentObject
+  TreatmentObject, 
+  TreatmentDetailOption
 } from "../../libs/intecojs";
+
+type TreatmentDefObject = {
+  reminderSlotId: string,
+  time: string,
+  timeDesc: string,
+  option: TreatmentDetailOption
+}
 
 export const BaclofenRegimenPhaseDef: {
   "reminderSlots": any, 
-  "5mg": TreatmentObject[],
-  "10mg": TreatmentObject[],
-  "15mg": TreatmentObject[],
-  "20mg": TreatmentObject[],
-  "25mg": TreatmentObject[],
-  "30mg": TreatmentObject[],
-  "35mg": TreatmentObject[],
-  "40mg": TreatmentObject[],
-  "45mg": TreatmentObject[],
-  "50mg": TreatmentObject[],
-  "55mg": TreatmentObject[],
-  "60mg": TreatmentObject[]
+  "5mg": TreatmentDefObject[],
+  "10mg": TreatmentDefObject[],
+  "15mg": TreatmentDefObject[],
+  "20mg": TreatmentDefObject[],
+  "25mg": TreatmentDefObject[],
+  "30mg": TreatmentDefObject[],
+  "35mg": TreatmentDefObject[],
+  "40mg": TreatmentDefObject[],
+  "45mg": TreatmentDefObject[],
+  "50mg": TreatmentDefObject[],
+  "55mg": TreatmentDefObject[],
+  "60mg": TreatmentDefObject[]
 } = {
   "reminderSlots": [
     {
@@ -62,8 +70,8 @@ export const BaclofenRegimenPhaseDef: {
     },
     {
       reminderSlotId: "1",
-      time: '12:00',
-      timeDesc: 'afternoon',
+      time: '18:00',
+      timeDesc: 'evening',
       option: TreatmentDetailOptions.baclofen5mg
     }
   ],

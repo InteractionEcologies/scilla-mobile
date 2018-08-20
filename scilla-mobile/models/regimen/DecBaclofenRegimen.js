@@ -47,15 +47,16 @@ export class DecBaclofenRegimen extends Regimen {
     let currentDoseMg = ((param.currentDoseMg: any): number);
     let days: number = REGIMEN_BACLOFEN_DAYS;
     if(currentDoseMg < 30) {
-      // increase to 30mg
-      days = BaclofenUtils.computeDaysByDosageDeficit(currentDoseMg - 30);
+      // decrease to 0mg
+      days = BaclofenUtils.computeDaysByDosageDeficit(currentDoseMg);
     } else if (currentDoseMg < 60 ) {
-      // increase to 60mg
-      days = BaclofenUtils.computeDaysByDosageDeficit(currentDoseMg = 60);
+      // decrease to 30mg
+      days = BaclofenUtils.computeDaysByDosageDeficit(currentDoseMg - 30);
     }
     return days;
   }
 
+  // TODO: Fix the issue with phases (revert the phase number from phase definition)
   _generateRegimenPhases(
     goal: RegimenGoalOption, 
     param: RegimenParamObject, 
@@ -68,7 +69,7 @@ export class DecBaclofenRegimen extends Regimen {
     let currentDoseMg = ((param.currentDoseMg: any): number);
     let nextPhaseDoseMg = this._computeInitialPhaseDoseMg(currentDoseMg);
 
-    for(let phase=0; phase < weeks; phase++) {
+    for(let phase=weeks; phase > 0; phase--) {
       let regimenPhase = this._generateRegimenPhase(phase, startDateMoment, nextPhaseDoseMg);
       regimenPhases.push(regimenPhase);
       

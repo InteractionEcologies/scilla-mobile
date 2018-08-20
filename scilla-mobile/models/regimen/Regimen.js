@@ -1,21 +1,22 @@
 // @flow
 import type { 
+  UserId,
   RegimenObject,
   RegimenParamObject,
   RegimenGoalOption,
   MeasurementType,
+  RegimenType,
+  ReminderConfigObject,
+  RegimenPhaseObject,
 } from "../../libs/intecojs";
 
 import {
-  RegimenType,
-  UserId,
+  RegimenGoalOptions,
   RegimenTypes,
   generatePushIDFunc,
   NotImplementedError,
   MeasurementTypes,
-  ReminderConfigObject,
   DateFormatISO8601,
-  RegimenPhaseObject,
   RegimenStatusOptions,
 } from "../../libs/intecojs";
 
@@ -25,17 +26,18 @@ import moment from "moment";
 import _ from "lodash";
 
 interface IRegimenCore {
+  +id: string;
   +type: RegimenType;
   +regimenGoal: RegimenGoalOption;
+  +startDate: string;
+  +endDate: string;
 
   generatePushID(): string;
-  
-  updateFromObj(obj: RegimenObject): void;
   
   setUserId(uid: UserId): Regimen;
   setRegimenName(name: string): Regimen;
   
-  confirmRegimenParam(): Regimen;
+  generateRegimenGoal(): Regimen;
   
   addTrackedMeasurementType(mtype: MeasurementType): Regimen;
   removeTrackedMeasurementType(mtype: MeasurementType): Regimen;
@@ -46,14 +48,19 @@ interface IRegimenCore {
   
   setReminderConfig(reminderId: string, newConfig: ReminderConfigObject): Regimen;
   setReminderTime(reminderId: string, time: string): Regimen;
+
+  getRegimenPhaseByDate(date: string): IRegimenPhase | null;
+  getRegimenPhaseObjByDate(date: string): RegimenPhaseObject | null;
   
-  make(): RegimenObject;
-  getRegimenPhases(): RegimenPhaseObject[];
+  make(): void;
+  getRegimenPhases(): IRegimenPhase[];
+  getRegimenPhaseObjs(): RegimenPhaseObject[];
 
   toObj(): RegimenObject;
 }
 
 interface IRegimenCustom {
+  updateFromObj(obj: RegimenObject): void;
   setRegimenParam(param: RegimenParamObject): Regimen;
   _personalizeRegimenGoal(param: RegimenParamObject): RegimenGoalOption;
   _personalizeRegimenDurationDays(param: RegimenParamObject): number;
@@ -71,6 +78,12 @@ export class Regimen implements IRegimenCore, IRegimenCustom {
   generatePushID: () => string;
   regimenDurationDays: number;
 
+
+  get id() { return this._obj.id }
+  get type() { return this._obj.type }
+  get regimenGoal() { return this._obj.regimenGoal }
+  get startDate() { return this._obj.startDate }
+  get endDate() { return this._obj.endDate }
   regimenPhases: IRegimenPhase[];
   
   constructor() {
@@ -87,7 +100,7 @@ export class Regimen implements IRegimenCore, IRegimenCustom {
       endDate: moment().add(7, 'days').format(DateFormatISO8601),
       type: RegimenTypes.undefined,
       regimenParam: {},
-      regimenGoal: null,
+      regimenGoal: RegimenGoalOptions.undefined,
       trackedMeasurementTypes: [], 
       status: RegimenStatusOptions.active, 
       regimenPhases: [], 
@@ -96,10 +109,7 @@ export class Regimen implements IRegimenCore, IRegimenCustom {
   }
 
   updateFromObj(obj: RegimenObject) {
-    // Doesn't allow others to change its type
-    var clonedObj = Object.assign({}, obj);
-    clonedObj.type = this._obj.type;
-    this._obj = clonedObj;
+    throw new NotImplementedError();
   }
 
   setUserId(uid: UserId): Regimen {
@@ -112,14 +122,11 @@ export class Regimen implements IRegimenCore, IRegimenCustom {
     return this;
   }
 
-  get type() { return this._obj.type }
-  get regimenGoal() { return this._obj.regimenGoal }
-
   setRegimenParam(param: RegimenParamObject): Regimen {
     throw new NotImplementedError();
   }
 
-  confirmRegimenParam(): Regimen {
+  generateRegimenGoal(): Regimen {
     this._obj.regimenGoal = this._personalizeRegimenGoal(this._obj.regimenParam);
     this.regimenDurationDays = this._personalizeRegimenDurationDays(this._obj.regimenParam);
     this._obj.trackedMeasurementTypes = this._generateDefaultTrackedMeasurementTypes();
@@ -177,7 +184,7 @@ export class Regimen implements IRegimenCore, IRegimenCustom {
   }
 
   setReminderConfig(reminderId: string, newConfig: ReminderConfigObject): Regimen {
-    this._obj.reminderConfigs = this._obj.reminderConfigs.map( (oldConfig) => {
+    this._obj.reminderConfigs = _.map(this._obj.reminderConfigs, (oldConfig) => {
       if(oldConfig.id === reminderId) {
         return newConfig;
       } 
@@ -187,7 +194,7 @@ export class Regimen implements IRegimenCore, IRegimenCustom {
   }
 
   setReminderTime(reminderId: string, time: string): Regimen {
-    this._obj.reminderConfigs = this._obj.reminderConfigs.map( 
+    this._obj.reminderConfigs = _.map(this._obj.reminderConfigs,
       (oldConfig: ReminderConfigObject): ReminderConfigObject => {
         if(oldConfig.id === reminderId) {
           oldConfig.time = time;
@@ -204,8 +211,9 @@ export class Regimen implements IRegimenCore, IRegimenCustom {
       this._obj.regimenGoal, 
       this._obj.regimenParam,
       this._obj.startDate
-    )
-    let objects = this.regimenPhases.map( (rp) => { return rp.toObj() });
+    );
+    console.log("Hello", this.regimenPhases);
+    let objects = this.getRegimenPhaseObjs();
     this._obj.regimenPhases = objects;
   }
 
@@ -213,7 +221,7 @@ export class Regimen implements IRegimenCore, IRegimenCustom {
     goal: RegimenGoalOption, 
     param: RegimenParamObject, 
     startDate: string
-  ): RegimenPhaseObject[] {
+  ): IRegimenPhase[] {
     throw new NotImplementedError();
   }
 
@@ -222,8 +230,35 @@ export class Regimen implements IRegimenCore, IRegimenCustom {
   }
 
   getRegimenPhaseObjs(): RegimenPhaseObject[] {
-    let objects = this.regimenPhases.map( (rp) => { return rp.toObj() });
+    let objects = this.regimenPhases 
+                  ? _.map(this.regimenPhases, (rp) => { return rp.toObj() })
+                  : [];
     return objects;
+  }
+
+  getRegimenPhaseByDate(date: string): IRegimenPhase | null {
+    let filteredRegimenPhases = _.filter(this.regimenPhases, (rp) => {
+      // check if `date` is within startDate and endDate
+      let startDate= moment(rp.startDate);
+      let endDate = moment(rp.endDate);
+      let dateMoment = moment(date);
+      return dateMoment.isSameOrAfter(startDate) && dateMoment.isSameOrBefore(endDate);
+    });
+
+    // should only get one or zero
+    if(filteredRegimenPhases.length === 0) {
+      return null
+    } else {
+      return filteredRegimenPhases[0]
+    } 
+  }
+  getRegimenPhaseObjByDate(date: string): RegimenPhaseObject | null {
+    let regimenPhase = this.getRegimenPhaseByDate(date);
+    if(regimenPhase) {
+      return regimenPhase.toObj();
+    } else {
+      return null;
+    }
   }
 
   toObj(): RegimenObject {

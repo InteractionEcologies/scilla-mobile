@@ -2,15 +2,35 @@
 import type {
   RegimenPhaseObject,
   TreatmentObject,
+  RegimenType,
 } from "../../libs/intecojs";
 import moment from "moment";
-import { DateFormatISO8601, DateFormatTimeOfDay } from "../../libs/intecojs";
+import { 
+  DateFormatISO8601, 
+  DateFormatTimeOfDay,
+  Utils,
+  RegimenTypes,
+} from "../../libs/intecojs";
 import { 
   BaclofenRegimenPhaseDef,
-  // Treatment
 } from "./";
 import { Treatment } from "./Treatment";
 import _ from "lodash";
+
+// export class RegimenPhaseFactory {
+//   static create(
+//     type: RegimenType,
+//     phase: number, 
+//     startDate: moment,
+//     doseForThisPhaseMg: ?number = null
+//   ): IRegimenPhase {
+//     switch(type) {
+//       case RegimenTypes.incBaclofen:
+//       case RegimenTypes.decBaclofen:
+//         return new BaclofenRegimenPhase(phase, startDate, doseFor)
+//     }
+//   }
+// }
 
 export interface IRegimenPhase {
 
@@ -22,14 +42,12 @@ export interface IRegimenPhase {
 
   toObj(): RegimenPhaseObject;
   sortTreatments(): TreatmentObject[];
-
-  // static
-  // getTreatmentPartOfDate(): string;
+  getTreatmentsByPartOfDay(): TreatmentsByPartOfDayObject;
 }
 
 export class BaclofenRegimenPhase implements IRegimenPhase {
   phase: number
-
+  id: string
   _startDate: moment
   get startDate(): string { return this._startDate.format(DateFormatISO8601)}
   set startDate(newValue: string) { 
@@ -46,23 +64,41 @@ export class BaclofenRegimenPhase implements IRegimenPhase {
   constructor(
     phase: number, 
     startDate: moment, 
-    doseForThisPhaseMg: number
+    doseForThisPhaseMg: ?number = null
   ) {
     this.phase = phase; 
     this._startDate = moment(startDate);
-    this._endDate = moment(startDate).add(7, 'days');
-    this.doseForThisPhaseMg = doseForThisPhaseMg;
+    this._endDate = moment(startDate).add(6, 'days');
 
-    let treatmentObjects: TreatmentObject[] 
-      = BaclofenRegimenPhaseDef[`${doseForThisPhaseMg}mg`];
+    if( doseForThisPhaseMg) {
+      let treatmentObjects: TreatmentObject[] 
+        = BaclofenRegimenPhaseDef[`${doseForThisPhaseMg}mg`];
     
-    this.treatments = treatmentObjects.map( (treatmentObject) => {
+      this.treatments = _.map(treatmentObjects, (treatmentObject) => {
+        return new Treatment(treatmentObject);
+      })
+    } else {
+      this.treatments = [];
+    }
+
+  }
+
+  static createFromObj(obj: RegimenPhaseObject): IRegimenPhase {
+    
+    let regimenPhase = new BaclofenRegimenPhase(
+      obj.phase,
+      moment(obj.startDate)
+    )
+
+    regimenPhase.treatments = _.map(obj.treatments, (treatmentObject) => {
       return new Treatment(treatmentObject);
     })
+    
+    return regimenPhase;
   }
 
   toObj(): RegimenPhaseObject {
-    let treatmentObjects = this.treatments.map( (t) => { return t.toObj() });
+    let treatmentObjects = _.map(this.treatments, (t) => { return t.toObj() });
     return {
       phase: this.phase, 
       startDate: this.startDate,
@@ -71,13 +107,48 @@ export class BaclofenRegimenPhase implements IRegimenPhase {
     }
   }
 
-  get treatmentObjects(): TreatmentObject {
-    return this.treatments.map( (t) => { return t.toObj() });
+  get treatmentObjects(): TreatmentObject[] {
+    return this._treatmentsToObjects(this.treatments)
   }
 
   sortTreatments(): TreatmentObject[] {
-    return _.sortBy(this.treatments, (treatment) => {
+    let treatments: Treatment[] = _.sortBy(this.treatments, (treatment) => {
       return moment(treatment.time, DateFormatTimeOfDay).unix();
     })
+    return this._treatmentsToObjects(treatments)
   }
+
+  _treatmentsToObjects(treatments: Treatment[]) {
+    return _.map(treatments, (t) => { return t.toObj() });
+  }
+
+  getTreatmentsByPartOfDay(): TreatmentsByPartOfDayObject {
+    let treatmentByPartOfDayObject: TreatmentsByPartOfDayObject = {
+      [PartOfDayOptions.morning]: [], 
+      [PartOfDayOptions.afternoon]: [],
+      [PartOfDayOptions.evening]: []
+    };
+
+    for(let treatment of this.treatments) {
+      let partOfDay = treatment.getPartOfDay();
+      treatmentByPartOfDayObject[partOfDay].push(treatment);
+    }
+    return treatmentByPartOfDayObject;
+  }
+}
+
+
+export const PartOfDayOptions = {
+  morning: "morning",
+  afternoon: "afternoon",
+  evening: "evening"
+} 
+
+export type TreatmentsByPartOfDayObject = {
+  // [PartOfDayOptions.morning]: Treatment[],
+  // [PartOfDayOptions.afternoon]: Treatment[],
+  // [PartOfDayOptions.evening]: Treatment[] 
+  morning: Treatment[],
+  afternoon: Treatment[],
+  evening: Treatment[],
 }

@@ -1,4 +1,11 @@
 {
   "git.ignoreLimitWarning": true,
-  "explorer.autoReveal": false
+  "explorer.autoReveal": false,
+  "todo-tree.flat": false,
+  "editor.tabSize": 2,
+  "flow.useNPMPackagedFlow": true,
+  "flow.enabled": true,
+  "javascript.validate.enable": false,
+  "gitlens.blame.line.enabled": false,
+  "gitlens.codeLens.enabled": false
 }

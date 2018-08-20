@@ -10,6 +10,7 @@ import {
   CardItem, Right, Icon
 } from "native-base";
 import type { RegimenObject } from "../../../libs/intecojs";
+import _ from "lodash";
 
 export default class RegimenList extends React.Component<any, any> {
 
@@ -24,7 +25,7 @@ export default class RegimenList extends React.Component<any, any> {
   // }
 
   _prepareCards = (items: RegimenObject[]) => {
-    const Cards: any = items.map( (item: RegimenObject, index: number): any => { 
+    const Cards: any = _.map(items, (item: RegimenObject, index: number): any => { 
       return this._prepareACard(item);
     });
     return Cards;

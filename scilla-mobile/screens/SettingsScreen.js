@@ -6,8 +6,7 @@ import {
 } from 'react-native';
 // import { ExpoConfigView } from '@expo/samples';
 // import Auth from "../libs/Auth";
-// import firebase from "firebase";
-import appService from "../AppService";
+import appService from "../app/AppService";
 
 export default class SettingsScreen extends React.Component<any, any> {
   static navigationOptions = {
@@ -21,10 +20,6 @@ export default class SettingsScreen extends React.Component<any, any> {
   signOut = () => {
     appService.auth.signOut()
       .then( () => this.props.navigation.navigate("Auth") );
-    // firebase
-    //   .auth()
-    //   .signOut()
-    //   .then( () => this.props.navigation.navigate("Main"));
   }
 
   render() {

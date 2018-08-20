@@ -3,7 +3,7 @@ import React from "react";
 import * as firebase from "firebase";
 
 import { ScreenNames } from "../../constants/Screens";
-import appService from "../../AppService";
+import appService from "../../app/AppService";
 
 import { View, Text,StyleSheet, ActivityIndicator, 
   StatusBar, AsyncStorage,Image

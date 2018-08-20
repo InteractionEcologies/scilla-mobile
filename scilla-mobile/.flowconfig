@@ -1,6 +1,6 @@
 [ignore]
 .*/node_modules/.*
-.*/__tests__/.*
+;.*/__tests__/.*
 *.json
 
 [include]
@@ -11,7 +11,7 @@
 [lints]
 
 [options]
-; all=true
+;all=true
 esproposal.decorators=ignore
 module.system=haste
 

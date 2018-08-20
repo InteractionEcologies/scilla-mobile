@@ -1,15 +1,16 @@
 // @flow
 import type {
-  TreatmentObject
+  TreatmentObject,
+  TreatmentDetailOption
 } from "../../libs/intecojs";
 
 import {
-  TreatmentDetailOption,
   DateFormatTimeOfDay,
 } from "../../libs/intecojs";
 import { Regimen } from "./";
 import moment from "moment";
 import _ from "lodash";
+import { PartOfDayOptions } from "./";
 
 export class BaclofenUtils {
   static computeWeeksByDosageDeficit(deficitDoseMg: number): number {
@@ -49,43 +50,22 @@ export class RegimenUtils {
   static AfternoonIndexInPartOfDayArray = 1;
   static EveningIndexInPartOfDayArray = 2;
 
-  static MORNING = "morning"
-  static AFTERNOON = "afternoon";
-  static EVENING = "evening";
-
   static sortTreatments(treatments: TreatmentObject[]) {
     return _.sortBy(treatments, (treatmentObj) => {
       return moment(treatmentObj.time, DateFormatTimeOfDay).unix();
     })
   }
 
-  static getTreatmentPartOfDay(treatment: TreatmentObject): string {
-    let treatmentTime = moment(treatment.time, DateFormatTimeOfDay);
-    let treatmentHour = parseFloat(treatmentTime.format("HH"));
-    let partOfDay: string;
-
-    if(treatmentHour >= RegimenUtils.splitAfternoon
-      && treatmentHour <= RegimenUtils.splitEvening ) {
-      partOfDay = RegimenUtils.AFTERNOON;
-    } else if(treatmentHour >= RegimenUtils.splitEvening ) {
-      partOfDay = RegimenUtils.EVENING;
-    } else {
-      partOfDay = RegimenUtils.MORNING;
-    }
-    
-    return partOfDay;
-  }
-
   static partOfDay2ArrayIndex(partOfDay: string) {
     let index;
     switch(partOfDay) {
-      case RegimenUtils.MORNING: 
+      case PartOfDayOptions.morning: 
         index = RegimenUtils.MorningIndexInPartOfDayArray; 
         break;
-      case RegimenUtils.AFTERNOON: 
+      case PartOfDayOptions.afternoon: 
         index = RegimenUtils.AfternoonIndexInPartOfDayArray; 
         break;
-      case RegimenUtils.MORNING: 
+      case PartOfDayOptions.evening: 
         index = RegimenUtils.EveningIndexInPartOfDayArray; 
         break;
       default:

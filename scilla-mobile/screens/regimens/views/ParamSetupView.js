@@ -22,6 +22,7 @@ export default class ParamSetupView extends React.Component<Props, any> {
   handleDosageChange = (dosageMgStr: string) => {
     let dosageMg = parseInt(dosageMgStr, 10); 
     this.props.onCurrentDosageChanged(dosageMg);
+
   }
 
   render() {
@@ -33,7 +34,7 @@ export default class ParamSetupView extends React.Component<Props, any> {
     }
 
     return (
-      <View style={RegimenStyles.mainView}>
+      <View>
         <Title>What's Your Current Dosage?</Title>
         <DotPageIndicator 
           totalDots={this.props.numStates}
@@ -46,6 +47,7 @@ export default class ParamSetupView extends React.Component<Props, any> {
             <Label>Baclofen Dosage Per Day (mg)</Label>
             <Input
               onChangeText={this.handleDosageChange}
+              keyboardType = 'numeric'
               value={ dosageMg }
             />
           </Item>
@@ -57,7 +59,9 @@ export default class ParamSetupView extends React.Component<Props, any> {
 
 const styles = StyleSheet.create({
   form: {
-    width: '90%'
+    width: '90%',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
   },
   button: {
     marginBottom: 8

@@ -1,5 +1,6 @@
 // @flow
 import { StyleSheet } from "react-native";
+import Colors from "../../constants/Colors";
 
 const styles = StyleSheet.create({
   content: {
@@ -10,15 +11,12 @@ const styles = StyleSheet.create({
   mainView: {
     alignItems: 'center',
     justifyContent: 'flex-start',
-    height: 400,
     width: 300,
-    // backgroundColor: 'powderblue'
+    flex: 0.8,
   },
-
   nextBackBtnView: {
     height: 50,
     width: 300,
-    // backgroundColor: 'skyblue',
     flexDirection: "row",
     justifyContent: 'space-between',
     left: 0, 
@@ -36,14 +34,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     flex: 1
   },
-
   dotPageIndicator: {
-    // backgroundColor: 'skyblue',
     marginTop: 8
   },
-
-  buttonList: {
-    
+  warningMessage: {
+    color: Colors.errorText
   }
 
 })

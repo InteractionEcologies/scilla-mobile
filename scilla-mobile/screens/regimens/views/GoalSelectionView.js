@@ -46,7 +46,7 @@ export default class GoalSelectionView extends React.Component<Props, any> {
 
   render() {
     return (
-      <View style={RegimenStyles.mainView}>
+      <View>
         <Title>Choose Your Goal</Title>
         <DotPageIndicator 
           totalDots={this.props.numStates}

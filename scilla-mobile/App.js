@@ -6,7 +6,7 @@ import AppNavigator from './navigation/AppNavigator';
 import { Provider } from "react-redux";
 import store from "./redux/store";
 
-export default class App extends React.Component {
+export default class App extends React.Component<any, any> {
   state = {
     isLoadingComplete: false,
   };
@@ -50,7 +50,7 @@ export default class App extends React.Component {
     ]);
   };
 
-  _handleLoadingError = error => {
+  _handleLoadingError = (error: any) => {
     // In this case, you might want to report the error to your error
     // reporting service, for example Sentry
     console.warn(error);

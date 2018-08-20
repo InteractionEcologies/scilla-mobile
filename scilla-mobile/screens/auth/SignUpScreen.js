@@ -8,7 +8,7 @@ import { Container, Content, Text, Button, Form,
 } from "native-base";
 import { AppText, Title } from "../../components"
 // import Auth from "../../libs/Auth";
-import appService from "../../AppService";
+import appService from "../../app/AppService";
 import { ScreenNames } from "../../constants/Screens";
 import BaseScreen from "../BaseScreen";
 import AuthStyles from "./AuthStyles";

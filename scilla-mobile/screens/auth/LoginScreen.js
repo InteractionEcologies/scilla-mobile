@@ -9,9 +9,10 @@ import {Content, Container,Text, View,
 } from 'native-base';
 import * as firebase from 'firebase'; 
 import BaseScreen from "../BaseScreen";
-import appService from "../../AppService";
+import appService from "../../app/AppService";
 import { ScreenNames } from "../../constants/Screens";
 import { AppText, Title } from "../../components";
+import Colors from "../../constants/Colors";
 
 export default class LoginScreen extends BaseScreen {
   state = {
@@ -100,7 +101,7 @@ const styles = StyleSheet.create({
     // marginTop: 8
   },
   errorMessage: {
-    color: 'red'
+    color: Colors.errorText
   },
   loginBtn: {
     marginTop: 8

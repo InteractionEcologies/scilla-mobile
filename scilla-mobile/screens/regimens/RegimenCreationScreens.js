@@ -3,13 +3,21 @@ import React from "react";
 // import { Machine, State } from "xstate";
 import { Action, State, withStateMachine } from "react-automata";
 import { Icon, Text, Button, Container, Content } from 'native-base';
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Image } from "react-native";
 import moment from "moment";
 
 import type { NavigationNavigatorProps } from "react-navigation";
-import type { RegimenType } from "../../libs/intecojs";
-import { RegimenTypes, RegimenGoalOption, DateFormatISO8601, RegimenPhaseObject } from "../../libs/intecojs";
-import { Regimen, RegimenFactory } from "../../models/regimen";
+import type { 
+  RegimenType,
+  RegimenGoalOption,
+  RegimenPhaseObject
+} from "../../libs/intecojs";
+import { 
+  RegimenTypes, 
+  RegimenGoalOptions,
+  DateFormatISO8601
+} from "../../libs/intecojs";
+import { Regimen, RegimenFactory, IRegimenPhase } from "../../models/regimen";
 
 import { ScreenNames } from "../../constants/Screens";
 import styles from "./RegimenStyles"; 
@@ -21,9 +29,11 @@ import GoalSelectionView from "./views/GoalSelectionView";
 import ParamSetupView from "./views/ParamSetupView";
 import GoalSuggestionView from "./views/GoalSuggestionView";
 import ScheduleView from "./views/ScheduleView";
+import CompletionView from "./views/CompletionView";
 
-import { DotPageIndicator } from "../../components";
-import appService from "../../AppService";
+import { DotPageIndicator, AppText } from "../../components";
+import appService from "../../app/AppService";
+import appState from "../../app/AppState";
 
 const NUM_INDICATOR_STATES = 9;
 const StateNames = {
@@ -72,10 +82,14 @@ const mainViewStateMachineConfig = {
     [StateNames.paramSetup]: {
       on: {
         [StateEvents.PREVIOUS]: StateNames.goalSelection,
-        [StateEvents.NEXT]: StateNames.goalSuggestion,
+        [StateEvents.NEXT]: {
+          [StateNames.goalSuggestion]: {
+            actions: ['setRegimenParam', 'generateRegimenGoal']
+          }
+        }
       },
       onEntry: ActionNames.paramSetup,
-      onExit: 'setRegimenParam'
+      onExit: '_enableNextStep'
     },
     [StateNames.goalSuggestion]: {
       on: {
@@ -88,7 +102,8 @@ const mainViewStateMachineConfig = {
     [StateNames.schedule]: {
       on: {
         [StateEvents.PREVIOUS]: StateNames.goalSuggestion,
-        [StateEvents.NEXT]: StateNames.dateSelection,
+        // TODO: Debugging purpose. 
+        [StateEvents.NEXT]: StateNames.complete,
       },
       onEntry: ['generateTemporarySchedule', ActionNames.schedule]
     },
@@ -116,40 +131,135 @@ const mainViewStateMachineConfig = {
     },
     [StateNames.complete]: {
       on: {
-        [StateEvents.NEXT]: StateNames.complete,
+        [StateEvents.NEXT]: StateNames.main,
       },
-      onEntry: ActionNames.complete
+      onEntry: ['finalizeRegimen', ActionNames.complete]
     },
   }
 }
 
+const WarningMessages = {
+  noAvailableGoals: "We don't have any regimen associated with your current dosage.",
+  dosageHighAlready: "Your current dosage reaches the maximum already, Scilla does"
+   + " not have any dosage suggestion associated with your current dosage.",
+  dosageCanNotBeNagative: "Your current dosage cannot be negative",
+}
+
 type States = {
+  // regimen object state
   selectedRegimenType: RegimenType, 
   currentDoseMg: number,
   regimenGoal: RegimenGoalOption,
-  regimenPhases: RegimenPhaseObject[],
+  startDate: ?string,
+  regimenPhases: IRegimenPhase[],
 
-  regimen: Regimen
+  // ui 
+  isNextBtnDisabled: bool,
+  warningMessage: ?string,
 }
 
 class RegimenCreationScreens 
   extends React.Component<any, States>
 {
-  // machine: Machine = Machine(mainViewStateMachineConfig);
   state = {
     selectedRegimenType: RegimenTypes.incBaclofen,
     currentDoseMg: 0,
-    regimenGoal: null,
+    regimenGoal: RegimenGoalOptions.undefined,
+    startDate: null,
     regimenPhases: [],
-    regimen: RegimenFactory.createRegimen(RegimenTypes.incBaclofen)
+
+    isNextBtnDisabled: false,
+    warningMessage: null
   }
+
+  regimen: Regimen = RegimenFactory.createRegimen(RegimenTypes.incBaclofen)
 
   constructor(props: any) {
     super(props);
   }
 
-  componentDidMount() {}
+  componentDidMount() {
 
+  }
+
+  // MARK: - Regimen Creation Process
+  initRegimen = () => {
+    console.log('init regimen');
+    this.regimen = RegimenFactory.createRegimen(this.state.selectedRegimenType);
+    let user = appService.auth.currentUser;
+    let uid = user.uid;
+    this.regimen.setUserId(uid);
+
+  }
+
+  setRegimenParam = () => {
+    console.log("setRegimenParam");
+
+    this.regimen.setRegimenParam({
+      currentDoseMg: this.state.currentDoseMg
+    })
+  }
+
+  generateRegimenGoal = () => {
+    this.regimen.generateRegimenGoal();
+    this.setState({
+      regimenGoal: this.regimen.regimenGoal
+    })
+  }
+
+  generateTemporarySchedule = () => {
+    let today: string = moment().format(DateFormatISO8601);
+    this.regimen.setStartDate(today);
+    this.regimen.make();
+ 
+    this.setState({
+      startDate: this.regimen.startDate,
+      regimenPhases: this.regimen.getRegimenPhases()
+    });
+  }
+
+  finalizeRegimen = () => {
+    console.log("finalize regimen");
+    this.regimen.make();
+    // TODO: DateSource ... add
+    appService.ds.createRegimen(this.regimen.toObj());
+
+    appState.regimensById.set(this.regimen.id, this.regimen);
+    appState.activeRegimenId = this.regimen.id;
+    console.log(appState.regimensById);
+  }
+
+  // MARK: - UI event handlers
+  onGoalSelected = (regimenType: RegimenType) => {
+    console.log(regimenType);
+    this.setState({
+      selectedRegimenType: regimenType
+    })
+  }
+  
+  onCurrentDosageChanged = (newDoseMg: number) => {
+    console.log(newDoseMg);
+    this.setState({currentDoseMg: newDoseMg});
+    this._verifyDosage(newDoseMg);
+  }
+
+  _verifyDosage = (newDoseMg: number) => {
+    if (newDoseMg > 60) {
+      this._disableNextStep(WarningMessages.dosageHighAlready);
+    } else if (newDoseMg < 0) {
+      this._disableNextStep(WarningMessages.dosageCanNotBeNagative);
+    } else if (newDoseMg === 60) {
+      if (this.regimen.type == RegimenTypes.incBaclofen) {
+        this._disableNextStep(WarningMessages.dosageHighAlready);
+      } else {
+        this._enableNextStep();
+      }
+    } else {
+      this._enableNextStep();
+    } 
+  }
+
+  // MARK: - Navigation
   goToMain() {
     this.props.navigation.navigate(ScreenNames.RegimenMain);
   }
@@ -162,61 +272,42 @@ class RegimenCreationScreens
     this.props.transition(StateEvents.NEXT);
   }
 
-  onGoalSelected = (regimenType: RegimenType) => {
-    console.log(regimenType);
+  _disableNextStep = (warningMessage: string) => {
     this.setState({
-      selectedRegimenType: regimenType
-    })
-  }
-
-  onCurrentDosageChanged = (newDoseMg: number) => {
-    console.log(newDoseMg);
-    this.setState({
-      currentDoseMg: newDoseMg
-    })
-  }
-
-  initRegimen = () => {
-    console.log('init regimen');
-    this.setState({
-      regimen: RegimenFactory.createRegimen(this.state.selectedRegimenType)
+      isNextBtnDisabled: true,
+      warningMessage: warningMessage
     });
-
-    let user = appService.auth.currentUser;
-    let uid = user.uid;
-    this.state.regimen.setUserId(uid);
   }
-
-  setRegimenParam = () => {
-    console.log("setRegimenParam");
-
-    // Generate personalized goal to use 
-    // in the next page.
-    this._generateRegimenGoal();
-    this._setStateOfRegimenGoal();
-  }
-
-  _generateRegimenGoal = () => {
-    this.state.regimen.setRegimenParam({
-      currentDoseMg: this.state.currentDoseMg
-    })
-    this.state.regimen.confirmRegimenParam();
-  }
-
-  _setStateOfRegimenGoal = () => {
+  _enableNextStep = () => {
     this.setState({
-      regimenGoal: this.state.regimen.regimenGoal
-    })
-  }
-
-  generateTemporarySchedule = () => {
-    let today: string = moment().format(DateFormatISO8601);
-    this.state.regimen.setStartDate(today);
-    this.state.regimen.make();
-
-    this.setState({
-      regimenPhases: this.state.regimen.getRegimenPhases()
+      isNextBtnDisabled: false,
+      warningMessage: null
     });
+  }
+
+  // MARK: - Rendering
+  render() {
+    return (
+      <Content contentContainerStyle={styles.content}>
+        {this._renderInnerView()}
+        
+        <View style={styles.nextBackBtnView}>
+          <Button iconLeft bordered={true} style={styles.button} onPress={this.goToPrevious}>
+            <Icon name="arrow-back"/>
+            <AppText style={styles.textLeft}>Back</AppText>
+          </Button>
+          <Button 
+            iconRight 
+            style={styles.button} 
+            onPress={this.goToNext} 
+            disabled={this.state.isNextBtnDisabled}>
+              <AppText style={styles.textRight}>Next</AppText>
+              <Icon name="arrow-forward"/>
+          </Button>
+        </View>
+
+      </Content>
+    )
   }
 
   _renderInnerView = () => {
@@ -262,32 +353,22 @@ class RegimenCreationScreens
       <Action is={ActionNames.reminderConfig}></Action>
       <Action is={ActionNames.trackedMeasurementTypeConfig}></Action>
       <Action is={ActionNames.precautions}></Action>
-      <Action is={ActionNames.complete}></Action>
+      <Action is={ActionNames.complete}>
+        <CompletionView 
+          numStates={NUM_INDICATOR_STATES}
+          currentStateIndex={NUM_INDICATOR_STATES}
+        />
+      </Action>
+
+      <View>
+        <AppText style={styles.warningMessage}>
+          {this.state.warningMessage}
+        </AppText>
+      </View>
     </View>
     )
   }
 
-  render() {
-    return (
-      <Container>
-        <Content contentContainerStyle={styles.content}>
-          {this._renderInnerView()}
-
-          <View style={styles.nextBackBtnView}>
-            <Button iconLeft bordered={true} style={styles.button} onPress={this.goToPrevious}>
-              <Icon name="arrow-back"/>
-              <Text style={styles.textLeft}>Back</Text>
-            </Button>
-            <Button iconRight style={styles.button} onPress={this.goToNext}>
-              <Text style={styles.textRight}>Next</Text>
-              <Icon name="arrow-forward"/>
-            </Button>
-          </View>
-
-        </Content>
-      </Container>
-    )
-  }
 }
 
 export default withStateMachine(mainViewStateMachineConfig)(RegimenCreationScreens);

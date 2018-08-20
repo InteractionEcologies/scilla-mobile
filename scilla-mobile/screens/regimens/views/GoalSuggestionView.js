@@ -17,7 +17,6 @@ type Props = {
 export default class GoalSuggestionView extends React.Component<Props, any> {
   _renderSuggestedDosage() {
     let text = "";
-
     switch(this.props.regimenGoal) {
       case RegimenGoalOptions.baclofen0mg:
         text = "0";
@@ -31,7 +30,7 @@ export default class GoalSuggestionView extends React.Component<Props, any> {
     }
     return (
       <View>
-        <Title>Dosage Suggestion</Title>
+        <Title>Medication Suggestion</Title>
         <DotPageIndicator 
           totalDots={this.props.numStates}
           currentDotIndex={this.props.currentStateIndex}
@@ -40,16 +39,18 @@ export default class GoalSuggestionView extends React.Component<Props, any> {
         />
         <View style={styles.dosageView}>
           <Title style={styles.dosageText}>{text}</Title>
-          <Title style={styles.dosageUnit}>mg</Title>
+          <Title style={styles.dosageUnit}>mg /per day</Title>
         </View>
       </View>
     )
   }
   render() {  
     return (
-      <View style={RegimenStyles.mainView}>
+      <View>
         {this._renderSuggestedDosage()}
-        <AppText>We suggest you to gradually change to this dosage.
+        <AppText>
+          We suggest you to gradually change to this amount of dosage. 
+          See next page for detail instructions.
         </AppText>
       </View>
     )

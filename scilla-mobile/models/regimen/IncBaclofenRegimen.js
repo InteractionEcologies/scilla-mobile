@@ -3,7 +3,7 @@ import type {
   RegimenParamObject,
   RegimenGoalOption,
   RegimenPhaseObject,
-  
+  RegimenObject,
 } from "../../libs/intecojs";
 
 import {
@@ -25,10 +25,24 @@ import {
 export class IncBaclofenRegimen extends Regimen {
 
   regimenPhases: IRegimenPhase[] = [];
+  static DoseThreasholdFor30mgGoal = 25;
+  static DoseFor30mgGoal = 30;
+  static MaxDoseAcceptable = 60;
 
   constructor() {
     super()
     this._obj.type = RegimenTypes.incBaclofen;
+  }
+
+  updateFromObj(obj: RegimenObject) {
+    // Doesn't allow others to change its type
+    var clonedObj = Object.assign({}, obj);
+    clonedObj.type = this._obj.type;
+    this._obj = clonedObj;
+
+    this.regimenPhases = _.map(this._obj.regimenPhases, (rp) => {
+      return new BaclofenRegimenPhase.createFromObj(rp);
+    })
   }
   
   setRegimenParam(param: RegimenParamObject): Regimen {
@@ -42,15 +56,15 @@ export class IncBaclofenRegimen extends Regimen {
 
   _personalizeRegimenGoal(param: RegimenParamObject): RegimenGoalOption {
     let currentDoseMg = ((param.currentDoseMg: any): number);
-    let goal;
-    if(currentDoseMg < 30) {
+    let goal: RegimenGoalOption = RegimenGoalOptions.undefined;
+    if(currentDoseMg <= IncBaclofenRegimen.DoseThreasholdFor30mgGoal) {
       // increase to 30mg
       goal = RegimenGoalOptions.baclofen30mg;
-    } else if (currentDoseMg < 60 ) {
+    } else if (currentDoseMg < IncBaclofenRegimen.MaxDoseAcceptable  ) {
       // increase to 60mg
       goal = RegimenGoalOptions.baclofen60mg;
-    } else if (currentDoseMg >= 60 ) {
-      goal = null
+    } else if (currentDoseMg >= IncBaclofenRegimen.MaxDoseAcceptable  ) {
+      goal = RegimenGoalOptions.undefined;
     }
     return goal;
   }
@@ -58,12 +72,16 @@ export class IncBaclofenRegimen extends Regimen {
   _personalizeRegimenDurationDays(param: RegimenParamObject): number {
     let currentDoseMg = ((param.currentDoseMg: any): number);
     let days: number = REGIMEN_BACLOFEN_DAYS;
-    if(currentDoseMg < 30) {
+    if(currentDoseMg < IncBaclofenRegimen.DoseThreasholdFor30mgGoal) {
       // increase to 30mg
-      days = BaclofenUtils.computeDaysByDosageDeficit( (30 - currentDoseMg));
-    } else if (currentDoseMg < 60 ) {
+      days = BaclofenUtils.computeDaysByDosageDeficit( 
+        (IncBaclofenRegimen.DoseFor30mgGoal- currentDoseMg)
+      );
+    } else if (currentDoseMg < IncBaclofenRegimen.MaxDoseAcceptable ) {
       // increase to 60mg
-      days = BaclofenUtils.computeDaysByDosageDeficit( (60 - currentDoseMg));
+      days = BaclofenUtils.computeDaysByDosageDeficit( 
+        (IncBaclofenRegimen.MaxDoseAcceptable - currentDoseMg)
+      );
     }
     return days;
   }
@@ -77,6 +95,7 @@ export class IncBaclofenRegimen extends Regimen {
     let regimenPhases: IRegimenPhase[] = [];
     let startDateMoment = moment(startDate);
     let weeks = parseInt(this.regimenDurationDays / 7, 10);
+    console.log('weeks', weeks);
     let currentDoseMg = ((param.currentDoseMg: any): number);
     let nextPhaseDoseMg = this._computeInitialPhaseDoseMg(currentDoseMg);
 

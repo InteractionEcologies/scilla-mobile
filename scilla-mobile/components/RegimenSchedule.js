@@ -1,17 +1,19 @@
 // @flow
 import React from "react";
 import { View, StyleSheet } from "react-native";
-import { AppText } from "./";
+import { AppText, AppHeaderText } from "./";
 import type { TreatmentObject, RegimenPhaseObject } from "../libs/intecojs";
 
 import _ from "lodash";
 import moment from "moment";
 import { TreatmentDetailOptions } from "../libs/intecojs";
-import { RegimenUtils } from "../models/regimen";
+import { RegimenUtils, IRegimenPhase, Treatment, PartOfDayOptions } from "../models/regimen";
 
 type Props = {
-  regimenPhases: RegimenPhaseObject[]
+  regimenPhases: IRegimenPhase[],
+  style: any
 }
+
 
 export class RegimenSchedule extends React.Component<Props, any> {
   componentDidMount() {
@@ -21,34 +23,29 @@ export class RegimenSchedule extends React.Component<Props, any> {
   renderRows() {
     let rows = [];
     // Make sure treatment is sorted.
-    let regimenPhases = _.sortBy(
-      this.props.regimenPhases, 
-      (phaseObj) => { return phaseObj.phase}
-    )
+    let regimenPhases = this.props.regimenPhases;
 
-    for(let phaseObj of regimenPhases) {
-      let phaseNumber = phaseObj.phase
-      let treatments: TreatmentObject[] = phaseObj.treatments;
-
-      treatments = RegimenUtils.sortTreatments(treatments);
-
+    for(let regimenPhase of regimenPhases) {
+      let phaseNumber = regimenPhase.phase
       let valuesForPillTableRow: string[] = [" ", " ", " "];
-      
-      for(let treatment of treatments) {
-        switch(treatment.option) {
-          case TreatmentDetailOptions.baclofen5mg: 
-            valuesForPillTableRow.push("5 mg");
-            break;
-          case TreatmentDetailOptions.baclofen10mg:
-            valuesForPillTableRow.push("10 mg");
-            break;
-          case TreatmentDetailOptions.baclofen15mg:
-            valuesForPillTableRow.push("15 mg");
-            break;
-          case TreatmentDetailOptions.baclofen20mg:
-            valuesForPillTableRow.push("20 mg");
-            break;
-        }
+
+      // let treatments: Treatment[] = regimenPhase.treatments; 
+      let treatmentsByPartOfDayObject = regimenPhase.getTreatmentsByPartOfDay();
+
+      let podOptions = [
+        PartOfDayOptions.morning, 
+        PartOfDayOptions.afternoon, 
+        PartOfDayOptions.evening
+      ]
+      for(let podOption of podOptions) {
+       let treatments = treatmentsByPartOfDayObject[podOption];
+       let oneTreatment = treatments ? treatments[0]: null;
+
+       let arrayIndex = RegimenUtils.partOfDay2ArrayIndex(podOption);
+        valuesForPillTableRow[arrayIndex] = 
+          oneTreatment 
+          ? oneTreatment.getShortDescription()
+          : " ";
       }
       
       console.log(valuesForPillTableRow);
@@ -66,7 +63,7 @@ export class RegimenSchedule extends React.Component<Props, any> {
     console.log(this.props.regimenPhases);
 
     return (
-      <View>
+      <View style={this.props.style}>
         <ThreePillTableHeader 
           columns={["Phase", "Morning", "Afternoon", "Evening"]}
         />
@@ -75,8 +72,6 @@ export class RegimenSchedule extends React.Component<Props, any> {
     )
   }
 }
-
-
 
 type ThreePillTableHeaderProps = {
   columns: string[]
@@ -87,13 +82,15 @@ class ThreePillTableHeader extends React.Component<any, any> {
     let columns = [];
     for(let i=0; i < this.props.columns.length; i++) {
       if(i >= 4) break;
-      columns.push(<AppText key={i}>{this.props.columns[i]}</AppText>);
+      columns.push(
+        <AppHeaderText key={i} style={styles.headerText}>
+          {this.props.columns[i]}
+        </AppHeaderText>
+      );
     }
     return (<View style={styles.headerRow}>{columns}</View>);
   }
 }
-
-
 
 type ThreePillTableRowProps = {
   rowIndex: number, 
@@ -106,10 +103,17 @@ class ThreePillTableRow extends React.Component<any, any> {
 
     for(let i = 0; i < 3; i++) {
       let text = this.props.values[i] ? this.props.values[i] : '';
-      pills.push(
-        <PillRegion key={i}>
-          <AppText style={styles.pillText}>text</AppText>
-        </PillRegion>)
+      if(text === "" || text === " ") {
+        pills.push(
+          <PillRegion key={i} empty>
+            <AppText style={styles.pillText}>{text}</AppText>
+          </PillRegion>)
+      } else {
+        pills.push(
+          <PillRegion key={i}>
+            <AppText style={styles.pillText}>{text}</AppText>
+          </PillRegion>)
+      }
     }
     return pills;
   }
@@ -143,8 +147,13 @@ class ThreePillTableRow extends React.Component<any, any> {
 
 
 class PillRegion extends React.Component<any, any> {
+
   render() {
-    return <View style={styles.pillRegion}>{this.props.children}</View>;
+    return (
+      <View style={this.props.empty ? styles.emptyPillRegion : styles.pillRegion}>
+        {this.props.children}
+      </View>
+    );
   }
 }
 
@@ -157,7 +166,8 @@ const styles = StyleSheet.create({
   },
   phaseRow: {
     flexDirection: 'row',
-    justifyContent: 'flex-start'
+    justifyContent: 'flex-start',
+    marginBottom: 8,
   },
   phaseTextRegion: {
     flex: 1,
@@ -165,22 +175,33 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     // width: 20,
     // height: 30,
-    backgroundColor: 'blue',
+    // backgroundColor: 'blue',
   },
   pillGroupRegion: {
     flex: 8,
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     alignItems: 'center',
-    backgroundColor: 'yellow'
+    // backgroundColor: 'yellow'
   },
   pillRegion: {
     justifyContent: 'center',
     alignItems: 'center',
-    width: 50,
+    width: 55,
     height: 30,
     borderRadius: 15,
     backgroundColor: 'grey'
+  },
+  emptyPillRegion: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 55,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: 'rgba(0, 0, 0, 0.0)'
+  },
+  headerText: {
+    fontSize: 12,
   },
   pillText: {
     color: 'white',
