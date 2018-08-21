@@ -18,8 +18,8 @@ class ActiveDot extends React.Component<any, any> {
 type Props = {
   totalDots: number, 
   currentDotIndex: number,
-  dotColor: string, 
-  activeDotColor: string
+  dotColor?: string, 
+  activeDotColor?: string
 }
 
 export class DotPageIndicator extends React.Component<Props, any> {

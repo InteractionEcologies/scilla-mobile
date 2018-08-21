@@ -11,7 +11,7 @@ import { RegimenUtils, IRegimenPhase, Treatment, PartOfDayOptions } from "../mod
 
 type Props = {
   regimenPhases: IRegimenPhase[],
-  style: any
+  style?: any
 }
 
 
@@ -29,7 +29,6 @@ export class RegimenSchedule extends React.Component<Props, any> {
       let phaseNumber = regimenPhase.phase
       let valuesForPillTableRow: string[] = [" ", " ", " "];
 
-      // let treatments: Treatment[] = regimenPhase.treatments; 
       let treatmentsByPartOfDayObject = regimenPhase.getTreatmentsByPartOfDay();
 
       let podOptions = [
@@ -48,7 +47,6 @@ export class RegimenSchedule extends React.Component<Props, any> {
           : " ";
       }
       
-      console.log(valuesForPillTableRow);
       rows.push(<ThreePillTableRow key={phaseNumber}
         rowIndex={phaseNumber}
         values={valuesForPillTableRow}
@@ -60,8 +58,6 @@ export class RegimenSchedule extends React.Component<Props, any> {
   }
 
   render() {
-    console.log(this.props.regimenPhases);
-
     return (
       <View style={this.props.style}>
         <ThreePillTableHeader 

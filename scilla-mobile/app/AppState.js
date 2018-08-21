@@ -1,7 +1,7 @@
 // @flow
 import { Regimen } from "../models/regimen";
 import type { 
-  TreatmentComplianceReport 
+  ComplianceReportObject
 } from "../libs/intecojs";
 
 class AppState {
@@ -10,8 +10,8 @@ class AppState {
   regimensById: Map<string, Regimen> = new Map();
   activeRegimenId: ?string = null;
 
-  complianceReportsById: Map<string, TreatmentComplianceReport> = new Map();
-  complianceReportsByDate: Map<string, TreatmentComplianceReport[]> = new Map();
+  complianceReportsById: Map<string, ComplianceReportObject> = new Map();
+  complianceReportsByDate: Map<string, ComplianceReportObject[]> = new Map();
 
   static instance: AppState
 

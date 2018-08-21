@@ -1,3 +1,4 @@
+// @flow
 export * from "./TextBullet";
 export * from "./Title";
 export * from "./StyledText";
