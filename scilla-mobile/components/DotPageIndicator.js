@@ -17,39 +17,60 @@ class ActiveDot extends React.Component<any, any> {
 
 type Props = {
   totalDots: number, 
-  currentDotIndex: number,
+  activeDotIndex: number,
   dotColor?: string, 
   activeDotColor?: string
 }
 
 export class DotPageIndicator extends React.Component<Props, any> {
+
+  render() {
+    return ( 
+      <View style={styles.dotPageIndicator}>
+        {this.renderDots()}
+      </View>
+    )
+  }
+
   renderDots() {
     let dots = [];
     for (let i = 0; i < this.props.totalDots; i++) {
-      dots.push( i === this.props.currentDotIndex
-        ? <ActiveDot key={i} 
-            style={[
-              styles.activeDot, 
-              this.props.activeDotColor? {backgroundColor: this.props.activeDotColor}: {}
-            ]}
-          />
-        : <Dot key={i} 
-            style={[
-              styles.dot,
-              this.props.dotColor? {backgroundColor: this.props.dotColor}: {}
-            ]}
-          />
-      )
+      this._renderDot(i, this.props.activeDotIndex)
     }
     return dots
   }
-  render() {
-    return ( 
-      <View style={styles.dotPageIndicator}>{this.renderDots()}</View>
+
+  _renderDot(currentDotIndex: number, activeDotIndex: number) {
+    if (currentDotIndex === activeDotIndex) {
+      return this._renderActiveDot(currentDotIndex);
+    } else {
+      return this._renderNormalDot(currentDotIndex);
+    } 
+  }
+
+  _renderActiveDot(dotIndex: number) {
+    return (
+      <ActiveDot 
+        key={dotIndex} 
+        style={[
+          styles.activeDot, 
+          this.props.activeDotColor? {backgroundColor: this.props.activeDotColor}: {}
+        ]}
+      />
+    )
+  }
+
+  _renderNormalDot(dotIndex: number) {
+    return (
+      <Dot key={dotIndex} 
+        style={[
+          styles.dot,
+          this.props.dotColor? {backgroundColor: this.props.dotColor}: {}
+        ]}
+      />
     )
   }
 }
-
 
 const styles = StyleSheet.create({
   dot: {

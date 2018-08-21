@@ -22,6 +22,21 @@ const btnTextMap = {
 
 export default class GoalSelectionView extends React.Component<Props, any> {
 
+  render() {
+    return (
+      <View>
+        <Title>Choose Your Goal</Title>
+        <DotPageIndicator 
+          totalDots={this.props.numStates}
+          activeDotIndex={this.props.currentStateIndex}
+          dotColor='grey'
+          activeDotColor='black'  
+        />
+        {this._renderButtonList()}
+      </View>
+    )
+  }
+
   _renderButtonList = () => {
     let goals = [RegimenTypes.incBaclofen, RegimenTypes.decBaclofen];
     let buttons = [];
@@ -44,20 +59,6 @@ export default class GoalSelectionView extends React.Component<Props, any> {
     return (<View>{buttons}</View>);
   }
 
-  render() {
-    return (
-      <View>
-        <Title>Choose Your Goal</Title>
-        <DotPageIndicator 
-          totalDots={this.props.numStates}
-          currentDotIndex={this.props.currentStateIndex}
-          dotColor='grey'
-          activeDotColor='black'  
-        />
-        {this._renderButtonList()}
-      </View>
-    )
-  }
 }
 
 const styles = StyleSheet.create({

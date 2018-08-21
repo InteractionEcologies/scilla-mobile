@@ -38,7 +38,7 @@ export default class ParamSetupView extends React.Component<Props, any> {
         <Title>What's Your Current Dosage?</Title>
         <DotPageIndicator 
           totalDots={this.props.numStates}
-          currentDotIndex={this.props.currentStateIndex}
+          activeDotIndex={this.props.currentStateIndex}
           dotColor='grey'
           activeDotColor='black'  
         />

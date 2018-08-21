@@ -3,8 +3,6 @@ import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 import { AppLoading, Asset, Font, Icon } from 'expo';
 import { Container } from "native-base";
 import AppNavigator from './navigation/AppNavigator';
-import { Provider } from "react-redux";
-import store from "./redux/store";
 
 export default class App extends React.Component<any, any> {
   state = {
@@ -22,12 +20,10 @@ export default class App extends React.Component<any, any> {
       );
     } else {
       return (
-        <Provider store={store}>
-          <Container style={styles.container}>
-            {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-            <AppNavigator />
-          </Container>
-        </Provider>
+        <Container style={styles.container}>
+          {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
+          <AppNavigator />
+        </Container>
       );
     }
   }

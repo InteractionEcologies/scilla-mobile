@@ -13,16 +13,15 @@ type Props = {
 }
 
 export default class ScheduleView extends React.Component<Props, any> {
-  componentDidMount() {
-
-  }
+  componentDidMount() {}
+  
   render() {
     return (
       <View>
         <Title>Medication Schedule</Title>
         <DotPageIndicator 
           totalDots={this.props.numStates}
-          currentDotIndex={this.props.currentStateIndex}
+          activeDotIndex={this.props.currentStateIndex}
         />
         <AppText style={{marginBottom: 8}}>
           Scilla suggests you to walk through {this.props.regimenPhases.length} phases 

@@ -7,7 +7,6 @@ import {
 } from "native-base";
 
 import { connect } from "react-redux";
-import { fetchRegimens } from "../../redux/regimens/regimenActions";
 import { ScreenNames } from "../../constants/Screens";
 import appService from "../../app/AppService";
 import RegimenList from "./views/RegimenList";
@@ -55,7 +54,7 @@ export default class RegimenMainScreen extends React.Component<any, State> {
   componentDidMount() {
     // DEBUG
     // Stub the data.
-    // this.debugStubData();
+    // this.addFakeData();
 
     this.initializeState();
   }
@@ -69,7 +68,7 @@ export default class RegimenMainScreen extends React.Component<any, State> {
     this.componentWillFocusSubscription.remove();
   }
 
-  debugStubData() {
+  addFakeData() {
     let regimenObject = fakeRegimenObject;
     let regimen = RegimenFactory.createRegimenFromObj(regimenObject);
     appState.regimensById.set(regimen.id, regimen);
@@ -107,16 +106,13 @@ export default class RegimenMainScreen extends React.Component<any, State> {
   }
 
   _setCurrentRegimenPhaseState() {
-
-    if(appState.activeRegimenId) {
-      let regimen = appState.regimensById.get(appState.activeRegimenId);
-      if(regimen) {
-        let regimenPhaseObject = regimen.getRegimenPhaseObjByDate(moment().format(DateFormatISO8601));
-        if(regimenPhaseObject) {
-          this.setState({
-            currentRegimenPhaseObject: regimenPhaseObject
-          });
-        }
+    let regimen = appState.getActiveRegimen();
+    if(regimen) {
+      let regimenPhaseObject = regimen.getRegimenPhaseObjByDate(moment().format(DateFormatISO8601));
+      if(regimenPhaseObject) {
+        this.setState({
+          currentRegimenPhaseObject: regimenPhaseObject
+        });
       }
     }
   }

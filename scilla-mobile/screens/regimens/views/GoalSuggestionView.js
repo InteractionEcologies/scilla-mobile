@@ -15,6 +15,19 @@ type Props = {
 }
 
 export default class GoalSuggestionView extends React.Component<Props, any> {
+  
+  render() {  
+    return (
+      <View>
+        {this._renderSuggestedDosage()}
+        <AppText>
+          We suggest you to gradually change to this amount of dosage. 
+          See next page for detail instructions.
+        </AppText>
+      </View>
+    )
+  }
+
   _renderSuggestedDosage() {
     let text = "";
     switch(this.props.regimenGoal) {
@@ -33,7 +46,7 @@ export default class GoalSuggestionView extends React.Component<Props, any> {
         <Title>Medication Suggestion</Title>
         <DotPageIndicator 
           totalDots={this.props.numStates}
-          currentDotIndex={this.props.currentStateIndex}
+          activeDotIndex={this.props.currentStateIndex}
           // dotColor='grey'
           // activeDotColor='black'  
         />
@@ -41,17 +54,6 @@ export default class GoalSuggestionView extends React.Component<Props, any> {
           <Title style={styles.dosageText}>{text}</Title>
           <Title style={styles.dosageUnit}>mg /per day</Title>
         </View>
-      </View>
-    )
-  }
-  render() {  
-    return (
-      <View>
-        {this._renderSuggestedDosage()}
-        <AppText>
-          We suggest you to gradually change to this amount of dosage. 
-          See next page for detail instructions.
-        </AppText>
       </View>
     )
   }

@@ -2,10 +2,11 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
 import { AppText, AppHeaderText } from "./";
-import type { TreatmentObject, RegimenPhaseObject } from "../libs/intecojs";
 
 import _ from "lodash";
 import moment from "moment";
+
+import type { TreatmentObject, RegimenPhaseObject } from "../libs/intecojs";
 import { TreatmentDetailOptions } from "../libs/intecojs";
 import { RegimenUtils, IRegimenPhase, Treatment, PartOfDayOptions } from "../models/regimen";
 
@@ -13,7 +14,6 @@ type Props = {
   regimenPhases: IRegimenPhase[],
   style?: any
 }
-
 
 export class RegimenSchedule extends React.Component<Props, any> {
   componentDidMount() {

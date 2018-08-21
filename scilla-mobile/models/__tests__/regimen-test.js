@@ -144,7 +144,7 @@ describe("regimen", () => {
       expect(regimenPhases[i].phase).toEqual(i);
     }
 
-    expect(regimenPhases[0].treatmentObjects).toEqual(
+    expect(regimenPhases[0].treatmentObjects).toMatchObject(
       BaclofenRegimenPhaseDef['45mg']
     );
     
@@ -174,7 +174,7 @@ describe("regimen", () => {
     expect(regimenPhase.startDate).toEqual(now.format(DateFormatISO8601));
     
     expect(regimenPhase.endDate)
-      .toEqual(now.add(7, 'days').format(DateFormatISO8601))
+      .toEqual(now.add(6, 'days').format(DateFormatISO8601))
     
     // expect(regimenPhase.treatmentObjects)
     //   .toEqual(BaclofenRegimenPhaseDef['5mg']);

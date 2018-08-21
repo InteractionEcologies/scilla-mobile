@@ -221,7 +221,6 @@ class RegimenCreationScreens
   finalizeRegimen = () => {
     console.log("finalize regimen");
     this.regimen.make();
-    // TODO: DateSource ... add
     appService.ds.createRegimen(this.regimen.toObj());
 
     appState.regimensById.set(this.regimen.id, this.regimen);

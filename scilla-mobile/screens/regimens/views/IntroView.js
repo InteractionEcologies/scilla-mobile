@@ -21,7 +21,7 @@ export default class IntroView extends React.Component<Props, any> {
         <Title>Start Baclofen Regimen</Title>
         <DotPageIndicator 
           totalDots={this.props.numStates}
-          currentDotIndex={this.props.currentStateIndex}
+          activeDotIndex={this.props.currentStateIndex}
           dotColor='grey'
           activeDotColor='black'  
         />

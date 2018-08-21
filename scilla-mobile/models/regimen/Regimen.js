@@ -212,7 +212,6 @@ export class Regimen implements IRegimenCore, IRegimenCustom {
       this._obj.regimenParam,
       this._obj.startDate
     );
-    console.log("Hello", this.regimenPhases);
     let objects = this.getRegimenPhaseObjs();
     this._obj.regimenPhases = objects;
   }

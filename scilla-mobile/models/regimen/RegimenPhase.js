@@ -80,11 +80,9 @@ export class BaclofenRegimenPhase implements IRegimenPhase {
     } else {
       this.treatments = [];
     }
-
   }
 
   static createFromObj(obj: RegimenPhaseObject): IRegimenPhase {
-    
     let regimenPhase = new BaclofenRegimenPhase(
       obj.phase,
       moment(obj.startDate)
@@ -98,7 +96,7 @@ export class BaclofenRegimenPhase implements IRegimenPhase {
   }
 
   toObj(): RegimenPhaseObject {
-    let treatmentObjects = _.map(this.treatments, (t) => { return t.toObj() });
+    let treatmentObjects = this._treatmentsToObjects(this.treatments);
     return {
       phase: this.phase, 
       startDate: this.startDate,

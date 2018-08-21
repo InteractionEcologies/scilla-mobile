@@ -95,12 +95,13 @@ export class IncBaclofenRegimen extends Regimen {
     let regimenPhases: IRegimenPhase[] = [];
     let startDateMoment = moment(startDate);
     let weeks = parseInt(this.regimenDurationDays / 7, 10);
-    console.log('weeks', weeks);
     let currentDoseMg = ((param.currentDoseMg: any): number);
     let nextPhaseDoseMg = this._computeInitialPhaseDoseMg(currentDoseMg);
 
     for(let phase=0; phase < weeks; phase++) {
       let regimenPhase = this._generateRegimenPhase(phase, startDateMoment, nextPhaseDoseMg);
+      // override phase number. 
+      regimenPhase.phase = phase;
       regimenPhases.push(regimenPhase);
       
       // Next phase
@@ -125,12 +126,6 @@ export class IncBaclofenRegimen extends Regimen {
     startDate: moment, 
     doseForThisPhaseMg: number): IRegimenPhase 
   {
-    // return {
-    //   phase: phase, 
-    //   startDate: startDate.format(DateFormatISO8601),
-    //   endDate: startDate.add(7, 'days').format(DateFormatISO8601),
-    //   treatments: BaclofenRegimenPhaseDef[`${doseForThisPhaseMg}mg`]
-    // };
     return new BaclofenRegimenPhase(phase, startDate, doseForThisPhaseMg);
   }
 

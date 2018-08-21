@@ -14,16 +14,6 @@ import _ from "lodash";
 
 export default class RegimenList extends React.Component<any, any> {
 
-  // prepareItem = (item: Object) => {
-  //   return (
-  //     <Text>{item.name}</Text>
-  //   )
-  // }
-
-  // updateRegimen = () => {
-  //   console.log("updateRegimen");
-  // }
-
   _prepareCards = (items: RegimenObject[]) => {
     const Cards: any = _.map(items, (item: RegimenObject, index: number): any => { 
       return this._prepareACard(item);
@@ -50,17 +40,6 @@ export default class RegimenList extends React.Component<any, any> {
 
   render() {
     const Cards = this._prepareCards(this.props.items);
-
-    // return (
-    //   <List dataArray={this.props.items}
-    //     renderRow={ (item) => (
-    //       <ListItem>
-    //         <Text>{item.name}</Text>
-    //       </ListItem>
-    //     )}
-    //   >
-    //   </List>
-    // )
     return Cards;
     
   }
