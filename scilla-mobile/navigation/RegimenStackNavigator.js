@@ -23,14 +23,14 @@ let RegimenStack = createStackNavigator(
 )
 
 RegimenStack.navigationOptions = {
-  tabBarLabel: 'Regimens',
+  tabBarLabel: 'Regimen',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
       name={
         Platform.OS === 'ios'
-          ? `ios-flask${focused ? '' : '-outline'}`
-          : 'md-flask'              
+          ? `ios-medkit${focused ? '' : '-outline'}`
+          : 'md-medkit'              
       }
     />
   )

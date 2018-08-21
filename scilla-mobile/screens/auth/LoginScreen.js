@@ -1,20 +1,16 @@
 // @flow
 import React from "react";
+import { StyleSheet } from 'react-native';
 import {
-  StyleSheet,
-  AsyncStorage
-} from 'react-native';
-import {Content, Container,Text, View, 
-  Button, Form, Item, Label, Input
-} from 'native-base';
-import * as firebase from 'firebase'; 
-import BaseScreen from "../BaseScreen";
-import appService from "../../app/AppService";
-import { ScreenNames } from "../../constants/Screens";
+  Content, Container,Text, View, Button, Form, Item, Label, Input
+} from 'native-base'; 
 import { AppText, Title } from "../../components";
-import Colors from "../../constants/Colors";
 
-export default class LoginScreen extends BaseScreen {
+import { ScreenNames } from "../../constants/Screens";
+import Colors from "../../constants/Colors";
+import appService from "../../app/AppService";
+
+export default class LoginScreen extends React.Component<any, any> {
   state = {
     email: '', 
     password: '', 
@@ -30,13 +26,12 @@ export default class LoginScreen extends BaseScreen {
 
     appService.auth
       .signInWithEmailAndPassword(this.state.email, this.state.password)
-      .then( () => this.navigate(ScreenNames.Main))
+      .then( () => this.props.navigation.navigate(ScreenNames.Main))
       .catch( error => this.setState({ errorMessage: error.message }));
   }
 
   render() {
     return (
-      <Container>
         <Content contentContainerStyle={styles.content}>
           <Title>Login</Title>
           {this.state.errorMessage && 
@@ -46,7 +41,6 @@ export default class LoginScreen extends BaseScreen {
 
           <Form style={styles.form}>
             <Item floatingLabel>
-              {/* <AppLabel>Email</AppLabel> */}
               <Label>Email</Label>
               <Input
                 autoCapitalize="none"
@@ -55,7 +49,6 @@ export default class LoginScreen extends BaseScreen {
               />
             </Item>
             <Item floatingLabel>
-              {/* <AppLabel>Password</AppLabel> */}
               <Label>Password</Label>
               <Input 
                 secureTextEntry
@@ -69,12 +62,13 @@ export default class LoginScreen extends BaseScreen {
             </Button>
           </Form>
 
-          <AppText style={styles.clickableText} onPress={() => this.navigate(ScreenNames.SignUp)}>
+          <AppText 
+            style={styles.clickableText} 
+            onPress={() => this.props.navigation.navigate(ScreenNames.SignUp)}>
             Don't have an account? Sign Up
           </AppText>
           
         </Content>
-      </Container>
     )
   }
 }

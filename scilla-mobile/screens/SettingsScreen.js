@@ -1,16 +1,15 @@
 // @flow
 import React from 'react';
 import {
-  View, 
-  Button
+  View, Button
 } from 'react-native';
 // import { ExpoConfigView } from '@expo/samples';
 // import Auth from "../libs/Auth";
 import appService from "../app/AppService";
 
 export default class SettingsScreen extends React.Component<any, any> {
-  static navigationOptions = {
-    title: 'app.json',
+  static navigationOptions: any = {
+    title: 'Settings',
   };
 
   constructor(props: any) {

@@ -34,7 +34,7 @@ type State = {
 
 export default class RegimenMainScreen extends React.Component<any, State> {
   static navigationOptions: any = {
-    title: "Your Regimens"
+    title: "Regimen"
   };
 
   state = {
@@ -53,36 +53,44 @@ export default class RegimenMainScreen extends React.Component<any, State> {
   }
 
   componentDidMount() {
-    console.log("RegimenMainScreen", "componentDidMount");
-    
-    // appService.ds.fetchRegimens(appService.auth.currentUser.uid)
-    //   .then( (regimens) => {
-    //     console.log(regimens);
-    //   })
-    // this.props.dispatch(fetchRegimens());
-    
     // DEBUG
     // Stub the data.
-    // let regimenObject = fakeRegimenObject;
-    // let regimen = RegimenFactory.createRegimenFromObj(regimenObject);
-    // appState.regimensById.set(regimen.id, regimen);
-    // appState.activeRegimenId = regimen.id;
+    // this.debugStubData();
 
     this.initializeState();
   }
 
   componentWillFocus = (payload: any) => {
     console.info("willFocus", payload);
-    this.componentDidMount();
+    this.initializeState();
   }
 
   componentWillUnmount() {
     this.componentWillFocusSubscription.remove();
   }
 
+  debugStubData() {
+    let regimenObject = fakeRegimenObject;
+    let regimen = RegimenFactory.createRegimenFromObj(regimenObject);
+    appState.regimensById.set(regimen.id, regimen);
+    appState.activeRegimenId = regimen.id;
+  }
+
   initializeState() {
     if(!appState.hasRegimens()) {
-
+      // TODO: change to fetch only "active" regimen. 
+      // TODO: Need to switch to a loading view. 
+      appService.ds.fetchRegimens(appService.auth.currentUser.uid)
+        .then( (regimenObjects: RegimenObject[]) => {
+          if(regimenObjects.length > 0) {
+            let regimen = RegimenFactory.createRegimenFromObj(regimenObjects[0]);
+            appState.regimensById.set(regimen.id, regimen);
+            appState.activeRegimenId = regimen.id;
+            
+            this._setRegimenState();
+            this._setCurrentRegimenPhaseState();
+          }
+        })
     } else {
       this._setRegimenState();
       this._setCurrentRegimenPhaseState();

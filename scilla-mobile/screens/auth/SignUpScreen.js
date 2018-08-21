@@ -10,10 +10,9 @@ import { AppText, Title } from "../../components"
 // import Auth from "../../libs/Auth";
 import appService from "../../app/AppService";
 import { ScreenNames } from "../../constants/Screens";
-import BaseScreen from "../BaseScreen";
 import AuthStyles from "./AuthStyles";
 
-export default class SignUpScreen extends BaseScreen {
+export default class SignUpScreen extends React.Component<any, any> {
   state = {
     email: '', 
     password: '', 
@@ -31,7 +30,7 @@ export default class SignUpScreen extends BaseScreen {
       .then(() => {
         this._createDefaultUserProfile();
       })
-      .then(() => this.navigate(ScreenNames.Main))
+      .then(() => this.props.navigation.navigate(ScreenNames.Main))
       .catch( error => this.setState({ errorMessage: error.message }))
   }
 
@@ -94,7 +93,7 @@ export default class SignUpScreen extends BaseScreen {
 
         <AppText 
           style={AuthStyles.clickableText} 
-          onPress={ () => this.navigate(ScreenNames.Login)}>
+          onPress={ () => this.props.navigation.navigate(ScreenNames.Login)}>
           Already have an account? Login
         </AppText>
       </Content>

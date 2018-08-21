@@ -1,5 +1,5 @@
 // @flow
-export let ScreenNames = {
+export const ScreenNames = {
   // Authentication
   Main: "Main",
   Login: "Login",
@@ -8,12 +8,10 @@ export let ScreenNames = {
   // Regimen 
   RegimenMain: "RegimenMain",
   RegimenCreation: 'RegimenCreation',
-  // Regimen creation
-  RegimenTypeSelection: 'RegimenTypeSelection',
-  RegimenTypeOverview: 'RegimenTypeOverview',
-  RegimenVarSelection: 'RegimenVarSelection',
-  RegimenDateSelection: 'RegimenDateSelection',
-  RegimenReminderConfig: "RegimenReminderConfig",
-  RegimenSummary: "RegimenSummary"
+  
+  // Reports
+  ReportSelection: "ReportSelect",
 
+  // Analysis
+  AnalysisMain: "AnalysisMain",
 }

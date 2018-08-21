@@ -6,15 +6,14 @@ import { ScreenNames } from "../../constants/Screens";
 import appService from "../../app/AppService";
 
 import { View, Text,StyleSheet, ActivityIndicator, 
-  StatusBar, AsyncStorage,Image
+  StatusBar, AsyncStorage, Image
 } from "react-native";
 import { Content  } from "native-base";
 
-import BaseScreen from "../BaseScreen";
 import { AppText, Title } from "../../components"
 
 
-export default class AuthLoadingScreen extends BaseScreen {
+export default class AuthLoadingScreen extends React.Component<any, any> {
 
   componentDidMount() {
     // firebase.auth().onAuthStateChanged(user => {

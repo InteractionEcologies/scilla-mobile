@@ -1,42 +1,28 @@
+// @flow
 import React from 'react';
 import { Platform } from 'react-native';
 import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
 
 import TabBarIcon from '../components/TabBarIcon';
-import HomeScreen from '../screens/HomeScreen';
 import LinksScreen from '../screens/LinksScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 
+import DashboardMainScreen from "../screens/dashboard/DashboardMainScreen";
 import RegimenStack from "./RegimenStackNavigator";
+import ReportStack from "./ReportStackNavigator";
+import AnalysisStack from "./AnalysisStackNavigator";
 
-// const HomeStack = createStackNavigator({
-//   Home: HomeScreen,
-// });
-
-// HomeStack.navigationOptions = {
-//   tabBarLabel: 'Home',
-//   tabBarIcon: ({ focused }) => (
-//     <TabBarIcon
-//       focused={focused}
-//       name={
-//         Platform.OS === 'ios'
-//           ? `ios-information-circle${focused ? '' : '-outline'}`
-//           : 'md-information-circle'
-//       }
-//     />
-//   ),
-// };
-
-const LinksStack = createStackNavigator({
-  Links: LinksScreen,
+const DashboardStack = createStackNavigator({
+  Main: DashboardMainScreen,
 });
 
-LinksStack.navigationOptions = {
-  tabBarLabel: 'Links',
+DashboardStack.navigationOptions = {
+  tabBarLabel: 'Today',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
-      name={Platform.OS === 'ios' ? `ios-link${focused ? '' : '-outline'}` : 'md-link'}
+      name={Platform.OS === 'ios' 
+            ? `ios-calendar${focused ? '' : '-outline'}` : 'md-calendar'}
     />
   ),
 };
@@ -56,7 +42,9 @@ SettingsStack.navigationOptions = {
 };
 
 export default createBottomTabNavigator({
+  DashboardStack,
   RegimenStack,
-  LinksStack,
-  SettingsStack,
+  ReportStack,
+  AnalysisStack,
+  SettingsStack, //TODO: need to move this out from the tab bar. 
 });
