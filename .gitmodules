@@ -4,3 +4,6 @@
 [submodule "scilla-mobile/libs/intecojs"]
 	path = scilla-mobile/libs/intecojs
 	url = https://github.com/InteractionEcologies/intecojs.git
+[submodule "scilla-mobile.wiki"]
+	path = scilla-mobile.wiki
+	url = https://github.com/InteractionEcologies/scilla-mobile.wiki.git
