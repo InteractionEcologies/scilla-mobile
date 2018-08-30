@@ -11,6 +11,7 @@ export const ScreenNames = {
   
   // Reports
   ReportSelection: "ReportSelect",
+  ReportMeasurementSelection: "ReportMeasurementSelect", 
 
   // Analysis
   AnalysisMain: "AnalysisMain",

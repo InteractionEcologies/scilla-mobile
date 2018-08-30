@@ -5,12 +5,18 @@ import TabBarIcon from "../components/TabBarIcon";
 import { Platform } from "react-native";
 
 import ReportSelectionScreen from "../screens/reports/ReportSelectionScreen";
+import ReportMeasurementScreen from "../screens/reports/ReportMeasurementScreen"
 import { ScreenNames } from "../constants/Screens";
 
 let ReportStack = createStackNavigator(
   {
-    [ScreenNames.ReportSelection]: ReportSelectionScreen
+    [ScreenNames.ReportSelection]: ReportSelectionScreen,
+    [ScreenNames.ReportMeasurementSelection]: ReportMeasurementScreen
+  },
+  {
+    initialRouteName: ScreenNames.ReportSelection
   }
+
 )
 
 ReportStack.navigationOptions = {
