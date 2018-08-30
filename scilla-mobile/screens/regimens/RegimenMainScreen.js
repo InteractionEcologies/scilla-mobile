@@ -8,7 +8,7 @@ import {
 
 import { connect } from "react-redux";
 import { ScreenNames } from "../../constants/Screens";
-import appService from "../../app/AppService";
+import AppService from "../../app/AppService";
 import RegimenList from "./views/RegimenList";
 import { AppText } from "../../components"
 import appState from "../../app/AppState";
@@ -30,6 +30,8 @@ type State = {
   regimenObject: ?RegimenObject,
   currentRegimenPhaseObject: ?RegimenPhaseObject
 }
+
+const appService = new AppService();
 
 export default class RegimenMainScreen extends React.Component<any, State> {
   static navigationOptions: any = {

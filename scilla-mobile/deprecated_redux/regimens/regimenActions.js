@@ -1,5 +1,6 @@
 // @flow
-import appService from "../../app/AppService";
+import AppService from "../../app/AppService";
+const appService = new AppService();
 
 export const ADD_TRIAL = "ADD_TRIAL";
 export const FETCH_TRIALS_BEGIN = "FETCH_TRIALS_BEGIN";

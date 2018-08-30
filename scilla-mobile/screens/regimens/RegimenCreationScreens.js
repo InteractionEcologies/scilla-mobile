@@ -32,8 +32,11 @@ import ScheduleView from "./views/ScheduleView";
 import CompletionView from "./views/CompletionView";
 
 import { DotPageIndicator, AppText } from "../../components";
-import appService from "../../app/AppService";
+import AppService from "../../app/AppService";
+const appService = new AppService();
+
 import appState from "../../app/AppState";
+
 
 const NUM_INDICATOR_STATES = 9;
 const StateNames = {

@@ -6,8 +6,7 @@ import * as firebase from 'firebase';
 import { FirebaseConfig } from "../constants/FirebaseConfig";
 import { FirebaseAuth, FirebaseDS, IAuth, IDataSource } from "../libs/intecojs";
 
-
-class AppService {
+export default class AppService {
   static instance: AppService;
   auth: IAuth; 
   ds: IDataSource;
@@ -30,4 +29,4 @@ class AppService {
 
 }
 
-export default new AppService();
+// export default new AppService();
