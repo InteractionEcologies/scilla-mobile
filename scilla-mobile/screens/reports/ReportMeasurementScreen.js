@@ -46,16 +46,20 @@ export default class ReportSelectionScreen extends React.Component<any, any> {
     let user = appService.auth.currentUser;
     let uid = user.uid;
 
-    this.newReport = {
-        id: appService.generatePushID(),
-        type: this.state.trackedMeasurementType,
-        uid: uid,
-        value: this.state.selectedScale
+    if (this.state.trackedMeasurementType && 
+      this.state.selectedScale
+    ) {
+      let trackedMeasurementType: MeasurementType = this.state.trackedMeasurementType;
+      let selectedScale: string = this.state.selectedScale; 
+
+      let report = {
+          id: appService.generatePushID(),
+          type: trackedMeasurementType,
+          uid: uid,
+          value: selectedScale
+      }
+      appService.ds.createMeasurementObject(report);  
     }
-    if(this.newReport) {
-      appService.ds.createMeasurementObject(this.newReport);
-    }
-    this.newReport = null;
     this.goToReportSelectionScreen();
   }
 

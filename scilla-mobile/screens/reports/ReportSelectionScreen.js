@@ -8,7 +8,7 @@ import styles from "./ReportStyles";
 
 
 export default class ReportSelectionScreen extends React.Component<any, any> {
-    static navigationOptions = {
+    static navigationOptions: any = {
       title: 'Report',
     };
 
