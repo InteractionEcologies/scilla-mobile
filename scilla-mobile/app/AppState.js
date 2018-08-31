@@ -3,6 +3,7 @@ import { Regimen } from "../models/regimen";
 import type { 
   ComplianceReportObject
 } from "../libs/intecojs";
+import appService from "./AppService";
 
 class AppState {
   user: any; // TODO: change any to more specific user type. 
@@ -21,6 +22,10 @@ class AppState {
     } 
 
     return AppState.instance;
+  }
+
+  initialize() {
+    
   }
 
   hasRegimens = (): boolean => {

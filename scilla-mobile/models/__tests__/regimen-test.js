@@ -14,11 +14,14 @@ import {
   RegimenParamKeys,
   DateFormatISO8601,
   RegimenGoalOptions,
+  IDataSource,
 } from "../../libs/intecojs";
 import type {
   RegimenType
 } from "../../libs/intecojs";
 import { fakeRegimenObject } from "../../datafixtures/fakeRegimen";
+
+import * as firebase from "firebase";
 
 import moment from "moment";
 import _ from "lodash";
@@ -50,6 +53,11 @@ describe("regimen", () => {
     return regimen;
   }
 
+  // Stub the persistent setting on Firebase
+  beforeAll( () => {
+
+  });
+
   beforeEach( () => {
     
   });
@@ -65,10 +73,6 @@ describe("regimen", () => {
     expect(regimen._obj.type).toEqual(RegimenTypes.incBaclofen);
     expect(regimen._obj.startDate).toEqual(moment().format(DateFormatISO8601));
   });
-
-  // it('init from data', () => {
-
-  // });
 
   it('set user id', async () => {
     let regimen = new RegimenFactory.createRegimen(RegimenTypes.incBaclofen);
@@ -188,8 +192,23 @@ describe("regimen", () => {
       .toMatchObject(fakeRegimenObject.regimenPhases[0])
   });
 
-  // it('stop regimen', () => {
+  it.only('save a regimen to Datastore', () => {
+    let regimen = RegimenFactory.createRegimenFromObj(fakeRegimenObject);
+    appService.ds.createRegimen(regimen.toObj());
 
-  // });
+    appService.ds.deleteRegimen(regimen.id);
+  })
+
+  it('get and delete the latest regimen', () => {
+
+    appService.ds.createRegimen(fakeRegimenObject)
+    let uid = fakeRegimenObject.uid;
+    appService.ds.fetchLatestRegimen(uid)
+      .then( (regimen) => {
+        expect(regimen.uid).toEqual(uid)
+        expect(regimen.startDate).toEqual(fakeRegimenObject.startDate)
+      })
+    appService.ds.deleteRegimen(fakeRegimenObject.id)
+  });
 
 })

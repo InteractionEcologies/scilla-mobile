@@ -18,7 +18,7 @@
   * `intecolib`: contains utilities that can be shared with other Inteco projects (e.g., data-sharing-cmd.)
 * `assets/`: contains images, fonts and other assets.
 * `datafixures/`: contains fake data for unitttesting and development. 
-* `flow-typed/`: contains type definitions for third party libraries. They are nstalled via `flow-typed install XXX`
+* `flow-typed/`: contains type definitions for third party libraries. They are installed via `flow-typed install XXX`
 * `*/__tests__/`: test modules are located under each sub-folders, closest to the functionalities they are testing. 
 
 ## Configuration files

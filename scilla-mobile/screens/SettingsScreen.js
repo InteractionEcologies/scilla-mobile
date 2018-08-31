@@ -5,7 +5,8 @@ import {
 } from 'react-native';
 // import { ExpoConfigView } from '@expo/samples';
 // import Auth from "../libs/Auth";
-import appService from "../app/AppService";
+import AppService from "../app/AppService";
+const appService = new AppService();
 
 export default class SettingsScreen extends React.Component<any, any> {
   static navigationOptions: any = {

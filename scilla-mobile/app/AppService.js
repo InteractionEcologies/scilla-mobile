@@ -4,10 +4,10 @@
 // @flow
 import * as firebase from 'firebase';
 import { FirebaseConfig } from "../constants/FirebaseConfig";
-import { FirebaseAuth, FirebaseDS, IAuth, IDataSource } from "../libs/intecojs";
-import { generatePushIDFunc } from "../libs/intecojs";
+import { FirebaseAuth, FirebaseDS, IAuth, IDataSource, generatePushIDFunc
+} from "../libs/intecojs";
 
-class AppService {
+export default class AppService {
   static instance: AppService;
   auth: IAuth; 
   ds: IDataSource;
@@ -28,8 +28,4 @@ class AppService {
     AppService.instance = this;
     return this;
   }
-
-
 }
-
-export default new AppService();
