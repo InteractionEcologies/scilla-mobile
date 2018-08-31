@@ -31,4 +31,11 @@ A mobile app to help patients with Spinal Cord Injury or Disease (SCI/D) learn t
   * Use terminal, navigate to `scilla-mobile/scilla-mobile/`
   * Run `npm install`
 * To start the program, use `npm run start`. 
-* To run unittest, use `npm run test`. 
+
+## Testing
+* Run all unittests with autowatch `npm run test:all`
+* Run unittest once `npm run test`
+* Run unittest in debug mode (allow the `debugger` keyword): `npm run test:debug`
+* Run unittest with specific module `npm run test -- [module name]`
+  * E.g., `npm run test -- FirebaseDS --watch`
+  * To show `console.log` under this mode, we cannot use watch (not sure why). Thus, just run `npm run test -- Firebase` for example. 

@@ -3,10 +3,12 @@ import { Regimen } from "../models/regimen";
 import type { 
   ComplianceReportObject
 } from "../libs/intecojs";
-import appService from "./AppService";
+import AppService from "./AppService";
 
-class AppState {
+export default class AppState {
   user: any; // TODO: change any to more specific user type. 
+
+  appService = new AppService();
 
   regimensById: Map<string, Regimen> = new Map();
   activeRegimenId: ?string = null;
@@ -24,11 +26,18 @@ class AppState {
     return AppState.instance;
   }
 
-  initialize() {
-    
+  initialize(): Promise<void> {
+    // TODO: work on this.
+    return Promise.resolve();
   }
 
-  hasRegimens = (): boolean => {
+  getRegimens(): Promise<Regimen[]> {
+    // this.appService.ds.ge
+
+    return Promise.resolve([]);
+  }
+
+  hasRegimens(): boolean {
     if(this.regimensById.size > 0) {
       return true;
     } else {
@@ -47,4 +56,3 @@ class AppState {
   }
 }
 
-export default new AppState();

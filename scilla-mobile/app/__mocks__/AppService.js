@@ -1,1 +1,0 @@
-const mockConstructor = jest.fn();

@@ -16,7 +16,8 @@ import type {
   MeasurementType,
   MeasurementObject
 } from "../../libs/intecojs";
-import appService from "../../app/AppService";
+import AppService from "../../app/AppService";
+const appService = new AppService();
 import styles from "./ReportStyles"; 
 import { ScreenNames } from "../../constants/Screens";
 
@@ -54,11 +55,12 @@ export default class ReportSelectionScreen extends React.Component<any, any> {
 
       let report = {
           id: appService.generatePushID(),
+          timestamp: moment().unix(),
           type: trackedMeasurementType,
           uid: uid,
           value: selectedScale
       }
-      appService.ds.createMeasurementObject(report);  
+      appService.ds.upsertMeasurement(report);  
     }
     this.goToReportSelectionScreen();
   }

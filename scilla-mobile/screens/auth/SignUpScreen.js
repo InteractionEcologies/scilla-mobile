@@ -37,7 +37,7 @@ export default class SignUpScreen extends React.Component<any, any> {
   }
 
   _createDefaultUserProfile() {
-    appService.ds.createUserProfile({
+    appService.ds.upsertUserProfile({
       uid: appService.auth.currentUser.uid, 
       firstName: "",
       lastName: "",

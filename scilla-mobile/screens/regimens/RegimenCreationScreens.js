@@ -35,7 +35,8 @@ import { DotPageIndicator, AppText } from "../../components";
 import AppService from "../../app/AppService";
 const appService = new AppService();
 
-import appState from "../../app/AppState";
+import AppState from "../../app/AppState";
+const appState = new AppState();
 
 
 const NUM_INDICATOR_STATES = 9;
@@ -224,7 +225,7 @@ class RegimenCreationScreens
   finalizeRegimen = () => {
     console.log("finalize regimen");
     this.regimen.make();
-    appService.ds.createRegimen(this.regimen.toObj());
+    appService.ds.upsertRegimen(this.regimen.toObj());
 
     appState.regimensById.set(this.regimen.id, this.regimen);
     appState.activeRegimenId = this.regimen.id;

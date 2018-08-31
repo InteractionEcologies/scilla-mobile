@@ -11,7 +11,6 @@ import { ScreenNames } from "../../constants/Screens";
 import AppService from "../../app/AppService";
 import RegimenList from "./views/RegimenList";
 import { AppText } from "../../components"
-import appState from "../../app/AppState";
 import { fakeRegimenObject } from "../../datafixtures/fakeRegimen";
 import { RegimenFactory } from "../../models/regimen";
 import type { 
@@ -25,13 +24,15 @@ import {
 import _ from "lodash";
 import moment from "moment";
 import RegimenStyles from "./RegimenStyles";
+import AppState from "../../app/AppState";
 
 type State = {
   regimenObject: ?RegimenObject,
   currentRegimenPhaseObject: ?RegimenPhaseObject
 }
 
-const appService = new AppService();
+const appService = AppService.instance;
+const appState = AppState.instance;
 
 export default class RegimenMainScreen extends React.Component<any, State> {
   static navigationOptions: any = {
@@ -81,7 +82,7 @@ export default class RegimenMainScreen extends React.Component<any, State> {
     if(!appState.hasRegimens()) {
       // TODO: change to fetch only "active" regimen. 
       // TODO: Need to switch to a loading view. 
-      appService.ds.fetchRegimens(appService.auth.currentUser.uid)
+      appService.ds.getRegimens(appService.auth.currentUser.uid)
         .then( (regimenObjects: RegimenObject[]) => {
           if(regimenObjects.length > 0) {
             let regimen = RegimenFactory.createRegimenFromObj(regimenObjects[0]);

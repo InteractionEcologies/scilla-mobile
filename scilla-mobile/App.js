@@ -1,13 +1,21 @@
+// @flow
 import React from 'react';
 import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 import { AppLoading, Asset, Font, Icon } from 'expo';
 import { Container } from "native-base";
 import AppNavigator from './navigation/AppNavigator';
+import AppService from "./app/AppService";
+import AppState from "./app/AppState";
 
 export default class App extends React.Component<any, any> {
   state = {
     isLoadingComplete: false,
   };
+
+  constructor(props: any) {
+    super(props);
+    
+  }
 
   render() {
     if (!this.state.isLoadingComplete && !this.props.skipLoadingScreen) {
@@ -29,6 +37,9 @@ export default class App extends React.Component<any, any> {
   }
 
   _loadResourcesAsync = async () => {
+
+    this._initializeAppService();
+    
     return Promise.all([
       Asset.loadAsync([
         require('./assets/images/robot-dev.png'),
@@ -43,8 +54,19 @@ export default class App extends React.Component<any, any> {
         'space-mono-bold': require('./assets/fonts/SpaceMono-Bold.ttf'),
         'open-sans': require('./assets/fonts/OpenSans-Regular.ttf'),
       }),
+      this._initializeAppState()
     ]);
   };
+
+  _initializeAppService = () => {
+    let appService = new AppService();
+    appService.initialize();
+  }
+
+  _initializeAppState = async () => {
+    let appState = new AppState();
+    return appState.initialize();
+  }
 
   _handleLoadingError = (error: any) => {
     // In this case, you might want to report the error to your error

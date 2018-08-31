@@ -4,8 +4,15 @@
 // @flow
 import * as firebase from 'firebase';
 import { FirebaseConfig } from "../constants/FirebaseConfig";
-import { FirebaseAuth, FirebaseDS, IAuth, IDataSource, generatePushIDFunc
+import { FirebaseAuth, FirebaseDS, IAuth, IDataSource,
+  generatePushIDFunc
 } from "../libs/intecojs";
+import type { Persistence } from "../libs/intecojs"; 
+
+type AppServiceConfig = {
+  persistenceType?: Persistence,
+  disableAuth?: boolean
+}
 
 export default class AppService {
   static instance: AppService;
@@ -22,10 +29,17 @@ export default class AppService {
       firebase.initializeApp(FirebaseConfig);
     }
 
-    this.auth = new FirebaseAuth();
-    this.ds = new FirebaseDS();
     this.generatePushID = generatePushIDFunc();
     AppService.instance = this;
     return this;
   }
+
+  initialize(config: AppServiceConfig = {}) {
+    if (config.disableAuth === null 
+      || config.disableAuth === false ) {
+      this.auth = new FirebaseAuth();
+    } 
+    this.ds = new FirebaseDS();
+  }
+
 }

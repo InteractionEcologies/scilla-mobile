@@ -25,6 +25,8 @@ import * as firebase from "firebase";
 
 import moment from "moment";
 import _ from "lodash";
+import AppService from "../../app/AppService";
+const appService = new AppService();
 
 describe("regimen", () => {
   let uid = "12345"
@@ -192,23 +194,23 @@ describe("regimen", () => {
       .toMatchObject(fakeRegimenObject.regimenPhases[0])
   });
 
-  it.only('save a regimen to Datastore', () => {
-    let regimen = RegimenFactory.createRegimenFromObj(fakeRegimenObject);
-    appService.ds.createRegimen(regimen.toObj());
+  // it('save a regimen to Datastore', () => {
+  //   let regimen = RegimenFactory.createRegimenFromObj(fakeRegimenObject);
+  //   appService.ds.createRegimen(regimen.toObj());
 
-    appService.ds.deleteRegimen(regimen.id);
-  })
+  //   appService.ds.deleteRegimen(regimen.id);
+  // })
 
-  it('get and delete the latest regimen', () => {
+  // it('get and delete the latest regimen', () => {
 
-    appService.ds.createRegimen(fakeRegimenObject)
-    let uid = fakeRegimenObject.uid;
-    appService.ds.fetchLatestRegimen(uid)
-      .then( (regimen) => {
-        expect(regimen.uid).toEqual(uid)
-        expect(regimen.startDate).toEqual(fakeRegimenObject.startDate)
-      })
-    appService.ds.deleteRegimen(fakeRegimenObject.id)
-  });
+  //   appService.ds.createRegimen(fakeRegimenObject)
+  //   let uid = fakeRegimenObject.uid;
+  //   appService.ds.getLatestRegimen(uid)
+  //     .then( (regimen) => {
+  //       expect(regimen.uid).toEqual(uid)
+  //       expect(regimen.startDate).toEqual(fakeRegimenObject.startDate)
+  //     })
+  //   appService.ds.deleteRegimen(fakeRegimenObject.id)
+  // });
 
 })
