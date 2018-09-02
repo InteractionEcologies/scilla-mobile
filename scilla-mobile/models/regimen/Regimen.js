@@ -8,6 +8,8 @@ import type {
   RegimenType,
   ReminderConfigObject,
   RegimenPhaseObject,
+  ComplianceReportObject,
+  RegimenStatusOption
 } from "../../libs/intecojs";
 
 import {
@@ -18,15 +20,20 @@ import {
   MeasurementTypes,
   DateFormatISO8601,
   RegimenStatusOptions,
+  NotExistError,
+  Utils,
+  UNDEFINED_TIMESTAMP
 } from "../../libs/intecojs";
 
 import { IRegimenPhase } from "./";
 
 import moment from "moment";
 import _ from "lodash";
+import { Treatment } from "./Treatment";
 
 interface IRegimenCore {
   +id: string;
+  +uid: UserId;
   +type: RegimenType;
   +regimenGoal: RegimenGoalOption;
   +startDate: string;
@@ -36,6 +43,7 @@ interface IRegimenCore {
   
   setUserId(uid: UserId): Regimen;
   setRegimenName(name: string): Regimen;
+  setStatus(status: RegimenStatusOption): void;
   
   generateRegimenGoal(): Regimen;
   
@@ -49,9 +57,15 @@ interface IRegimenCore {
   setReminderConfig(reminderId: string, newConfig: ReminderConfigObject): Regimen;
   setReminderTime(reminderId: string, time: string): Regimen;
 
-  getRegimenPhaseByDate(date: string): IRegimenPhase | null;
-  getRegimenPhaseObjByDate(date: string): RegimenPhaseObject | null;
+  getRegimenPhaseByDate(date: string): IRegimenPhase;
+  getRegimenPhaseObjByDate(date: string): RegimenPhaseObject;
   
+  getTreatmentsByDate(date: string): Treatment[];
+  getDefaultComplianceReportsByDate(date: string): ComplianceReportObject[];
+  createMissingComplianceReports(
+    date: string, existingReports: ComplianceReportObject[]
+  ): ComplianceReportObject[];
+
   make(): void;
   getRegimenPhases(): IRegimenPhase[];
   getRegimenPhaseObjs(): RegimenPhaseObject[];
@@ -80,6 +94,7 @@ export class Regimen implements IRegimenCore, IRegimenCustom {
 
 
   get id() { return this._obj.id }
+  get uid() { return this._obj.uid }
   get type() { return this._obj.type }
   get regimenGoal() { return this._obj.regimenGoal }
   get startDate() { return this._obj.startDate }
@@ -120,6 +135,10 @@ export class Regimen implements IRegimenCore, IRegimenCustom {
   setRegimenName(name: string): Regimen {
     this._obj.name = name;
     return this;
+  }
+
+  setStatus(status: RegimenStatusOption): void {
+    this._obj.status = status;
   }
 
   setRegimenParam(param: RegimenParamObject): Regimen {
@@ -235,7 +254,7 @@ export class Regimen implements IRegimenCore, IRegimenCustom {
     return objects;
   }
 
-  getRegimenPhaseByDate(date: string): IRegimenPhase | null {
+  getRegimenPhaseByDate(date: string): IRegimenPhase {
     let filteredRegimenPhases = _.filter(this.regimenPhases, (rp) => {
       // check if `date` is within startDate and endDate
       let startDate= moment(rp.startDate);
@@ -246,18 +265,78 @@ export class Regimen implements IRegimenCore, IRegimenCustom {
 
     // should only get one or zero
     if(filteredRegimenPhases.length === 0) {
-      return null
+      throw new NotExistError(`Regimen phase with date ${date} does not exist.`)
     } else {
       return filteredRegimenPhases[0]
     } 
   }
-  getRegimenPhaseObjByDate(date: string): RegimenPhaseObject | null {
+  getRegimenPhaseObjByDate(date: string): RegimenPhaseObject {
+    let regimenPhase = this.getRegimenPhaseByDate(date);
+    return regimenPhase.toObj();
+  }
+
+  getTreatmentsByDate(date: string): Treatment[] {
     let regimenPhase = this.getRegimenPhaseByDate(date);
     if(regimenPhase) {
-      return regimenPhase.toObj();
+      return regimenPhase.treatments;
     } else {
-      return null;
+      return [];
     }
+  }
+
+  getDefaultComplianceReportsByDate(date: string): ComplianceReportObject[] {
+    return [];
+  }
+
+  _filterComplianceReportsByTreatment(
+    reports: ComplianceReportObject[], treatment: Treatment
+  ): ComplianceReportObject[] {
+    return _.filter(reports, (r) => { 
+      return (r.treatmentId === treatment.id)
+        && r.regimenId === this.id
+    })
+  }
+
+  _createDefaultComplianceReport(
+    date: string, treatment: Treatment
+  ): ComplianceReportObject {
+    let regimenPhase = this.getRegimenPhaseByDate(date);
+
+    let report: ComplianceReportObject = {
+      id: this.generatePushID(),
+      uid: this.uid,
+      regimenId: this.id,
+      regimenPhase: regimenPhase.phase,
+      treatmentId: treatment.id,
+      date: date, 
+      lastUpdatedAtTimestamp: UNDEFINED_TIMESTAMP,
+      isComplied: false
+    };
+    return report
+  }
+
+  createMissingComplianceReports(
+    date: string, existingReports: ComplianceReportObject[]
+  ): ComplianceReportObject[] {
+    let regimenPhase = this.getRegimenPhaseByDate(date);
+    let treatments = regimenPhase.treatments;
+    let missingReports: ComplianceReportObject[] = [];
+
+    for(let treatment of treatments) {
+      // check if every treatment has an associated `existingReports`
+      let reportsForTreatment = 
+        this._filterComplianceReportsByTreatment(existingReports, treatment);
+
+      if (reportsForTreatment.length == 0) {
+        let missingReport = this._createDefaultComplianceReport(date, treatment);
+        missingReports.push(missingReport);
+      } else if(reportsForTreatment.length > 1) {
+        console.warn(`Multiple compliance reports are created for treatment ` + 
+                    `${treatment.id} on date: ${date}.`);
+      }
+    }
+    
+    return missingReports;
   }
 
   toObj(): RegimenObject {

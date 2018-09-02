@@ -225,11 +225,9 @@ class RegimenCreationScreens
   finalizeRegimen = () => {
     console.log("finalize regimen");
     this.regimen.make();
-    appService.ds.upsertRegimen(this.regimen.toObj());
+    
+    appState.insertRegimen(this.regimen);
 
-    appState.regimensById.set(this.regimen.id, this.regimen);
-    appState.activeRegimenId = this.regimen.id;
-    console.log(appState.regimensById);
   }
 
   // MARK: - UI event handlers

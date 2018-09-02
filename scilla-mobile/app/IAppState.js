@@ -4,10 +4,11 @@ import type
 { MeasurementObject, MeasurementType,
   DailyEvaluationObject,
   ComplianceReportObject, 
-  UserProfileObject
+  UserProfileObject,
+  DateTypeISO8601
 } from "../libs/intecojs";
 
-interface IAppState {
+export interface IAppState {
 
   initialize(): Promise<void>;
 
@@ -18,38 +19,32 @@ interface IAppState {
   // Regimen
   insertRegimen(regimen: Regimen): Promise<Regimen>;
   getRegimens(): Promise<Regimen[]>;
-  getRegimen(id: string): Promise<Regimen>;
   getLatestRegimen(): Promise<Regimen>;
   updateRegimen(id: string, regimen: Regimen): Promise<void>;
-  deleteRegimen(id: string): Promise<void>;
   deactivateRegimen(id: string): Promise<void>;
 
   // Compliance Reports
-  getOrCreateComplianceReportsForDate(date: Date): Promise<ComplianceReportObject[]>;
+  getOrInitComplianceReportsForDate(date: DateTypeISO8601): Promise<ComplianceReportObject[]>;
   getComplianceReport(id: string): Promise<ComplianceReportObject>;
-  getComplianceReportsByDate(date: Date): Promise<ComplianceReportObject[]>;
-  getComplianceReportsByRegimenPhase(phaseId: string): Promise<ComplianceReportObject[]>;
-  updateComplianceReport(id: string, obj: ComplianceReportObject): Promise<void>;
-  deleteComplianceReport(id: string): Promise<void>;
-
+  getComplianceReportsByDate(date: DateTypeISO8601): Promise<ComplianceReportObject[]>;
+  getComplianceReportsByRegimenPhase(regimenId: string, phase: number): Promise<ComplianceReportObject[]>;
+  updateComplianceReport(obj: ComplianceReportObject): Promise<void>;
+  
   // Measurement Objects
   // Note that for measurements we use an Object directly instead of 
   // a wrapper class.
   insertMeasurement(obj: MeasurementObject): Promise<void>;
   getMeasurement(id: string): Promise<MeasurementObject>;
-  getMeasurementsByDate(date: Date): Promise<MeasurementObject[]>;
-  getMeasurementsByDateRange(startDate: Date, endDate: Date): Promise<MeasurementObject[]>;
-  getMeasurementsByDateAndType(date: Date, type: MeasurementType): Promise<MeasurementObject[]>;
-  updateMeasurement(id: string, obj: MeasurementObject): Promise<void>;
-  deleteMeasurement(id: string): Promise<void>;
-
+  getMeasurementsByDate(date: DateTypeISO8601): Promise<MeasurementObject[]>;
+  getMeasurementsByDateRange(startDate: DateTypeISO8601, endDate: DateTypeISO8601): Promise<MeasurementObject[]>;
+  updateMeasurement(obj: MeasurementObject): Promise<void>;
+  
   // Daily Evaluation Reports
   insertDailyEval(obj: DailyEvaluationObject): Promise<void>;
   getDailyEval(id: string): Promise<DailyEvaluationObject>;
-  getDailyEvalByDate(date: Date): Promise<DailyEvaluationObject>;
-  getDailyEvalsByDateRange(startDate: Date, endDate: Date): Promise<DailyEvaluationObject[]>;
-  updateDailyEvaluation(id: string, obj: DailyEvaluationObject): Promise<void>;
-  deleteDailyEvaluation(id: string): Promise<void>;
+  getDailyEvalByDate(date: DateTypeISO8601): Promise<DailyEvaluationObject>;
+  getDailyEvalsByDateRange(startDate: DateTypeISO8601, endDate: DateTypeISO8601): Promise<DailyEvaluationObject[]>;
+  updateDailyEval(obj: DailyEvaluationObject): Promise<void>;
 
 
 }

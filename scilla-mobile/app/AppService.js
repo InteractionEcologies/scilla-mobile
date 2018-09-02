@@ -8,10 +8,10 @@ import { FirebaseAuth, FirebaseDS, IAuth, IDataSource,
   generatePushIDFunc
 } from "../libs/intecojs";
 import type { Persistence } from "../libs/intecojs"; 
+import _ from "lodash";
 
 type AppServiceConfig = {
-  persistenceType?: Persistence,
-  disableAuth?: boolean
+  disableAuthPersistence?: boolean
 }
 
 export default class AppService {
@@ -35,10 +35,11 @@ export default class AppService {
   }
 
   initialize(config: AppServiceConfig = {}) {
-    if (config.disableAuth === null 
-      || config.disableAuth === false ) {
+    if (config.disableAuthPersistence === true ) {
+      this.auth = new FirebaseAuth(false);
+    } else {
       this.auth = new FirebaseAuth();
-    } 
+    }
     this.ds = new FirebaseDS();
   }
 

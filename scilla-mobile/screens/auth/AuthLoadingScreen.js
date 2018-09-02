@@ -5,27 +5,29 @@ import * as firebase from "firebase";
 import { ScreenNames } from "../../constants/Screens";
 import AppService from "../../app/AppService";
 const appService = new AppService();
+import AppState from "../../app/AppState";
 
-import { View, Text,StyleSheet, ActivityIndicator, 
+import { View, Text, StyleSheet, ActivityIndicator, 
   StatusBar, AsyncStorage, Image
 } from "react-native";
 import { Content  } from "native-base";
 
 import { AppText, Title } from "../../components"
 
-
 export default class AuthLoadingScreen extends React.Component<any, any> {
-
+  
   componentDidMount() {
-    // firebase.auth().onAuthStateChanged(user => {
-    //   this.props.navigation.navigate(user ? 'Main': 'Login');
-    // });
-    appService.auth.onAuthStateChanged(user => {
+    appService.auth.onAuthStateChanged(async (user) => {
+      if(user) {
+        await this._initializeAppState();
+      }
       this.props.navigation.navigate(user ? ScreenNames.Main: ScreenNames.Login);
     })
-    // var user = appService.auth.currentUser;
-    // this.navigate(user? ScreenNames.Main: ScreenNames.Login);
-    
+  }
+
+  _initializeAppState = async () => {
+    let appState = new AppState();
+    return appState.initialize();
   }
 
   render() {

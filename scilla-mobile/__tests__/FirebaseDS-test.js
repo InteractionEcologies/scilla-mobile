@@ -1,11 +1,12 @@
 // @flow
 import * as firebase from "firebase";
 import { FirebaseDS, FirebaseAuth, PersistenceTypes,
-  Utils, DateFormatISO8601
+  Utils, DateFormatISO8601, NotExistError
 } from "../libs/intecojs"
 import { FirebaseConfig } from "../constants/FirebaseConfig";
 import { fakeUser, fakeUserProfile, fakeComplianceReport,
-  fakeMeasurement
+  fakeMeasurement,
+  fakeDailyEvaluation
 } from "../datafixtures/core";
 import { fakeRegimenObject } from "../datafixtures/fakeRegimen";
 import _ from "lodash";
@@ -22,6 +23,7 @@ describe("FirebaseDS", () => {
     await createRegimen();
     await createComplianceReport(); 
     await createMeasurement();
+    await createDailyEval();
   })
 
   afterAll(() => {
@@ -58,6 +60,12 @@ describe("FirebaseDS", () => {
     return m;
   }
 
+  function getFakeDailyEval() {
+    let dailyEval = _.cloneDeep(fakeDailyEvaluation);
+    dailyEval.uid = getUid();
+    return dailyEval;
+  }
+
   function createUserProfile() {
     return ds.upsertUserProfile(fakeUserProfile);
   }
@@ -68,11 +76,18 @@ describe("FirebaseDS", () => {
   }
 
   function createComplianceReport() {
-    return ds.upsertComplianceReport(fakeComplianceReport)
+    let obj = getFakeComplianceReport();
+    return ds.upsertComplianceReport(obj)
   }
 
   function createMeasurement() {
-    return ds.upsertMeasurement(fakeMeasurement);
+    let obj = getFakeMeasurement();
+    return ds.upsertMeasurement(obj);
+  }
+
+  function createDailyEval() {
+    let obj = getFakeDailyEval();
+    return ds.upsertDailyEval(obj);
   }
 
   it("Create and get user profile", async () => {
@@ -101,7 +116,6 @@ describe("FirebaseDS", () => {
     if(auth.currentUser) {
       let uid = auth.currentUser.uid;
       let regimenObjs = await ds.getRegimens(uid);
-      console.log(regimenObjs.length)
       expect(regimenObjs.length).toBeGreaterThanOrEqual(1);
     }
   })
@@ -192,8 +206,6 @@ describe("FirebaseDS", () => {
     let uid = getUid();
     let endDate = moment.unix(fakeMeasurement.timestamp).local();
     let startDate = endDate.clone().subtract(7, 'days');
-    console.log(endDate);
-    console.log(startDate);
 
     let anotherMeasurement = getFakeMeasurement();
     anotherMeasurement.id = ds.generatePushID();
@@ -214,6 +226,51 @@ describe("FirebaseDS", () => {
     expect(measurements[0]).toMatchObject(anotherMeasurement);
     expect(measurements[1]).toMatchObject(fakeMeasurement);
   });
+
+  it('Create, get and delete daily evaluation', async () => {
+    let dailyEval = getFakeDailyEval();
+    dailyEval.id = ds.generatePushID();
+
+    await ds.upsertDailyEval(dailyEval);
+    let persistedDailyEval = await ds.getDailyEval(dailyEval.id);
+
+    let result = await ds.deleteDailyEval(dailyEval.id);
+
+    expect(persistedDailyEval).toMatchObject(dailyEval);
+
+    await expect( 
+      ds.getDailyEval(dailyEval.id)
+    ).rejects.toThrow(Error);
+
+  })
+
+  it('Throw error when deleting daily eval not exist', async () => {
+    await expect(
+      ds.deleteDailyEval("-LLHjR_YnUovYK6uHazn")
+    ).rejects.toThrow(Error)
+  })
+
+  it('Get daily eval by date range', async () => {
+    let dailyEval = getFakeDailyEval();
+    let oldDailyEval = getFakeDailyEval();
+    let oldDate = moment(oldDailyEval.date).subtract(7, 'days');
+    let oldDateStr = oldDate.format(DateFormatISO8601);
+    
+    oldDailyEval.id = ds.generatePushID();
+    oldDailyEval.date = oldDateStr
+    oldDailyEval.createdAtTimestamp = oldDate.unix();
+    await ds.upsertDailyEval(oldDailyEval);
+
+    let dailyEvals = await ds.getDailyEvalsByDateRange(
+      getUid(), oldDailyEval.date, fakeDailyEvaluation.date 
+    )
+
+    await ds.deleteDailyEval(oldDailyEval.id);
+
+    expect(dailyEvals).toHaveLength(2);
+    expect(dailyEvals[0]).toMatchObject(oldDailyEval);
+    expect(dailyEvals[1]).toMatchObject(dailyEval);
+  })
 
 
 })

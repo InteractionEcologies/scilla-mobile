@@ -43,7 +43,7 @@ export const fakeComplianceReport: ComplianceReportObject = {
   regimenPhase: fakeRegimenObject.regimenPhases[1].phase,
   treatmentId: fakeRegimenObject.regimenPhases[1].treatments[0].id,
   date: "2018-08-31", 
-  timestamp: 1535732612, 
+  lastUpdatedAtTimestamp: 1535732612, 
   isComplied: false
 }
 

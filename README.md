@@ -16,7 +16,7 @@ A mobile app to help patients with Spinal Cord Injury or Disease (SCI/D) learn t
 ## Development Environments
 * **Visual Studio Code** (v1.26.1)
 * **React Native** (v0.55.4)
-* **node** (v10.4.1)
+* **node** (v8.11.4 LTS)
 * **Expo** (v29.0.0)
 * **Flow** 
 * **Jest**

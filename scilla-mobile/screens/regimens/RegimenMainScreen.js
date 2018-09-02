@@ -9,10 +9,9 @@ import {
 import { connect } from "react-redux";
 import { ScreenNames } from "../../constants/Screens";
 import AppService from "../../app/AppService";
-import RegimenList from "./views/RegimenList";
 import { AppText } from "../../components"
 import { fakeRegimenObject } from "../../datafixtures/fakeRegimen";
-import { RegimenFactory } from "../../models/regimen";
+import { RegimenFactory, Regimen } from "../../models/regimen";
 import type { 
   RegimenObject,
   RegimenPhaseObject
@@ -27,12 +26,12 @@ import RegimenStyles from "./RegimenStyles";
 import AppState from "../../app/AppState";
 
 type State = {
-  regimenObject: ?RegimenObject,
+  regimen: ?Regimen,
   currentRegimenPhaseObject: ?RegimenPhaseObject
 }
 
-const appService = AppService.instance;
-const appState = AppState.instance;
+const appService = new AppService();
+const appState = new AppState();
 
 export default class RegimenMainScreen extends React.Component<any, State> {
   static navigationOptions: any = {
@@ -40,7 +39,7 @@ export default class RegimenMainScreen extends React.Component<any, State> {
   };
 
   state = {
-    regimenObject: null,
+    regimen: null,
     currentRegimenPhaseObject: null
   }
   
@@ -74,49 +73,22 @@ export default class RegimenMainScreen extends React.Component<any, State> {
   addFakeData() {
     let regimenObject = fakeRegimenObject;
     let regimen = RegimenFactory.createRegimenFromObj(regimenObject);
-    appState.regimensById.set(regimen.id, regimen);
-    appState.activeRegimenId = regimen.id;
+    appState.insertRegimen(regimen);
   }
 
-  initializeState() {
-    if(!appState.hasRegimens()) {
-      // TODO: change to fetch only "active" regimen. 
-      // TODO: Need to switch to a loading view. 
-      appService.ds.getRegimens(appService.auth.currentUser.uid)
-        .then( (regimenObjects: RegimenObject[]) => {
-          if(regimenObjects.length > 0) {
-            let regimen = RegimenFactory.createRegimenFromObj(regimenObjects[0]);
-            appState.regimensById.set(regimen.id, regimen);
-            appState.activeRegimenId = regimen.id;
-            
-            this._setRegimenState();
-            this._setCurrentRegimenPhaseState();
-          }
-        })
-    } else {
-      this._setRegimenState();
-      this._setCurrentRegimenPhaseState();
-    }
-  }
-
-  _setRegimenState() {
-    let regimen = appState.getActiveRegimen();
-    if(regimen) {
-      this.setState({
-        regimenObject: regimen.toObj()
-      });
-    }
-  }
-
-  _setCurrentRegimenPhaseState() {
-    let regimen = appState.getActiveRegimen();
-    if(regimen) {
-      let regimenPhaseObject = regimen.getRegimenPhaseObjByDate(moment().format(DateFormatISO8601));
+  async initializeState() {
+    try {
+      let regimen = await appState.getLatestRegimen();
+      let today = moment().local().format(DateFormatISO8601)
+      let regimenPhaseObject = regimen.getRegimenPhaseObjByDate(today);
       if(regimenPhaseObject) {
         this.setState({
+          regimen: regimen,
           currentRegimenPhaseObject: regimenPhaseObject
         });
       }
+    } catch (e) {
+      console.error(e);
     }
   }
 
@@ -140,7 +112,7 @@ export default class RegimenMainScreen extends React.Component<any, State> {
   }
 
   renderRegimen() {
-    if(this.state.regimenObject) {
+    if(this.state.regimen) {
       return this._renderActiveRegimen();
     } else {
       return this._renderRegimenCreation();
