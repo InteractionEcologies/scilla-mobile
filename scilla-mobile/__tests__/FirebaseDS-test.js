@@ -26,9 +26,14 @@ describe("FirebaseDS", () => {
     await createDailyEval();
   })
 
-  afterAll(() => {
+  afterAll(async () => {
     // Must signout otherwise auth will preserve data renfereces that 
     // cause jest to continue running. 
+    let uid = getUid();
+    await ds.deleteRegimensOfUser(uid);
+    await ds.deleteComplianceReportsOfUser(uid);
+    await ds.deleteMeasurementsOfUser(uid);
+    await ds.deleteDailyEvalsOfUser(uid);
     return auth.signOut()
   })
 

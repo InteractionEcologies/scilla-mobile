@@ -4,7 +4,7 @@ import AppService from "../AppService";
 import { fakeUser } from "../../datafixtures/core";
 import { fakeRegimenObject } from "../../datafixtures/fakeRegimen";
 import {
-  UserRoles, DateFormatISO8601, UNDEFINED_TIMESTAMP, UNDEFINED_DATE
+  UserRoles, DateFormatISO8601, UNDEFINED_TIMESTAMP, UNDEFINED_DATE, ComplianceStatusOptions
 } from "../../libs/intecojs"
 import _ from "lodash";
 import moment from "moment";
@@ -19,6 +19,9 @@ describe('AppState', () => {
   })
 
   afterAll(async () => {
+    let uid = getUid();
+    await appService.ds.deleteRegimensOfUser(uid);
+    await appService.ds.deleteComplianceReportsOfUser(uid);
     await appService.auth.signOut();
   })
 
@@ -43,7 +46,7 @@ describe('AppState', () => {
     expect(profile.role).toEqual(UserRoles.patient);
   })
 
-  it.only('Get compliance reports for a date of a regimen', async () => {
+  it('Get compliance reports for a date of a regimen', async () => {
     let regimenObj = createAndGetRegimenObjFromDS();
     let regimenId = regimenObj.id;
     let dateOfSecondRegimenPhase = moment(regimenObj.startDate).add(8, 'days');
@@ -57,16 +60,16 @@ describe('AppState', () => {
     expect(reports[0].treatmentId).toEqual(regimenObj.regimenPhases[1].treatments[0].id);
     expect(reports[0].date).toEqual(dateStr);
     expect(reports[0].lastUpdatedAtTimestamp).toEqual(UNDEFINED_TIMESTAMP);
-    expect(reports[0].isComplied).toBe(false);
+    expect(reports[0].status).toBe(ComplianceStatusOptions.undefined);
 
     expect(reports[1].treatmentId).toEqual(regimenObj.regimenPhases[1].treatments[1].id);
-    expect(reports[1].isComplied).toBe(false);
+    expect(reports[1].status).toBe(ComplianceStatusOptions.undefined);
 
   })
-
   
-
-  // it('Init', () => {
-  //   appState.initialize();
-  // })
+  it('Initialize', async () => {
+    let regimenObj = createAndGetRegimenObjFromDS();
+    await appState.initialize(regimenObj.startDate);
+    expect(appState.latestRegimen.toObj()).toMatchObject(regimenObj);
+  })
 })

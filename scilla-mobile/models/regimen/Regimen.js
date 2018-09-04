@@ -22,6 +22,7 @@ import {
   RegimenStatusOptions,
   NotExistError,
   Utils,
+  ComplianceStatusOptions,
   UNDEFINED_TIMESTAMP
 } from "../../libs/intecojs";
 
@@ -61,7 +62,6 @@ interface IRegimenCore {
   getRegimenPhaseObjByDate(date: string): RegimenPhaseObject;
   
   getTreatmentsByDate(date: string): Treatment[];
-  getDefaultComplianceReportsByDate(date: string): ComplianceReportObject[];
   createMissingComplianceReports(
     date: string, existingReports: ComplianceReportObject[]
   ): ComplianceReportObject[];
@@ -270,6 +270,7 @@ export class Regimen implements IRegimenCore, IRegimenCustom {
       return filteredRegimenPhases[0]
     } 
   }
+
   getRegimenPhaseObjByDate(date: string): RegimenPhaseObject {
     let regimenPhase = this.getRegimenPhaseByDate(date);
     return regimenPhase.toObj();
@@ -282,37 +283,6 @@ export class Regimen implements IRegimenCore, IRegimenCustom {
     } else {
       return [];
     }
-  }
-
-  getDefaultComplianceReportsByDate(date: string): ComplianceReportObject[] {
-    return [];
-  }
-
-  _filterComplianceReportsByTreatment(
-    reports: ComplianceReportObject[], treatment: Treatment
-  ): ComplianceReportObject[] {
-    return _.filter(reports, (r) => { 
-      return (r.treatmentId === treatment.id)
-        && r.regimenId === this.id
-    })
-  }
-
-  _createDefaultComplianceReport(
-    date: string, treatment: Treatment
-  ): ComplianceReportObject {
-    let regimenPhase = this.getRegimenPhaseByDate(date);
-
-    let report: ComplianceReportObject = {
-      id: this.generatePushID(),
-      uid: this.uid,
-      regimenId: this.id,
-      regimenPhase: regimenPhase.phase,
-      treatmentId: treatment.id,
-      date: date, 
-      lastUpdatedAtTimestamp: UNDEFINED_TIMESTAMP,
-      isComplied: false
-    };
-    return report
   }
 
   createMissingComplianceReports(
@@ -337,6 +307,35 @@ export class Regimen implements IRegimenCore, IRegimenCustom {
     }
     
     return missingReports;
+  }
+
+  _filterComplianceReportsByTreatment(
+    reports: ComplianceReportObject[], treatment: Treatment
+  ): ComplianceReportObject[] {
+    return _.filter(reports, (r) => { 
+      return (r.treatmentId === treatment.id)
+        && r.regimenId === this.id
+    })
+  }
+
+  _createDefaultComplianceReport(
+    date: string, treatment: Treatment
+  ): ComplianceReportObject {
+    let regimenPhase = this.getRegimenPhaseByDate(date);
+
+    let report: ComplianceReportObject = {
+      id: this.generatePushID(),
+      uid: this.uid,
+      regimenId: this.id,
+      regimenPhase: regimenPhase.phase,
+      treatmentId: treatment.id,
+      date: date, 
+      lastUpdatedAtTimestamp: UNDEFINED_TIMESTAMP,
+      status: ComplianceStatusOptions.undefined,
+
+      expectedTreatmentTime: treatment.time
+    };
+    return report
   }
 
   toObj(): RegimenObject {

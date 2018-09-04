@@ -9,7 +9,8 @@ import type {
 import {
   MeasurementTypes,
   UserRoles,
-  SpasticityScales
+  SpasticityScales,
+  ComplianceStatusOptions
 } from "../libs/intecojs"
 
 import { fakeRegimenObject } from "./fakeRegimen";
@@ -44,7 +45,9 @@ export const fakeComplianceReport: ComplianceReportObject = {
   treatmentId: fakeRegimenObject.regimenPhases[1].treatments[0].id,
   date: "2018-08-31", 
   lastUpdatedAtTimestamp: 1535732612, 
-  isComplied: false
+  status: ComplianceStatusOptions.undefined,
+
+  expectedTreatmentTime: fakeRegimenObject.regimenPhases[1].treatments[1].time
 }
 
 export const fakeDailyEvaluation: DailyEvaluationObject = {

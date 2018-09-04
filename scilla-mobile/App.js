@@ -5,6 +5,7 @@ import { AppLoading, Asset, Font, Icon } from 'expo';
 import { Container } from "native-base";
 import AppNavigator from './navigation/AppNavigator';
 import AppService from "./app/AppService";
+import Colors from "./constants/Colors";
 
 export default class App extends React.Component<any, any> {
   state = {
@@ -27,10 +28,10 @@ export default class App extends React.Component<any, any> {
       );
     } else {
       return (
-        <Container style={styles.container}>
+        <View style={styles.container}>
           {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
           <AppNavigator />
-        </Container>
+        </View>
       );
     }
   }
@@ -72,6 +73,7 @@ export default class App extends React.Component<any, any> {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    backgroundColor: Colors.backgroundColor
   },
 });
