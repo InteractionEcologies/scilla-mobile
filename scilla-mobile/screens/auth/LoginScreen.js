@@ -8,6 +8,7 @@ import { AppText, Title } from "../../components";
 
 import { ScreenNames } from "../../constants/Screens";
 import Colors from "../../constants/Colors";
+import { Styles as AppStyles } from "../../constants/Styles";
 import AppService from "../../app/AppService";
 const appService = new AppService();
 
@@ -33,6 +34,7 @@ export default class LoginScreen extends React.Component<any, any> {
 
   render() {
     return (
+      <Container>
         <Content contentContainerStyle={styles.content}>
           <Title>Login</Title>
           {this.state.errorMessage && 
@@ -70,6 +72,7 @@ export default class LoginScreen extends React.Component<any, any> {
           </AppText>
           
         </Content>
+      </Container>
     )
   }
 }
@@ -79,24 +82,16 @@ const styles = StyleSheet.create({
     flex: 1, 
     justifyContent: 'center',
     alignItems: 'center',
-    // backgroundColor: 'skyblue'
+    backgroundColor: Colors.surfaceColor
   },
   form: {
-    // flex: 1, 
-    width: '90%',
-    // justifyContent: 'center',
-    // alignItems: 'center',
-    // backgroundColor: 'steelblue'
+    width: '90%'
   },
   textInput: {
-    // height: 40, 
-    width: '100%',
-    // borderColor: 'gray',
-    // borderWidth: 1, 
-    // marginTop: 8
+    width: '100%'
   },
   errorMessage: {
-    color: Colors.errorText
+    color: Colors.errorColor
   },
   loginBtn: {
     marginTop: 8

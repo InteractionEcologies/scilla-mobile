@@ -5,7 +5,8 @@ import { IAppState } from "./IAppState";
 import { 
   NotImplementedError,
   RegimenStatusOptions,
-  DateFormatISO8601
+  DateFormatISO8601,
+  NotExistError
 } from "../libs/intecojs";
 import type { 
   RegimenObject,
@@ -58,7 +59,10 @@ export default class AppState implements IAppState {
       this.getLatestRegimen()
     ]).then(()=>{
       return this.getOrInitComplianceReportsForDate(today);
-    }).then(()=>{});
+    }).then(()=>{})
+    .catch( (error) => {
+      console.log(error);
+    });
   }
 
   get uid() {
@@ -103,6 +107,9 @@ export default class AppState implements IAppState {
         .then( (obj) => {
           this._cacheLatestRegimenFromObj(obj);
           return ((this.latestRegimen:any):Regimen);
+        })
+        .catch( (error) => {
+          throw new NotExistError("Regimen does not exist")
         })
     }
   }

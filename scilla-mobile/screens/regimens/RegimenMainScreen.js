@@ -23,6 +23,7 @@ import {
 import _ from "lodash";
 import moment from "moment";
 import RegimenStyles from "./RegimenStyles";
+import { Styles as AppStyles } from "../../constants/Styles";
 import AppState from "../../app/AppState";
 
 type State = {
@@ -88,7 +89,7 @@ export default class RegimenMainScreen extends React.Component<any, State> {
         });
       }
     } catch (e) {
-      console.error(e);
+      console.log(e);
     }
   }
 
@@ -103,11 +104,13 @@ export default class RegimenMainScreen extends React.Component<any, State> {
 
   render() {
     return (
-      <Content contentContainerStyle={RegimenStyles.content}>
-        <View style={RegimenStyles.mainView}>
-          {this.renderRegimen()}
-        </View>
-      </Content>
+      <Container>
+        <Content contentContainerStyle={AppStyles.content}>
+          <View style={AppStyles.contentBody}>
+            {this.renderRegimen()}
+          </View>
+        </Content>
+      </Container>
     )
   }
 
@@ -142,10 +145,6 @@ export default class RegimenMainScreen extends React.Component<any, State> {
       </Card>
     )
   }
-
-  // _renderCurrentRegimenPhase() {
-
-  // }
 
   _renderRegimenCreation() {
     return (

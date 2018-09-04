@@ -2,7 +2,9 @@
 import React from 'react';
 import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 import { AppLoading, Asset, Font, Icon } from 'expo';
-import { Container } from "native-base";
+import { StyleProvider, Container } from "native-base";
+import getTheme from "./native-base-theme/components";
+import commonColor from "./native-base-theme/variables/commonColor";
 import AppNavigator from './navigation/AppNavigator';
 import AppService from "./app/AppService";
 import Colors from "./constants/Colors";
@@ -28,10 +30,12 @@ export default class App extends React.Component<any, any> {
       );
     } else {
       return (
-        <View style={styles.container}>
-          {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-          <AppNavigator />
-        </View>
+        <StyleProvider style={getTheme(commonColor)}>
+          <View style={styles.container}>
+            {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
+            <AppNavigator />
+          </View>
+        </StyleProvider>
       );
     }
   }

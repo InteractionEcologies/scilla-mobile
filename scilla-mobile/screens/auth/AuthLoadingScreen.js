@@ -12,7 +12,9 @@ import { View, Text, StyleSheet, ActivityIndicator,
 } from "react-native";
 import { Content, Container  } from "native-base";
 
-import { AppText, Title } from "../../components"
+import { AppText, Title } from "../../components";
+import { Styles as AppStyles } from "../../constants/Styles";
+import Colors from "../../constants/Colors";
 
 export default class AuthLoadingScreen extends React.Component<any, any> {
   
@@ -33,11 +35,11 @@ export default class AuthLoadingScreen extends React.Component<any, any> {
   render() {
     return (
       <Container>
-        <Content contentContainerStyle={styles.content}>
+        <Content contentContainerStyle={[AppStyles.content, styles.content]}>
           <Image style={styles.welcomeImage} source={require('../../assets/images/scilla-icon.png')}/>
-          <Title>Find the Optimal Spasticity Care</Title>
-          <ActivityIndicator style={styles.ActivityIndicator} size="large" />
-          <StatusBar barStatus="default" />
+          {/* <Title>Find the Optimal Spasticity Care</Title> */}
+          {/* <ActivityIndicator style={styles.ActivityIndicator} size="large" /> */}
+          {/* <StatusBar barStatus="default" /> */}
         </Content>
       </Container>
     )
@@ -46,9 +48,7 @@ export default class AuthLoadingScreen extends React.Component<any, any> {
 
 const styles = StyleSheet.create({
   content: {
-    flex: 1, 
-    alignItems: 'center', 
-    justifyContent: 'center',
+    backgroundColor: Colors.primaryColor
   },
   welcomeImage: {
     width: 200,

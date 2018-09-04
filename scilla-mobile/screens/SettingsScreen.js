@@ -4,12 +4,13 @@ import {
   View, StyleSheet, FlatList
 } from 'react-native';
 import { 
-  Content, List, ListItem, Button
+  Content, List, ListItem, Button, Container
 } from "native-base";
 import {
   AppText
 } from "../components/";
 import Colors from "../constants/Colors";
+import { Styles as AppStyles } from "../constants/Styles";
 
 // import { ExpoConfigView } from '@expo/samples';
 // import Auth from "../libs/Auth";
@@ -26,10 +27,6 @@ export default class SettingsScreen extends React.Component<any, any> {
     super(props);
   }
 
-  componentDidMount() {
-
-  }
-
   signOut = () => {
     appService.auth.signOut()
       .then( () => this.props.navigation.navigate("Auth") );
@@ -40,30 +37,23 @@ export default class SettingsScreen extends React.Component<any, any> {
      * content, we just wanted to give you a quick view of your config */
     // return <ExpoConfigView />;
     return (
-      <Content contentContainerStyle={styles.content}>
-        <View style={styles.mainView}>
-          <Button onPress={this.signOut} block style={styles.signOutBtn}>
-            <AppText>Sign Out</AppText>
-          </Button>
-        </View>
-        
-      </Content>
+      <Container>
+        <Content contentContainerStyle={AppStyles.content}>
+          <View style={[AppStyles.contentBody, styles.contentBody]}>
+            <Button onPress={this.signOut} block>
+              <AppText>Sign Out</AppText>
+            </Button>
+          </View>
+          
+        </Content>
+      </Container>
 
     )
   }
 }
 
 const styles = StyleSheet.create({
-  content: {
-    backgroundColor: Colors.backgroundColor,
-    flex: 1, 
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    
-  },
-  mainView: {
-    width: '90%',
-  },
-  signOutBtn: {
+  contentBody: {
+    marginTop: 10
   }
 })

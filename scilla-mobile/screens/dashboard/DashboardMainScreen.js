@@ -44,17 +44,30 @@ export default class DashboardMainScreen extends React.Component<any, State> {
     complianceReportMap: {},
     current: moment().format(DateFormatISO8601)
   }
-
+  componentWillFocusSubscription: any;
+  
   constructor(props: any) {
     super(props);
     // this.state.treatmentMap = new Map<string, Treatment>();
     // this.state.complianceReportMap = new Map<string, ComplianceReportObject>();
     this.state.current = moment().format(DateFormatISO8601);
+    this.componentWillFocusSubscription = this.props.navigation.addListener(
+      'willFocus',
+      this.componentWillFocus
+    )
   }
 
   componentDidMount() {
     this.updateDate(this.state.current);
   } 
+
+  componentWillFocus = (payload: any) => {
+    this.updateDate(this.state.current);
+  }
+
+  componentWillUnmount() {
+    this.componentWillFocusSubscription.remove();
+  }
 
   async updateDate(date: string) {
     try {
@@ -77,7 +90,7 @@ export default class DashboardMainScreen extends React.Component<any, State> {
         complianceReportMap: complianceReportMap
       })
     } catch (e) {
-      console.error(e);
+      console.log(e);
     }
   }
 

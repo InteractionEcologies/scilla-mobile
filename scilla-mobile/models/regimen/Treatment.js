@@ -29,7 +29,9 @@ export class Treatment {
   reminderSlotId: string
 
   constructor(treatmentObj: TreatmentObject) {
-    this.id = treatmentObj.id;
+    this.id = treatmentObj.id 
+              ? treatmentObj.id
+              : Utils.randomId();
     this.time = treatmentObj.time;
     this.timeDesc = treatmentObj.timeDesc;
     this.option = treatmentObj.option;

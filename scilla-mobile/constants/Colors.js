@@ -10,7 +10,7 @@ const accentDarkColor = "#001970";
 const accentLightColor = "#666ad1";
 
 const backgroundColor = "#E0E0E0";
-const surfaceColor = "#E0E0E0";
+const surfaceColor = "#ffffff";
 const errorColor = "#d81b60";
 
 const primaryTextColor = "#000000";
@@ -27,6 +27,8 @@ export default {
   primaryDarkColor, 
   primaryLightColor,
   accentColor, 
+  accentDarkColor, 
+  accentLightColor,
   backgroundColor,
   surfaceColor,
   errorColor, 

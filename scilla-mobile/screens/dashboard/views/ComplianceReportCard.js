@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   snoozedTimeTitle: {
-    color: Colors.errorColor
+    color: Colors.primaryColor
   },
   buttonRow: {
     flex: 1,

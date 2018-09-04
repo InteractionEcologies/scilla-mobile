@@ -340,6 +340,7 @@ export class Regimen implements IRegimenCore, IRegimenCustom {
 
   toObj(): RegimenObject {
     this._obj.regimenPhases = this.getRegimenPhaseObjs();
+    console.log(this._obj);
     return Object.assign({}, this._obj);
   }
 }

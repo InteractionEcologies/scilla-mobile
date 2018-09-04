@@ -3,16 +3,11 @@ import { StyleSheet } from "react-native";
 import Colors from "../../constants/Colors";
 
 const styles = StyleSheet.create({
-  content: {
-    flex: 1, 
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
   mainView: {
     alignItems: 'center',
     justifyContent: 'flex-start',
-    width: 300,
-    flex: 0.8,
+    width: '90%',
+    flex: 0.8
   },
   nextBackBtnView: {
     height: 50,
