@@ -1,39 +1,62 @@
 // @flow
-import React from 'react';
-import { StyleSheet, TouchableOpacity} from 'react-native';
+import React from "react";
 import { Content, Text, View, Icon, Button} from "native-base";
 import { AppText, Title } from "../../components";
-import { ScreenNames } from "../../constants/Screens";
+import moment from "moment";
+import { MeasurementTypes } from "../../libs/intecojs"; 
 import styles from "./ReportStyles"; 
+import { ScreenNames } from "../../constants/Screens";
+import _ from "lodash";
 
 
 export default class ReportSelectionScreen extends React.Component<any, any> {
-    static navigationOptions = {
-      title: 'Report',
-    };
+  static navigationOptions: any = {
+    title: 'Report'
+  };
 
-    render() {
-        const { navigate } = this.props.navigation;
-      return (
-        <Content contentContainerStyle={styles.content}>
-        <View style={styles.mainView}>
-            <Title style={styles.titleText}>What do you want to report?</Title>
-            <TouchableOpacity 
-                style={styles.selectionBtn}
-                onPress={() => navigate(ScreenNames.ReportMeasurementSelection)}>
-                <Text style={styles.selectionText}>Prompt experience record</Text>
-                <Text style={styles.selectionText}>(Spasticity, Mood, Note)</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-                style={styles.selectionBtn}
-                onPress={() => navigate(ScreenNames.ReportMeasurementSelection)}>
-                <Text style={styles.selectionText}>Daily Evaluation</Text>
-            </TouchableOpacity>
-
-        </View>
-        </Content>
-      );
-    }
+  _goToMeasurementScreen = (type:string) =>{
+    this.props.navigation.navigate(ScreenNames.ReportMeasurement, {
+              trackedMeasurementType: type
+            })
   }
 
+  _goToDailyEvaluationScreen = () =>{
+    this.props.navigation.navigate(ScreenNames.ReportDailyEvaluation)
+  }
+
+  renderMeasurementTypeOptions = () =>{
+    let measurementOptions : any = _.values(MeasurementTypes)
+    measurementOptions.push('Daily evaluation')
+    return measurementOptions.map((type: string, i: number)=>{
+        return (
+        <Button 
+            key={i}
+            style={styles.optionButton}
+            bordered={true}
+            block
+            onPress = {(type==='Daily evaluation')? ()=>this._goToDailyEvaluationScreen(): ()=>this._goToMeasurementScreen(type) }
+        >
+            <AppText>{type}</AppText>
+        </Button>
+        );
+    })
+}
+
+  render(){
+      return(
+          <Content contentContainerStyle={styles.content}>
+            <View style={styles.mainView}>
+              <Title style={styles.titleText}>Report your experience</Title>
+              {this.renderMeasurementTypeOptions()}    
+            </View>       
+          </Content>
+      );
+    }
+
+}
+
+
+
+
+
+  
