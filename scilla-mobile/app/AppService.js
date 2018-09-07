@@ -4,10 +4,17 @@
 // @flow
 import * as firebase from 'firebase';
 import { FirebaseConfig } from "../constants/FirebaseConfig";
-import { FirebaseAuth, FirebaseDS, IAuth, IDataSource } from "../libs/intecojs";
-import { generatePushIDFunc } from "../libs/intecojs";
+import { FirebaseAuth, FirebaseDS, IAuth, IDataSource,
+  generatePushIDFunc
+} from "../libs/intecojs";
+import type { Persistence } from "../libs/intecojs"; 
+import _ from "lodash";
 
-class AppService {
+type AppServiceConfig = {
+  disableAuthPersistence?: boolean
+}
+
+export default class AppService {
   static instance: AppService;
   auth: IAuth; 
   ds: IDataSource;
@@ -22,14 +29,18 @@ class AppService {
       firebase.initializeApp(FirebaseConfig);
     }
 
-    this.auth = new FirebaseAuth();
-    this.ds = new FirebaseDS();
     this.generatePushID = generatePushIDFunc();
     AppService.instance = this;
     return this;
   }
 
+  initialize(config: AppServiceConfig = {}) {
+    if (config.disableAuthPersistence === true ) {
+      this.auth = new FirebaseAuth(false);
+    } else {
+      this.auth = new FirebaseAuth();
+    }
+    this.ds = new FirebaseDS();
+  }
 
 }
-
-export default new AppService();

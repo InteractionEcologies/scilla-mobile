@@ -74,7 +74,7 @@ export class BaclofenRegimenPhase implements IRegimenPhase {
       let treatmentObjects: TreatmentObject[] 
         = BaclofenRegimenPhaseDef[`${doseForThisPhaseMg}mg`];
     
-      this.treatments = _.map(treatmentObjects, (treatmentObject) => {
+      this.treatments = _.map(treatmentObjects, (treatmentObject: TreatmentObject) => {
         return new Treatment(treatmentObject);
       })
     } else {

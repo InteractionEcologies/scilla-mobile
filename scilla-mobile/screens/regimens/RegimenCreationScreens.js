@@ -2,7 +2,9 @@
 import React from "react";
 // import { Machine, State } from "xstate";
 import { Action, State, withStateMachine } from "react-automata";
-import { Icon, Text, Button, Container, Content } from 'native-base';
+import { Icon, Text, Button, Container, Content,
+  Card, CardItem
+} from 'native-base';
 import { View, StyleSheet, Image } from "react-native";
 import moment from "moment";
 
@@ -21,6 +23,8 @@ import { Regimen, RegimenFactory, IRegimenPhase } from "../../models/regimen";
 
 import { ScreenNames } from "../../constants/Screens";
 import styles from "./RegimenStyles"; 
+import { Styles as AppStyles } from "../../constants/Styles";
+
 // import { State } from "xstate";
 
 //Views
@@ -32,8 +36,12 @@ import ScheduleView from "./views/ScheduleView";
 import CompletionView from "./views/CompletionView";
 
 import { DotPageIndicator, AppText } from "../../components";
-import appService from "../../app/AppService";
-import appState from "../../app/AppState";
+import AppService from "../../app/AppService";
+const appService = new AppService();
+
+import AppState from "../../app/AppState";
+const appState = new AppState();
+
 
 const NUM_INDICATOR_STATES = 9;
 const StateNames = {
@@ -221,11 +229,9 @@ class RegimenCreationScreens
   finalizeRegimen = () => {
     console.log("finalize regimen");
     this.regimen.make();
-    appService.ds.createRegimen(this.regimen.toObj());
+    
+    appState.insertRegimen(this.regimen);
 
-    appState.regimensById.set(this.regimen.id, this.regimen);
-    appState.activeRegimenId = this.regimen.id;
-    console.log(appState.regimensById);
   }
 
   // MARK: - UI event handlers
@@ -287,84 +293,86 @@ class RegimenCreationScreens
   // MARK: - Rendering
   render() {
     return (
-      <Content contentContainerStyle={styles.content}>
-        {this._renderInnerView()}
-        
-        <View style={styles.nextBackBtnView}>
-          <Button iconLeft bordered={true} style={styles.button} onPress={this.goToPrevious}>
-            <Icon name="arrow-back"/>
-            <AppText style={styles.textLeft}>Back</AppText>
-          </Button>
-          <Button 
-            iconRight 
-            style={styles.button} 
-            onPress={this.goToNext} 
-            disabled={this.state.isNextBtnDisabled}>
-              <AppText style={styles.textRight}>Next</AppText>
-              <Icon name="arrow-forward"/>
-          </Button>
-        </View>
+      <Container>
+        <Content contentContainerStyle={AppStyles.content}>
+          {this._renderInnerView()}
+          
+          <View style={styles.nextBackBtnView}>
+            <Button iconLeft bordered={true} style={styles.button} onPress={this.goToPrevious}>
+              <Icon name="arrow-back"/>
+              <AppText style={styles.textLeft}>Back</AppText>
+            </Button>
+            <Button 
+              iconRight 
+              style={styles.button} 
+              onPress={this.goToNext} 
+              disabled={this.state.isNextBtnDisabled}>
+                <AppText style={styles.textRight}>Next</AppText>
+                <Icon name="arrow-forward"/>
+            </Button>
+          </View>
 
-      </Content>
+        </Content>
+      </Container>
     )
   }
 
   _renderInnerView = () => {
     return (
-      <View style={styles.mainView}>
-      <Action is={ActionNames.introduction}>
-        <IntroView 
-          numStates={NUM_INDICATOR_STATES} 
-          currentStateIndex={0}
-        />
-      </Action>
-      <Action is={ActionNames.goalSelection}>
-        <GoalSelectionView 
-          numStates={NUM_INDICATOR_STATES} 
-          currentStateIndex={1}
-          onGoalSelected={this.onGoalSelected}
-          selectedRegimenType={this.state.selectedRegimenType}
-        />
-      </Action>
-      <Action is={ActionNames.paramSetup}>
-        <ParamSetupView
-          numStates={NUM_INDICATOR_STATES} 
-          currentStateIndex={2}
-          currentDoseMg={this.state.currentDoseMg}
-          onCurrentDosageChanged={this.onCurrentDosageChanged}
-        />
-      </Action>
-      <Action is={ActionNames.goalSuggestion}>
-        <GoalSuggestionView
-          numStates={NUM_INDICATOR_STATES} 
-          currentStateIndex={3}
-          regimenGoal={this.state.regimenGoal}
-        />
-      </Action>
-      <Action is={ActionNames.schedule}>
-        <ScheduleView
-          numStates={NUM_INDICATOR_STATES}
-          currentStateIndex={4}
-          regimenPhases={this.state.regimenPhases}
-        />
-      </Action>
-      <Action is={ActionNames.dateSelection}></Action>
-      <Action is={ActionNames.reminderConfig}></Action>
-      <Action is={ActionNames.trackedMeasurementTypeConfig}></Action>
-      <Action is={ActionNames.precautions}></Action>
-      <Action is={ActionNames.complete}>
-        <CompletionView 
-          numStates={NUM_INDICATOR_STATES}
-          currentStateIndex={NUM_INDICATOR_STATES}
-        />
-      </Action>
+        <View style={styles.mainView}>
+            <Action is={ActionNames.introduction}>
+              <IntroView 
+                numStates={NUM_INDICATOR_STATES} 
+                currentStateIndex={0}
+              />
+            </Action>
+            <Action is={ActionNames.goalSelection}>
+              <GoalSelectionView 
+                numStates={NUM_INDICATOR_STATES} 
+                currentStateIndex={1}
+                onGoalSelected={this.onGoalSelected}
+                selectedRegimenType={this.state.selectedRegimenType}
+              />
+            </Action>
+            <Action is={ActionNames.paramSetup}>
+              <ParamSetupView
+                numStates={NUM_INDICATOR_STATES} 
+                currentStateIndex={2}
+                currentDoseMg={this.state.currentDoseMg}
+                onCurrentDosageChanged={this.onCurrentDosageChanged}
+              />
+            </Action>
+            <Action is={ActionNames.goalSuggestion}>
+              <GoalSuggestionView
+                numStates={NUM_INDICATOR_STATES} 
+                currentStateIndex={3}
+                regimenGoal={this.state.regimenGoal}
+              />
+            </Action>
+            <Action is={ActionNames.schedule}>
+              <ScheduleView
+                numStates={NUM_INDICATOR_STATES}
+                currentStateIndex={4}
+                regimenPhases={this.state.regimenPhases}
+              />
+            </Action>
+            <Action is={ActionNames.dateSelection}></Action>
+            <Action is={ActionNames.reminderConfig}></Action>
+            <Action is={ActionNames.trackedMeasurementTypeConfig}></Action>
+            <Action is={ActionNames.precautions}></Action>
+            <Action is={ActionNames.complete}>
+              <CompletionView 
+                numStates={NUM_INDICATOR_STATES}
+                currentStateIndex={NUM_INDICATOR_STATES}
+              />
+            </Action>
 
-      <View>
-        <AppText style={styles.warningMessage}>
-          {this.state.warningMessage}
-        </AppText>
+            <View>
+              <AppText style={styles.warningMessage}>
+                {this.state.warningMessage}
+              </AppText>
+            </View>
       </View>
-    </View>
     )
   }
 

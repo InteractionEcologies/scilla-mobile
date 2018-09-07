@@ -13,7 +13,8 @@ import type {
   MeasurementType,
   MeasurementObject
 } from "../../libs/intecojs";
-import appService from "../../app/AppService";
+import AppService from "../../app/AppService";
+const appService = new AppService();
 import styles from "./ReportStyles"; 
 import { ScreenNames } from "../../constants/Screens";
 import AppState from "../../app/AppState";

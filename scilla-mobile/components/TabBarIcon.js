@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-import { Ionicons, Entypo } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 
 import Colors from '../constants/Colors';
 

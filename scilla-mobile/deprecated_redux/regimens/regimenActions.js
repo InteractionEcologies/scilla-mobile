@@ -1,5 +1,6 @@
 // @flow
-import appService from "../../app/AppService";
+import AppService from "../../app/AppService";
+const appService = new AppService();
 
 export const ADD_TRIAL = "ADD_TRIAL";
 export const FETCH_TRIALS_BEGIN = "FETCH_TRIALS_BEGIN";
@@ -39,34 +40,34 @@ export function initRegimen(): ActionCreator {
   }
 }
 
-export function fetchRegimens(): ActionCreator {
+export function getRegimens(): ActionCreator {
   return (dispatch: any) => {
     let uid = appService.auth.currentUser.uid;
-    return appService.ds.fetchRegimens(uid)
+    return appService.ds.getRegimens(uid)
       .then( (regimens) => {
-        dispatch(fetchRegimensSuccess(regimens));
+        dispatch(getRegimensSuccess(regimens));
       })
   }
   // return (dispatch: any) => {
-  //   dispatch(fetchRegimensBegin());
+  //   dispatch(getRegimensBegin());
   //   return 
   // }
 }
 
-export function fetchRegimensBegin(): Action {
+export function getRegimensBegin(): Action {
   return {
     type: FETCH_TRIALS_BEGIN
   }
 }
 
-export function fetchRegimensSuccess(regimens: any): Action {
+export function getRegimensSuccess(regimens: any): Action {
   return {
     type: FETCH_TRIALS_SUCCESS,
     payload: { regimens }
   }
 }
 
-export function fetchRegimensFailure(error: any): Action {
+export function getRegimensFailure(error: any): Action {
   return {
     type: FETCH_TRIALS_FAILURE,
     payload: { error }

@@ -8,28 +8,34 @@ import {
 
 import { connect } from "react-redux";
 import { ScreenNames } from "../../constants/Screens";
-import appService from "../../app/AppService";
-import RegimenList from "./views/RegimenList";
+import AppService from "../../app/AppService";
 import { AppText } from "../../components"
-import appState from "../../app/AppState";
 import { fakeRegimenObject } from "../../datafixtures/fakeRegimen";
-import { RegimenFactory } from "../../models/regimen";
+import { RegimenFactory, Regimen } from "../../models/regimen";
 import type { 
   RegimenObject,
   RegimenPhaseObject
 } from "../../libs/intecojs";
 import {
   DateFormatUXFriendly,
-  DateFormatISO8601
+  DateFormatISO8601,
+  Utils
 } from "../../libs/intecojs";
 import _ from "lodash";
 import moment from "moment";
 import RegimenStyles from "./RegimenStyles";
+import { Styles as AppStyles } from "../../constants/Styles";
+import AppState from "../../app/AppState";
+import { Calendar } from "../../components/Calendar";
+import Colors from "../../constants/Colors";
 
 type State = {
-  regimenObject: ?RegimenObject,
+  regimen: ?Regimen,
   currentRegimenPhaseObject: ?RegimenPhaseObject
 }
+
+const appService = new AppService();
+const appState = new AppState();
 
 export default class RegimenMainScreen extends React.Component<any, State> {
   static navigationOptions: any = {
@@ -37,11 +43,17 @@ export default class RegimenMainScreen extends React.Component<any, State> {
   };
 
   state = {
-    regimenObject: null,
+    regimen: null,
     currentRegimenPhaseObject: null
   }
   
   componentWillFocusSubscription: any;
+  phaseColors = 
+    [ Colors.primaryLightColor,
+      Colors.primaryColor, 
+      Colors.primaryDarkColor,
+      Colors.accentLightColor
+    ]
 
   constructor(props: any) {
     super(props);
@@ -71,50 +83,61 @@ export default class RegimenMainScreen extends React.Component<any, State> {
   addFakeData() {
     let regimenObject = fakeRegimenObject;
     let regimen = RegimenFactory.createRegimenFromObj(regimenObject);
-    appState.regimensById.set(regimen.id, regimen);
-    appState.activeRegimenId = regimen.id;
+    appState.insertRegimen(regimen);
   }
 
-  initializeState() {
-    if(!appState.hasRegimens()) {
-      // TODO: change to fetch only "active" regimen. 
-      // TODO: Need to switch to a loading view. 
-      appService.ds.fetchRegimens(appService.auth.currentUser.uid)
-        .then( (regimenObjects: RegimenObject[]) => {
-          if(regimenObjects.length > 0) {
-            let regimen = RegimenFactory.createRegimenFromObj(regimenObjects[0]);
-            appState.regimensById.set(regimen.id, regimen);
-            appState.activeRegimenId = regimen.id;
-            
-            this._setRegimenState();
-            this._setCurrentRegimenPhaseState();
-          }
-        })
-    } else {
-      this._setRegimenState();
-      this._setCurrentRegimenPhaseState();
-    }
-  }
-
-  _setRegimenState() {
-    let regimen = appState.getActiveRegimen();
-    if(regimen) {
-      this.setState({
-        regimenObject: regimen.toObj()
-      });
-    }
-  }
-
-  _setCurrentRegimenPhaseState() {
-    let regimen = appState.getActiveRegimen();
-    if(regimen) {
-      let regimenPhaseObject = regimen.getRegimenPhaseObjByDate(moment().format(DateFormatISO8601));
+  async initializeState() {
+    try {
+      let regimen = await appState.getLatestRegimen();
+      let today = moment().local().format(DateFormatISO8601)
+      let regimenPhaseObject = regimen.getRegimenPhaseObjByDate(today);
       if(regimenPhaseObject) {
         this.setState({
+          regimen: regimen,
           currentRegimenPhaseObject: regimenPhaseObject
         });
       }
+    } catch (e) {
+      console.log(e);
     }
+  }
+
+
+  getMarkedDays() {
+    console.log("getMarkedDays");
+    let markedDates = {};
+    if(this.state.regimen) {
+      const { regimen } = this.state;
+      let regimenPhases = regimen.getRegimenPhases();
+      _.map(regimenPhases, (regimenPhase) => {
+        let startDate = regimenPhase.startDate;
+        let endDate = regimenPhase.endDate
+        let treatmentObjs = regimenPhase.treatmentObjects;
+        
+        let color = this.phaseColors[regimenPhase.phase % this.phaseColors.length ]
+        let curDateM = moment(startDate);
+        let endDateM = moment(endDate);
+
+        while (curDateM.isSameOrBefore(endDateM)) {
+          let curDate = curDateM.format(DateFormatISO8601);
+          markedDates[curDate] = {
+            color: color
+          }
+          curDateM.add(1, 'day')
+        }
+        markedDates[startDate] = {
+          startingDay: true, 
+          color: color
+        }
+        markedDates[endDate] = {
+          endingDay: true,
+          color: color
+        }
+
+      })
+
+    }
+    return markedDates
   }
 
   // MARK: - Navigation
@@ -128,16 +151,18 @@ export default class RegimenMainScreen extends React.Component<any, State> {
 
   render() {
     return (
-      <Content contentContainerStyle={RegimenStyles.content}>
-        <View style={RegimenStyles.mainView}>
-          {this.renderRegimen()}
-        </View>
-      </Content>
+      <Container>
+        <Content contentContainerStyle={AppStyles.content}>
+          <View style={AppStyles.contentBody}>
+            {this.renderRegimen()}
+          </View>
+        </Content>
+      </Container>
     )
   }
 
   renderRegimen() {
-    if(this.state.regimenObject) {
+    if(this.state.regimen) {
       return this._renderActiveRegimen();
     } else {
       return this._renderRegimenCreation();
@@ -154,23 +179,37 @@ export default class RegimenMainScreen extends React.Component<any, State> {
       endDate = moment(endDate).format(DateFormatUXFriendly);
     }
 
+    let markedDates = this.getMarkedDays();
+    console.log(markedDates);
+      
     return (
-      <Card style={styles.currentRegimenPhaseCard}>
-        <CardItem header bordered>
-          <AppText>Current Regimen Phase</AppText>
-        </CardItem>
-        <CardItem>
-          <Body>
-            <AppText>{startDate} - {endDate}</AppText>
-          </Body>
-        </CardItem>
-      </Card>
+      <View style={{width: '100%'}}>
+        <Card style={styles.currentRegimenPhaseCard}>
+          <CardItem header bordered>
+            <AppText>Current Regimen Phase</AppText>
+          </CardItem>
+          <CardItem>
+            <Body>
+              <AppText>{startDate} - {endDate}</AppText>
+            </Body>
+          </CardItem>
+        </Card>
+
+        <Card>
+          <CardItem header bordered>
+            <AppText>Whole Regimen</AppText>
+          </CardItem>
+          <CardItem>
+            <Calendar style={{width: '100%'}}
+              markedDates={markedDates}
+              markingType="period"
+            />
+          </CardItem>
+        </Card>
+
+      </View>
     )
   }
-
-  // _renderCurrentRegimenPhase() {
-
-  // }
 
   _renderRegimenCreation() {
     return (

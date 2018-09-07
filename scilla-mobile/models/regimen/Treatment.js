@@ -22,7 +22,6 @@ import _ from "lodash";
 import moment from "moment";
 
 export class Treatment {
-  _obj: TreatmentObject
   id: string
   time: string
   timeDesc: ?string
@@ -30,11 +29,9 @@ export class Treatment {
   reminderSlotId: string
 
   constructor(treatmentObj: TreatmentObject) {
-    if( treatmentObj.id ) {
-      this.id = treatmentObj.id;
-    } else {
-      this.id = Utils.randomId();
-    }
+    this.id = treatmentObj.id 
+              ? treatmentObj.id
+              : Utils.randomId();
     this.time = treatmentObj.time;
     this.timeDesc = treatmentObj.timeDesc;
     this.option = treatmentObj.option;
@@ -49,7 +46,7 @@ export class Treatment {
       reminderSlotId: this.reminderSlotId
     }
     if( this.timeDesc ) {
-      obj["timeDesc"] = this.timeDesc;
+      obj.timeDesc = this.timeDesc;
     }
     return obj;
   }
@@ -81,6 +78,21 @@ export class Treatment {
         return "15 mg";
       case TreatmentDetailOptions.baclofen20mg:
         return "20 mg";
+      default:
+        return "";
+    }
+  }
+
+  getDescription(): string {
+    switch(this.option) {
+      case TreatmentDetailOptions.baclofen5mg:
+        return "Baclofen 5 (mg)";
+      case TreatmentDetailOptions.baclofen10mg:
+        return "Baclofen 10 (mg)";
+      case TreatmentDetailOptions.baclofen15mg:
+        return "Baclofen 15 (mg)";
+      case TreatmentDetailOptions.baclofen20mg:
+        return "Baclofen 20 (mg)";
       default:
         return "";
     }

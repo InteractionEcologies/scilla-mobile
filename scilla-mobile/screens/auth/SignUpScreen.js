@@ -8,7 +8,9 @@ import { Container, Content, Text, Button, Form,
 } from "native-base";
 import { AppText, Title } from "../../components"
 // import Auth from "../../libs/Auth";
-import appService from "../../app/AppService";
+import AppService from "../../app/AppService";
+const appService = new AppService();
+
 import { ScreenNames } from "../../constants/Screens";
 import AuthStyles from "./AuthStyles";
 
@@ -35,7 +37,7 @@ export default class SignUpScreen extends React.Component<any, any> {
   }
 
   _createDefaultUserProfile() {
-    appService.ds.createUserProfile({
+    appService.ds.upsertUserProfile({
       uid: appService.auth.currentUser.uid, 
       firstName: "",
       lastName: "",
