@@ -1,6 +1,5 @@
 // @flow
 import React from "react";
-import { StyleSheet } from 'react-native';
 import { Content, Text, View, Icon, Button} from "native-base";
 import { AppText, Title } from "../../components";
 import MoodScaleView from './views/MoodScaleView';
@@ -9,9 +8,7 @@ import BaclofenScaleView from './views/BaclofenScaleView';
 import SpasticityScaleView from './views/SpasticityScaleView';
 import TiredScaleView from './views/TiredScaleView';
 import moment from "moment";
-import { MeasurementTypes } from "../../libs/intecojs"; 
-// import { SleepScales, SpasticityScales, BaclofenScales, TirednessScales, MoodScales }  from "../../libs/intecojs"; 
-import MeasurementOptionList from "./views/MeasurementOptionList";
+import { MeasurementTypes, DateFormatISO8601, DateFormatTimeOfDay } from "../../libs/intecojs"; 
 import type { 
   MeasurementType,
   MeasurementObject
@@ -20,173 +17,121 @@ import AppService from "../../app/AppService";
 const appService = new AppService();
 import styles from "./ReportStyles"; 
 import { ScreenNames } from "../../constants/Screens";
+import AppState from "../../app/AppState";
 
 
-const InnerViewStates = {
-    MeasurementOptionSelection: "measurementOptionSelection",
-    Scale: "scale"
-}
-
-export default class ReportSelectionScreen extends React.Component<any, any> {
+export default class ReportMeasurmentScreen extends React.Component<any, any> {
   static navigationOptions: any = {
     title: 'Report'
   };
 
+  
+  selectedMeasurementType : MeasurementType = this.props.navigation.getParam('trackedMeasurementType', null);
+
   state = {
-      innerViewState: InnerViewStates.MeasurementOptionSelection,
-      trackedMeasurementType: null,
-      selectedScale: null,
-      scale: null
+      trackedMeasurementType: this.selectedMeasurementType,
+      selectedScaleValue: null,
   }
 
   newReport: ?MeasurementObject = null
 
   onMeasurementValueConfirmed = () => {
     console.log("save measurement object");
+    if(this.state.trackedMeasurementType && this.state.selectedScaleValue){
+      this._createMeasurementReport(this.state.trackedMeasurementType, this.state.selectedScaleValue);
+    };
+    this.newReport = null;
+    this._goToReportSelectionScreen();
+  }
 
+  _createMeasurementReport = (type: MeasurementType, value: string) =>{
     let user = appService.auth.currentUser;
     let uid = user.uid;
-
-    if (this.state.trackedMeasurementType && 
-      this.state.selectedScale
-    ) {
-      let trackedMeasurementType: MeasurementType = this.state.trackedMeasurementType;
-      let selectedScale: string = this.state.selectedScale; 
-
-      let report = {
-          id: appService.generatePushID(),
-          timestamp: moment().unix(),
-          type: trackedMeasurementType,
-          uid: uid,
-          value: selectedScale
-      }
-      appService.ds.upsertMeasurement(report);  
+    this.newReport = {
+        id: appService.generatePushID(),
+        type: type,
+        timestamp: moment().unix(),
+        uid: uid,
+        value: value
     }
-    this.goToReportSelectionScreen();
+    appService.ds.upsertMeasurement(this.newReport);
+    // AppState.insertMeasurement(this.newReport);
   }
 
-  updateTrackedMeasurementType = (measurementType: string) => {
-     this.setState(
-       { 
-         trackedMeasurementType: measurementType
-        }
-      )
+  _goToReportSelectionScreen = () =>{
+    this.props.navigation.navigate(ScreenNames.ReportSelection)
   }
 
-  updateSelectedScale = (scaleValue: string) =>{
-
+  updateSelectedScaleValue = (value: string) =>{
     this.setState(
       {
-        selectedScale: scaleValue
+        selectedScaleValue: value
       }
     )
   }
 
-  goToScaleView = () =>{
-    this.setState({
-      innerViewState: InnerViewStates.Scale
-    })
-  }
-
-  goToMeasurementTypeOptionView = () =>{
-    this.setState({
-      innerViewState: InnerViewStates.MeasurementOptionSelection,
-      selectedScale: null
-    })
-  }
-
-  goToReportSelectionScreen = () =>{
-    this.props.navigation.navigate(ScreenNames.ReportSelection)
-  }
 
   render(){
-      return(
-          <Content contentContainerStyle={styles.content}>
-            <Title style={styles.titleText}>Report your experience</Title>
-              {this.renderInnerView()}
-            
-          </Content>
-      );
-    }
+    let isBtnDisabled:boolean = !(this.state.selectedScaleValue);
 
-    renderInnerView() {
-      if(this.state.innerViewState === InnerViewStates.MeasurementOptionSelection) {
-        return this._renderMeasurementOptionList();
-      } else {
-        return this._renderScale();
-      }
-    }
+    return(
+      <Content contentContainerStyle={styles.content}>
+        {this.renderScale()}
+        <View style={styles.okBtnView}>
+          <Button
+            style={styles.button}
+            block
+            onPress={()=>this.onMeasurementValueConfirmed()} 
+            disabled={isBtnDisabled}
+          >
+            <AppText>OK</AppText>
+          </Button>
+        </View>
+      </Content>
+    );
+  }
 
-    _renderMeasurementOptionList() {
-
-      return (
-        <MeasurementOptionList 
-          updateTrackedMeasurementType={this.updateTrackedMeasurementType}
-          trackedMeasurementType = {this.state.trackedMeasurementType}
-          goToScaleView = {this.goToScaleView}
-          goToReportSelectionScreen = {this.goToReportSelectionScreen}
-        />
-      )
-    }
-
-    _renderScale() {
+  renderScale() {
       let view;
       switch(this.state.trackedMeasurementType) {
         case MeasurementTypes.sleepQuality: 
           view = <SleepScaleView
-            selectedScale = {this.state.selectedScale}
-            updateSelectedScale = {this.updateSelectedScale}
-            onValueConfirmed={this.onMeasurementValueConfirmed}
-            goToMeasurementTypeOptionView = {this.goToMeasurementTypeOptionView}
+            selectedScaleValue = {this.state.selectedScaleValue}
+            updateSelectedScaleValue = {this.updateSelectedScaleValue}
           />;
           break;
         case MeasurementTypes.spasticitySeverity: 
           view = <SpasticityScaleView
-            selectedScale = {this.state.selectedScale}
-            updateSelectedScale = {this.updateSelectedScale}
-            onValueConfirmed={this.onMeasurementValueConfirmed}
-            goToMeasurementTypeOptionView = {this.goToMeasurementTypeOptionView}
+            selectedScaleValue = {this.state.selectedScaleValue}
+            updateSelectedScaleValue = {this.updateSelectedScaleValue}
           />
           break;
         case MeasurementTypes.baclofenAmount:
           view = <BaclofenScaleView
-            selectedScale = {this.state.selectedScale}
-            updateSelectedScale = {this.updateSelectedScale}
-            onValueConfirmed={this.onMeasurementValueConfirmed}
-            goToMeasurementTypeOptionView = {this.goToMeasurementTypeOptionView}
+            selectedScaleValue = {this.state.selectedScaleValue}
+            updateSelectedScaleValue = {this.updateSelectedScaleValue}
           />
           break;
         case MeasurementTypes.tiredness:
           view = <TiredScaleView
-            selectedScale = {this.state.selectedScale}
-            updateSelectedScale = {this.updateSelectedScale}
-            onValueConfirmed={this.onMeasurementValueConfirmed}
-            goToMeasurementTypeOptionView = {this.goToMeasurementTypeOptionView}
+            selectedScaleValue = {this.state.selectedScaleValue}
+            updateSelectedScaleValue = {this.updateSelectedScaleValue}
           />
           break;
         case MeasurementTypes.mood:
           view = <MoodScaleView
-            selectedScale = {this.state.selectedScale}
-            updateSelectedScale = {this.updateSelectedScale}
-            onValueConfirmed={this.onMeasurementValueConfirmed}
-            goToMeasurementTypeOptionView = {this.goToMeasurementTypeOptionView}
+            selectedScaleValue = {this.state.selectedScaleValue}
+            updateSelectedScaleValue = {this.updateSelectedScaleValue}
           />
           break;
         default: 
           view = <SleepScaleView
-            selectedScale = {this.state.selectedScale}
-            updateSelectedScale = {this.updateSelectedScale}
-            onValueConfirmed={this.onMeasurementValueConfirmed}
-            goToMeasurementTypeOptionView = {this.goToMeasurementTypeOptionView}
+            selectedScaleValue = {this.state.selectedScaleValue}
+            updateSelectedScaleValue = {this.updateSelectedScaleValue}
           />;
           break;
       }
       return view;
     }
+
 }
-
-
-
-
-
-  

@@ -18,13 +18,16 @@ import type {
 } from "../../libs/intecojs";
 import {
   DateFormatUXFriendly,
-  DateFormatISO8601
+  DateFormatISO8601,
+  Utils
 } from "../../libs/intecojs";
 import _ from "lodash";
 import moment from "moment";
 import RegimenStyles from "./RegimenStyles";
 import { Styles as AppStyles } from "../../constants/Styles";
 import AppState from "../../app/AppState";
+import { Calendar } from "../../components/Calendar";
+import Colors from "../../constants/Colors";
 
 type State = {
   regimen: ?Regimen,
@@ -45,6 +48,12 @@ export default class RegimenMainScreen extends React.Component<any, State> {
   }
   
   componentWillFocusSubscription: any;
+  phaseColors = 
+    [ Colors.primaryLightColor,
+      Colors.primaryColor, 
+      Colors.primaryDarkColor,
+      Colors.accentLightColor
+    ]
 
   constructor(props: any) {
     super(props);
@@ -93,6 +102,44 @@ export default class RegimenMainScreen extends React.Component<any, State> {
     }
   }
 
+
+  getMarkedDays() {
+    console.log("getMarkedDays");
+    let markedDates = {};
+    if(this.state.regimen) {
+      const { regimen } = this.state;
+      let regimenPhases = regimen.getRegimenPhases();
+      _.map(regimenPhases, (regimenPhase) => {
+        let startDate = regimenPhase.startDate;
+        let endDate = regimenPhase.endDate
+        let treatmentObjs = regimenPhase.treatmentObjects;
+        
+        let color = this.phaseColors[regimenPhase.phase % this.phaseColors.length ]
+        let curDateM = moment(startDate);
+        let endDateM = moment(endDate);
+
+        while (curDateM.isSameOrBefore(endDateM)) {
+          let curDate = curDateM.format(DateFormatISO8601);
+          markedDates[curDate] = {
+            color: color
+          }
+          curDateM.add(1, 'day')
+        }
+        markedDates[startDate] = {
+          startingDay: true, 
+          color: color
+        }
+        markedDates[endDate] = {
+          endingDay: true,
+          color: color
+        }
+
+      })
+
+    }
+    return markedDates
+  }
+
   // MARK: - Navigation
   goToCreateRegimen = () => {
     this.props.navigation.navigate(ScreenNames.RegimenCreation);
@@ -132,17 +179,35 @@ export default class RegimenMainScreen extends React.Component<any, State> {
       endDate = moment(endDate).format(DateFormatUXFriendly);
     }
 
+    let markedDates = this.getMarkedDays();
+    console.log(markedDates);
+      
     return (
-      <Card style={styles.currentRegimenPhaseCard}>
-        <CardItem header bordered>
-          <AppText>Current Regimen Phase</AppText>
-        </CardItem>
-        <CardItem>
-          <Body>
-            <AppText>{startDate} - {endDate}</AppText>
-          </Body>
-        </CardItem>
-      </Card>
+      <View style={{width: '100%'}}>
+        <Card style={styles.currentRegimenPhaseCard}>
+          <CardItem header bordered>
+            <AppText>Current Regimen Phase</AppText>
+          </CardItem>
+          <CardItem>
+            <Body>
+              <AppText>{startDate} - {endDate}</AppText>
+            </Body>
+          </CardItem>
+        </Card>
+
+        <Card>
+          <CardItem header bordered>
+            <AppText>Whole Regimen</AppText>
+          </CardItem>
+          <CardItem>
+            <Calendar style={{width: '100%'}}
+              markedDates={markedDates}
+              markingType="period"
+            />
+          </CardItem>
+        </Card>
+
+      </View>
     )
   }
 
