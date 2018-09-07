@@ -10,8 +10,9 @@ export const ScreenNames = {
   RegimenCreation: 'RegimenCreation',
   
   // Reports
-  ReportSelection: "ReportSelect",
-  ReportMeasurementSelection: "ReportMeasurementSelect", 
+  ReportSelection: "ReportSelection",
+  ReportMeasurement: "ReportMeasurement",
+  ReportDailyEvaluation: "ReportDailyEvaluation", 
 
   // Analysis
   AnalysisMain: "AnalysisMain",
