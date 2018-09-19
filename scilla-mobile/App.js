@@ -3,11 +3,11 @@ import React from 'react';
 import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 import { AppLoading, Asset, Font, Icon } from 'expo';
 import { StyleProvider, Container } from "native-base";
-import getTheme from "./native-base-theme/components";
-import commonColor from "./native-base-theme/variables/commonColor";
-import AppNavigator from './navigation/AppNavigator';
-import AppService from "./app/AppService";
-import Colors from "./constants/Colors";
+import getTheme from "./src/constants/native-base-theme/components";
+import commonColor from "./src/constants/native-base-theme/variables/commonColor";
+import AppNavigator from './src/navigation/AppNavigator';
+import AppService from "./src/app/AppService";
+import Colors from "./src/constants/Colors";
 
 export default class App extends React.Component<any, any> {
   state = {

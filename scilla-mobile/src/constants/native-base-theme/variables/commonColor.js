@@ -1,6 +1,6 @@
 import color from "color";
 import { Platform, Dimensions, PixelRatio } from "react-native";
-import Colors from "../../constants/Colors";
+import Colors from "../../Colors";
 
 const deviceHeight = Dimensions.get("window").height;
 const deviceWidth = Dimensions.get("window").width;

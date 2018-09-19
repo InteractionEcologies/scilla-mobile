@@ -36,7 +36,7 @@ export default class AuthLoadingScreen extends React.Component<any, any> {
     return (
       <Container>
         <Content contentContainerStyle={[AppStyles.content, styles.content]}>
-          <Image style={styles.welcomeImage} source={require('../../assets/images/scilla-icon.png')}/>
+          <Image style={styles.welcomeImage} source={require('../../../assets/images/scilla-icon.png')}/>
           {/* <Title>Find the Optimal Spasticity Care</Title> */}
           {/* <ActivityIndicator style={styles.ActivityIndicator} size="large" /> */}
           {/* <StatusBar barStatus="default" /> */}
