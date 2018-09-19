@@ -18,7 +18,7 @@ export default class CompletionView extends React.Component<Props, any> {
   render() {
     return (
       <View>
-        <Image source={require('../../../assets/images/scilla-icon.png')}/>
+        <Image source={require('../../../../assets/images/scilla-icon.png')}/>
       </View>
     )
   }
