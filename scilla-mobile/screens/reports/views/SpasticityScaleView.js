@@ -1,42 +1,39 @@
 // @flow
 import React from 'react';
 import { Text, View, Button, Icon } from "native-base";
-import { AppText, Title } from "../../../components";
+// import { StyleSheet, Slider } from "react-native";
+import { AppText, Title, ScaleSlider } from "../../../components";
 import styles from "../ReportStyles"; 
 import { SpasticityScales }  from "../../../libs/intecojs"; 
 import _ from "lodash";
+import type { MeasurementValue } from "../../../libs/intecojs";
 
 type Props = {
-  selectedScaleValue:? string,
-  updateSelectedScaleValue: (scaleValue:string) =>void,
+  type: string,
+  selectedScaleValue: MeasurementValue,
+  updateSelectedScaleValue: (type: string, scaleValue:number) =>void,
+  isDailyEvalView: bool
 } 
 
 export default class SpasticityScaleView extends React.Component<Props, any> {
-  renderScaleOptions = () =>{
-      return(
-        _.values(SpasticityScales)
-          .map((scale: string, i: number) => {
-            let selected: boolean = scale === this.props.selectedScaleValue;
-            return (
-              <Button 
-                key={i}
-                style={styles.optionButton}
-                bordered={!selected}
-                block
-                onPress={ ()=>this.props.updateSelectedScaleValue(scale)}
-              >
-                <AppText>{scale}</AppText>
-              </Button>
-            );
-          })
-      );
-    }
 
     render() {
+      let headlineText = this.props.isDailyEvalView? 
+                          "Rate today's overall spasticity"
+                          : "How severe is your spasticity now?"; 
       return (
         <View style={styles.mainView}>
-            <AppText style={styles.headlineText}>How severe is your spasticity?</AppText> 
-            {this.renderScaleOptions()}
+            <AppText style={styles.headlineText}>{headlineText}</AppText> 
+            <ScaleSlider 
+              type = {this.props.type}
+              selectedScaleValue = {this.props.selectedScaleValue}
+              selectedScaleValueText = {null}
+              updateSelectedScaleValue = {this.props.updateSelectedScaleValue}
+              minValue = {0}
+              maxValue = {10}
+              minText = {'No Spasticity'}
+              maxText = {'Worst possible Spasticity'}
+              ></ScaleSlider>
         </View>
       );
     }

@@ -273,8 +273,8 @@ describe("FirebaseDS", () => {
     await ds.deleteDailyEval(oldDailyEval.id);
 
     expect(dailyEvals).toHaveLength(2);
-    expect(dailyEvals[0]).toMatchObject(oldDailyEval);
-    expect(dailyEvals[1]).toMatchObject(dailyEval);
+    expect(dailyEvals[1]).toMatchObject(oldDailyEval);
+    expect(dailyEvals[0]).toMatchObject(dailyEval);
   })
 
 

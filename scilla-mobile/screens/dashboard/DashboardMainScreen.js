@@ -26,7 +26,6 @@ import { OneWeekCalendar } from "../../components";
 import { Calendar } from "../../components/Calendar"
 import XDate from "xdate";
 
-const appService = new AppService();
 const appState: AppState = new AppState();
 
 type State = {

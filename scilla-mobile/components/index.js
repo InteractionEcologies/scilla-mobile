@@ -7,3 +7,4 @@ export * from "./RegimenSchedule";
 export * from "./RoundedCard";
 export * from "./RoundedCardItem";
 export * from "./OneWeekCalendar";
+export * from "./ScaleSlider";

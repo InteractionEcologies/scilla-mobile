@@ -56,6 +56,6 @@ export const fakeDailyEvaluation: DailyEvaluationObject = {
   date: "2018-08-31",
   createdAtTimestamp: 1535729800,
   measurementsByType: {
-    [MeasurementTypes.spasticitySeverity]: fakeMeasurement
+    [MeasurementTypes.spasticitySeverity]: fakeMeasurement.value
   }
 }

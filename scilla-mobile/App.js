@@ -2,7 +2,7 @@
 import React from 'react';
 import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 import { AppLoading, Asset, Font, Icon } from 'expo';
-import { StyleProvider, Container } from "native-base";
+import { StyleProvider, Container, Root } from "native-base";
 import getTheme from "./native-base-theme/components";
 import commonColor from "./native-base-theme/variables/commonColor";
 import AppNavigator from './navigation/AppNavigator';
@@ -33,7 +33,9 @@ export default class App extends React.Component<any, any> {
         <StyleProvider style={getTheme(commonColor)}>
           <View style={styles.container}>
             {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-            <AppNavigator />
+            <Root>
+              <AppNavigator />
+            </Root>
           </View>
         </StyleProvider>
       );
