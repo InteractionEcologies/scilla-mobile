@@ -35,13 +35,11 @@ export class ComplianceReportHelper {
   }
 
   static getNewSnoozeTime(report: ComplianceReportObject): number {
-    if (report.expectedTreatmentTime) {
-      let { expectedTreatmentTime } = report;
-    
-      let time = moment(expectedTreatmentTime, DateFormatTimeOfDay);
-      time.add(10, 'minutes');
-      return time.unix();
-    }
+    let { expectedTreatmentTime } = report;
+  
+    let time = moment(expectedTreatmentTime, DateFormatTimeOfDay);
+    time.add(10, 'minutes');
+    return time.unix();
   }
 
 }
