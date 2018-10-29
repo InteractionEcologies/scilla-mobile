@@ -16,7 +16,9 @@
     "preset": "jest-expo",
     "transformIgnorePatterns": [
       "node_modules/(?!react-native|expo|@expo|react-navigation|native-base|native-base-shoutem-theme|@shoutem/theme|@shoutem/animation|@shoutem/ui|tcomb-form-native)"
-    ]
+    ],
+    "setupTestFrameworkScriptFile": "<rootDir>/src/__mocks__/jest.mock.rn-firebase",
+    "automock": false
   },
   "dependencies": {
     "@expo/samples": "2.1.1",

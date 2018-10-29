@@ -35,8 +35,10 @@ export class FirebaseDS implements IDataSource {
   db: firebase.firestore.Firestore;
   generatePushID: () => string;
 
-  constructor() {
-    this.db = firebase.firestore();
+  /* db: can be a web-based or native firestore instance. 
+  */
+  constructor(db: firebase.firestore.Firestore) {
+    this.db = db;
     this.generatePushID = generatePushIDFunc();
 
     let settings = {

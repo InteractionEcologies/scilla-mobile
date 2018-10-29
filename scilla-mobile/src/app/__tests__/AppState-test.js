@@ -1,6 +1,6 @@
 // @flow
 import AppState from "../AppState";
-import AppService from "../AppService";
+import { AppServiceImplWithFirebaseWeb } from "../AppServiceImplWithFirebaseWeb";
 import { fakeUser } from "../../datafixtures/core";
 import { fakeRegimenObject } from "../../datafixtures/fakeRegimen";
 import {
@@ -9,9 +9,10 @@ import {
 import _ from "lodash";
 import moment from "moment";
 
-describe('AppState', () => {
+describe('AppState with AppService implemented with Firebase Web SDK', () => {
   const appState = new AppState();
-  const appService = new AppService();
+  appState.appService = new AppServiceImplWithFirebaseWeb();
+  const appService = appState.appService;
   appService.initialize({disableAuthPersistence: true});
 
   beforeAll(async () => {
