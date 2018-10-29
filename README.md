@@ -17,7 +17,9 @@ A mobile app to help patients with Spinal Cord Injury or Disease (SCI/D) learn t
 * **Visual Studio Code** (v1.26.1)
 * **React Native** (v0.55.4)
 * **node** (v8.11.4 LTS)
-* **Expo** (v29.0.0)
+* **Expo** (v30.0.0)
+* **React Native Firebase (npm)** (v4.2)
+* **React Native Firebase (cocoapod)** (v5.3.0)
 * **Flow** 
 * **Jest**
 
@@ -30,7 +32,13 @@ A mobile app to help patients with Spinal Cord Injury or Disease (SCI/D) learn t
 * Install dependencies
   * Use terminal, navigate to `scilla-mobile/scilla-mobile/`
   * Run `npm install`
-* To start the program, use `npm run start`. 
+* To start serving the javascript code, use `npm run start`. 
+
+### iOS
+* Use XCode to open `scilla-mobile.xcworkspace`
+* Navigate to the `ios/` folder under terminal. Install dependency via Cocoapods. (`pod install`)
+* Run the code in a simulator. 
+
 
 ## Testing
 * Run all unittests with autowatch `npm run test:all`

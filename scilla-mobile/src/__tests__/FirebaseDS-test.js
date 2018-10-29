@@ -12,10 +12,10 @@ import { fakeRegimenObject } from "../datafixtures/fakeRegimen";
 import _ from "lodash";
 import moment from "moment";
 
-describe("FirebaseDS", () => {
+describe("FirebaseDS with Web SDK", () => {
   firebase.initializeApp(FirebaseConfig);
   const auth = firebase.auth();
-  const ds = new FirebaseDS();
+  const ds = new FirebaseDS(firebase.firestore());
 
   beforeAll(async () => {
     await auth.signInWithEmailAndPassword(fakeUser.email, fakeUser.password);
