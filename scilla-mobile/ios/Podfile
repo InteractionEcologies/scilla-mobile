@@ -2,9 +2,19 @@ source 'https://github.com/CocoaPods/Specs.git'
 platform :ios, '9.0'
 
 target 'scilla-mobile' do
+  
+  # Note: 10/29/2018
+  # Although React Native Firebase releases 5.9.0
+  # Expo only supports 5.3.0 now, using 5.9.0 will cause
+  # compatibility issues. 
+  pod 'Firebase/Core', '5.3.0'
+  pod 'Firebase/Auth', '5.3.0'
+  pod 'Firebase/Firestore', '5.3.0'
+
+  
   pod 'ExpoKit',
     :git => "http://github.com/expo/expo.git",
-    :tag => "ios/2.8.2",
+    :tag => "ios/2.8.4",
     :subspecs => [
       "Core"
     ],
@@ -121,22 +131,25 @@ target 'scilla-mobile' do
 
     if ['Amplitude-iOS','Analytics','AppAuth','Branch','CocoaLumberjack','FBSDKCoreKit','FBSDKLoginKit','FBSDKShareKit','GPUImage','JKBigInteger2'].include? target.pod_name
       target.native_target.build_configurations.each do |config|
-        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '9.0'
+        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '10.0'
       end
     end
     # Can't specify this in the React podspec because we need
     # to use those podspecs for detached projects which don't reference ExponentCPP.
     if target.pod_name.start_with?('React')
       target.native_target.build_configurations.each do |config|
-        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '9.0'
+        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '10.0'
         config.build_settings['HEADER_SEARCH_PATHS'] ||= ['$(inherited)']
       end
     end
-    # Build React Native with RCT_DEV enabled
+    # Build React Native with RCT_DEV enabled and RCT_ENABLE_INSPECTOR and
+    # RCT_ENABLE_PACKAGER_CONNECTION disabled
     next unless target.pod_name == 'React'
     target.native_target.build_configurations.each do |config|
       config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)']
       config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'RCT_DEV=1'
+      config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'RCT_ENABLE_INSPECTOR=0'
+      config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'ENABLE_PACKAGER_CONNECTION=0'
     end
 
     end
