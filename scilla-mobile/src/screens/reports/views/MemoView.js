@@ -15,7 +15,7 @@ export default class MemoView extends React.Component<Props,any> {
   render(){
     return(
       <View style={styles.mainView}>
-        <AppText style={styles.headlineText}>Leave a memo for additional info</AppText>
+        <AppText style={styles.headlineText}>Additional notes of the day</AppText>
         <Textarea 
             rowSpan={6} 
             bordered 

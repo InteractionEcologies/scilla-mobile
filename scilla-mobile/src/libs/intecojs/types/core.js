@@ -39,6 +39,7 @@ export type MeasurementObject = {
   value: MeasurementValue
 };
 
+// 
 export const MeasurementTypes = {
   sleepQuality: "Sleep Quality",
   spasticitySeverity: "Spasticity Severity",
@@ -48,24 +49,13 @@ export const MeasurementTypes = {
 
   // For daily eval only
   exerciseTime: "Exercise Time",
+  memo: "Memo",
+  medication: "Medication",
+
   botox: "Botox",
   triggerPointInjection: "Trigger Point Injection",
   accupuncture: "Accupuncture",
-  physicalTherapy: "Physical Therapy",
-  memo: "Memo"
+  physicalTherapy: "Physical Therapy"
 };
 
 export type MeasurementType = $Values<typeof MeasurementTypes>;
-
-export const AdditionalMeasurementTypesForDailyEval = {
-  exerciseTime: "Exercise Time",
-  medication: "Medication",
-  memo: "Memo"
-}
-
-export const MedicationTypes = {
-  botox: "Botox",
-  triggerPointInjection: "Trigger Point Injection",
-  accupuncture: "Accupuncture",
-  physicalTherapy: "Physical Therapy",
-}

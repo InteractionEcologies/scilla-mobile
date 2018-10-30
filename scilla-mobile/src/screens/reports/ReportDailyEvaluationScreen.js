@@ -17,8 +17,6 @@ import { ScreenNames } from "../../constants/Screens";
 import moment from "moment";
 import {
   MeasurementTypes,
-  AdditionalMeasurementTypesForDailyEval,
-  MedicationTypes,
   DateFormatISO8601,
   NotExistError
 } from "../../libs/intecojs";
@@ -30,6 +28,11 @@ import type {
 import _ from "lodash";
 import styles from "./ReportStyles"; 
 import XDate from "xdate";
+import { 
+  RequiredCheckboxMeasurementTypesInDailyEval, 
+  RequiredMeasurementTypesInDailyEval, 
+  DailyEvalQuestionPriorityMap
+} from "./constants";
 
 const appState = new AppState();
 const appService = new AppService();
@@ -43,6 +46,9 @@ type State = {
   step: number, 
   dailyEvalReportObjId: ?string
 }
+
+
+
 
 export default class ReportDailyEvaluationScreen extends React.Component<any, State> {
 
@@ -109,9 +115,8 @@ export default class ReportDailyEvaluationScreen extends React.Component<any, St
         this.setState({
           measurementsByType: {
             ...this._initMeasurementsByType(regimen.getTrackedMeasurementTypes(), 0),
-            ...this._initMeasurementsByType(_.values(MedicationTypes), false),
-            ...this._initMeasurementsByType(_.values(AdditionalMeasurementTypesForDailyEval)
-                                              .filter((type)=> type !=='Medication'), '')
+            ...this._initMeasurementsByType(RequiredCheckboxMeasurementTypesInDailyEval, false),
+            ...this._initMeasurementsByType(RequiredMeasurementTypesInDailyEval, '')
           }         
         }, ()=>{this._initDailyEvalViews()})    
       } catch (e) {
@@ -119,7 +124,7 @@ export default class ReportDailyEvaluationScreen extends React.Component<any, St
       }
   }
 
-  _initMeasurementsByType = (measurementTypes:MeasurementType[], initialValue:MeasurementValue) =>{
+  _initMeasurementsByType = (measurementTypes: MeasurementType[], initialValue: MeasurementValue) =>{
     let initialMeasurementObj = {};
     for(let type of measurementTypes){
       initialMeasurementObj[type] = initialValue;
@@ -139,16 +144,33 @@ export default class ReportDailyEvaluationScreen extends React.Component<any, St
   }
 
   _initDailyEvalViews = () =>{
-    let measurementTypesFromRegimen =_.keys(this.state.measurementsByType)
-                                      .filter((type)=>this._IsMeasurementTypesFromRegimen(type));
+    let measurementTypesFromRegimen = _.keys(this.state.measurementsByType)
+                                      .filter((type)=>this._isOptionalMeasurementType(type));
+    measurementTypesFromRegimen = this._sortMeasurementTypesByPriority(measurementTypesFromRegimen);
     this.dailyEvalViews = [...measurementTypesFromRegimen, 
-                            ..._.values(AdditionalMeasurementTypesForDailyEval)];
+                          ...RequiredMeasurementTypesInDailyEval];
 
   }
 
-  _IsMeasurementTypesFromRegimen = (type:string) =>{
-    return (!_.values(MedicationTypes).includes(type) && 
-            !_.values(AdditionalMeasurementTypesForDailyEval).includes(type)) 
+  _isOptionalMeasurementType = (type:string) =>{
+    return (!RequiredMeasurementTypesInDailyEval.includes(type) && 
+            !RequiredCheckboxMeasurementTypesInDailyEval.includes(type)) 
+  }
+
+  _sortMeasurementTypesByPriority = (measurementTypes: MeasurementType[]) => {
+    // convert to an array of object based on priority definition first
+    let measurementTypesWithPriority = _.map(measurementTypes, (type: MeasurementType) => {
+      return {
+        type: type,
+        priority: DailyEvalQuestionPriorityMap[type]  
+      }
+    });
+
+    measurementTypesWithPriority = _.sortBy(measurementTypesWithPriority, 'priority');
+    let sortedMeasurementTypes = _.map(measurementTypesWithPriority, (obj: any) => {
+      return obj.type
+    });
+    return sortedMeasurementTypes;
   }
 
   updateSelectedScaleValue = (type: string, value: MeasurementValue) =>{
@@ -194,10 +216,9 @@ export default class ReportDailyEvaluationScreen extends React.Component<any, St
   _showToast = () =>{
     Toast.show({
       text: 'Daily evaluation report saved!',
-      buttonText: 'Okay'
+      buttonText: 'OK'
     })
   }
-
 
   render(){
     let { selectedDate } = this.state;
@@ -284,7 +305,7 @@ export default class ReportDailyEvaluationScreen extends React.Component<any, St
 
   renderInSituReport = (measurementType:string) => {
     let inSituReport; 
-    if(!_.values(AdditionalMeasurementTypesForDailyEval).includes(measurementType)){
+    if (this._isOptionalMeasurementType(measurementType)){
       inSituReport = 
         <Card style={styles.inSituCard}>
           <CardItem header bordered>
@@ -313,7 +334,7 @@ export default class ReportDailyEvaluationScreen extends React.Component<any, St
           );
         })
       );
-    }else{
+    } else {
       return(
         <CardItem>
           <Text>None</Text>
@@ -333,7 +354,7 @@ export default class ReportDailyEvaluationScreen extends React.Component<any, St
     
     selectedScaleValue = this.state.measurementsByType[measurementType]
 
-    _.values(MedicationTypes).forEach((type:string)=>{
+    RequiredCheckboxMeasurementTypesInDailyEval.forEach((type:string)=>{
       selectedValueForMedication[type] = this.state.measurementsByType[type]
     })
   
@@ -378,20 +399,20 @@ export default class ReportDailyEvaluationScreen extends React.Component<any, St
             isDailyEvalView = {isDailyEvalView}
           />
           break;
-        case AdditionalMeasurementTypesForDailyEval.exerciseTime:
+        case MeasurementTypes.exerciseTime:
           view = <ExerciseReportView 
             type = {measurementType}
             selectedScaleValue = {selectedScaleValue}
             updateSelectedScaleValue = {this.updateSelectedScaleValue}
           />
           break;
-        case AdditionalMeasurementTypesForDailyEval.medication:
+        case MeasurementTypes.medication:
           view = <MedicationReportView 
             selectedValue = {selectedValueForMedication}
             updateSelectedScaleValue = {this.updateSelectedScaleValue}
           />
           break;
-        case AdditionalMeasurementTypesForDailyEval.memo:
+        case MeasurementTypes.memo:
           view = <MemoView 
             type = {measurementType}
             selectedScaleValue = {selectedScaleValue}

@@ -20,12 +20,11 @@ import { ScreenNames } from "../../constants/Screens";
 import AppState from "../../app/AppState";
 import XDate from "xdate";
 
-
 const appState = new AppState();
 const appService = new AppService();
 
 type State = {
-  current: string, 
+  currentDate: string, 
   trackedMeasurementType: MeasurementType,
   selectedScaleValue: MeasurementValue
 }
@@ -36,8 +35,8 @@ export default class ReportMeasurmentScreen extends React.Component<any, State> 
   };
 
   state = {
-    current: moment().format(DateFormatISO8601),
-    trackedMeasurementType:this.props.navigation.getParam('trackedMeasurementType', null),
+    currentDate: moment().format(DateFormatISO8601),
+    trackedMeasurementType: this.props.navigation.getParam('trackedMeasurementType', null),
     selectedScaleValue: 0,
   }
 
@@ -87,15 +86,15 @@ export default class ReportMeasurmentScreen extends React.Component<any, State> 
 
   onDayPressed = (day: XDate) => {
     this.setState({
-      current: day.dateString
+      currentDate: day.dateString
     })
   }
 
 
   render(){
-    let { current } = this.state;
+    let { currentDate } = this.state;
     let markedDates = {
-      [current]: {
+      [currentDate]: {
         selected: true
       }
     }
@@ -105,7 +104,7 @@ export default class ReportMeasurmentScreen extends React.Component<any, State> 
         <Content contentContainerStyle={styles.content}>
         <Card style={styles.selectionCard}>
           <CardItem style = {styles.cardDate} bordered>
-            <Title style={styles.titleText}>{this.state.current}</Title>   
+            <Title style={styles.titleText}>{this.state.currentDate}</Title>   
           </CardItem>
           <CardItem style = {styles.cardItems}>
           {this.renderScale()}
