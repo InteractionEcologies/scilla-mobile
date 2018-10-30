@@ -14,6 +14,6 @@
 	<key>STANDALONE_CONTEXT_TYPE</key>
 	<string>user</string>
 	<key>developmentUrl</key>
-	<string>exp3e8715bd3d1a42668343585ba408c611://127.0.0.1:19000</string>
+	<string>exp3e8715bd3d1a42668343585ba408c611://cp-ijm.chuanche.scilla-mobile.exp.direct:80</string>
 </dict>
 </plist>
