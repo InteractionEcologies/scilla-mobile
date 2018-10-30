@@ -51,7 +51,8 @@ export default class App extends React.Component<any, any> {
       Font.loadAsync({
         // This is the font that we are using for our tab bar
         ...Icon.Ionicons.font,
-        
+        'Roboto': require('./assets/fonts/Roboto.ttf'),
+        'Roboto_medium': require('./assets/fonts/Roboto_medium.ttf'),
         'space-mono': require('./assets/fonts/SpaceMono-Regular.ttf'),
         'space-mono-bold': require('./assets/fonts/SpaceMono-Bold.ttf'),
         'open-sans': require('./assets/fonts/OpenSans-Regular.ttf'),

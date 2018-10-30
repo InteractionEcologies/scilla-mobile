@@ -18,7 +18,8 @@ jest.mock('react-native-firebase', () => {
         subscribeToTopic: jest.fn(),
         unsubscribeFromTopic: jest.fn(),
         requestPermission: jest.fn(() => Promise.resolve(true)),
-        getToken: jest.fn(() => Promise.resolve('RN-Firebase-Token'))
+        getToken: jest.fn(() => Promise.resolve('RN-Firebase-Token')),
+        signInAndRetrieveDataWithEmailAndPassword: jest.fn()
       }
     }),
     crashlytics: jest.fn(() => {

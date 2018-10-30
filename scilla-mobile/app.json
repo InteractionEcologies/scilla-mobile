@@ -3,7 +3,7 @@
     "name": "scilla-mobile",
     "description": "Find the optimal spasticity care.",
     "slug": "scilla-mobile",
-    "privacy": "public",
+    "privacy": "unlisted",
     "sdkVersion": "30.0.0",
     "platforms": [
       "ios",
