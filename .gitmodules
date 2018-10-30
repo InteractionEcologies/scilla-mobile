@@ -1,8 +1,5 @@
-[submodule "ScillaMobile/app/lib/intecojs"]
-	path = ScillaMobile/app/lib/intecojs
-	url = https://github.com/sprite728/intecojs
-[submodule "scilla-mobile/libs/intecojs"]
-	path = scilla-mobile/libs/intecojs
+[submodule "scilla-mobile/src/libs/intecojs"]
+	path = scilla-mobile/src/libs/intecojs
 	url = https://github.com/InteractionEcologies/intecojs.git
 [submodule "scilla-mobile.wiki"]
 	path = scilla-mobile.wiki
