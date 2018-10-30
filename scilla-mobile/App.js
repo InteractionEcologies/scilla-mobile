@@ -2,12 +2,13 @@
 import React from 'react';
 import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 import { AppLoading, Asset, Font, Icon } from 'expo';
+
 import { StyleProvider, Container, Root } from "native-base";
-import getTheme from "./native-base-theme/components";
-import commonColor from "./native-base-theme/variables/commonColor";
-import AppNavigator from './navigation/AppNavigator';
-import AppService from "./app/AppService";
-import Colors from "./constants/Colors";
+import getTheme from "./src/constants/native-base-theme/components";
+import commonColor from "./src/constants/native-base-theme/variables/commonColor";
+import AppNavigator from './src/navigation/AppNavigator';
+import AppService from "./src/app/AppService";
+import Colors from "./src/constants/Colors";
 
 export default class App extends React.Component<any, any> {
   state = {
@@ -53,7 +54,8 @@ export default class App extends React.Component<any, any> {
       Font.loadAsync({
         // This is the font that we are using for our tab bar
         ...Icon.Ionicons.font,
-        
+        'Roboto': require('./assets/fonts/Roboto.ttf'),
+        'Roboto_medium': require('./assets/fonts/Roboto_medium.ttf'),
         'space-mono': require('./assets/fonts/SpaceMono-Regular.ttf'),
         'space-mono-bold': require('./assets/fonts/SpaceMono-Bold.ttf'),
         'open-sans': require('./assets/fonts/OpenSans-Regular.ttf'),

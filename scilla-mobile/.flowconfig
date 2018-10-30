@@ -2,6 +2,8 @@
 .*/node_modules/.*
 ;.*/__tests__/.*
 *.json
+.*/android/**/*
+.*/ios/**/*
 
 [include]
 
