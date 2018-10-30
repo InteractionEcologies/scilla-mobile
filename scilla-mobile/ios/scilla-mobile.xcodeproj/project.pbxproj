@@ -171,8 +171,8 @@
 				B563863D1DB9693800A0598C /* Sources */,
 				B563863E1DB9693800A0598C /* Frameworks */,
 				B563863F1DB9693800A0598C /* Resources */,
-				AA38385B7D8D0854176B72FC /* [CP] Copy Pods Resources */,
 				19D233B7204FDD7D0087ED51 /* Bundle Expo Assets */,
+				E0DCCBBD688DE35F2508DA29 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -286,10 +286,26 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		AA38385B7D8D0854176B72FC /* [CP] Copy Pods Resources */ = {
+		B5722AD01DFB7E3F0084848F /* Prepare Expo */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			inputPaths = (
+			);
+			name = "Prepare Expo";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/bash;
+			shellScript = "set -eo pipefail\n\npushd \"${SRCROOT}/..\"\nvalue=\"$(cat ~/.expo/PATH)\"\nPATH=\"$PATH:$value\" expo prepare-detached-build --platform ios\npopd\n";
+		};
+		E0DCCBBD688DE35F2508DA29 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-scilla-mobile/Pods-scilla-mobile-resources.sh",
@@ -305,6 +321,8 @@
 				"${PODS_CONFIGURATION_BUILD_DIR}/gRPC/gRPCCertificates.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+			);
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/api.amplitude.com.der",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/ComodoCaLimitedRsaCertificationAuthority.der",
@@ -321,20 +339,6 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-scilla-mobile/Pods-scilla-mobile-resources.sh\"\n";
 			showEnvVarsInLog = 0;
-		};
-		B5722AD01DFB7E3F0084848F /* Prepare Expo */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Prepare Expo";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/bash;
-			shellScript = "set -eo pipefail\n\npushd \"${SRCROOT}/..\"\nvalue=\"$(cat ~/.expo/PATH)\"\nPATH=\"$PATH:$value\" expo prepare-detached-build --platform ios\npopd\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
