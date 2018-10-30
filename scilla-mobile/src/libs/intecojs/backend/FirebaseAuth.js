@@ -36,10 +36,7 @@ export class FirebaseAuth implements IAuth {
   }
 
   signOut(): Promise<any> {
-    
-    return firebase
-      .auth()
-      .signOut();
+    return firebase.auth().signOut();
   }
 
   onAuthStateChanged(
