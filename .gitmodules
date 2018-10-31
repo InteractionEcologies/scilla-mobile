@@ -1,3 +1,6 @@
 [submodule "scilla-mobile/src/libs/intecojs"]
 	path = scilla-mobile/src/libs/intecojs
 	url = git@github.com:InteractionEcologies/intecojs.git
+[submodule "scilla-mobile/src/libs/victory-native"]
+	path = scilla-mobile/src/libs/victory-native
+	url = https://github.com/InteractionEcologies/victory-native.git

@@ -25,18 +25,15 @@ import {
   VictoryVoronoiContainer, 
   VictoryTooltip, 
   VictoryGroup 
-} from "victory-native";
+} from "../../libs/victory-native";
 
 import { 
   ColorsForMeasurementTypes, 
   DefaultColorForMeasurement 
 } from "./constants";
 import { MeasurementSelectionBtn } from "./views/MeasurementSelectionBtn";
-// import { Svg } from "expo";
-
-// import { Circle, Rect, G } from "react-native-svg";
-import { Circle, Rect, G } from "victory-native";
-import { Svg } from "react-native-svg";
+import { Svg } from "expo";
+const { Circle, Rect, G } = Svg; 
 
 const appState = new AppState();
 
@@ -373,6 +370,7 @@ export default class AnalysisMainScreen extends React.Component<any, State> {
           key = {i}
           measurementType = {type}
           selected = {selected}
+          style = {styles.btn}
           onPress = {() => this._onBtnPress(type)}
         />
         // <Button
@@ -427,9 +425,9 @@ const styles = StyleSheet.create({
     width: 340,
     flexDirection: "row",
     flexWrap: 'wrap',
-    marginTop:30,
-    marginBottom:50,
-    marginLeft:10
+    marginTop: 30,
+    marginBottom: 50,
+    marginLeft: 10
   },
   btnText:{
     color:'black'

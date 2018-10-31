@@ -42,7 +42,7 @@ export default class ReportMeasurmentScreen extends React.Component<any, State> 
 
   newReport: ?MeasurementObject = null
 
-  onMeasurementValueConfirmed = () => {q
+  onMeasurementValueConfirmed = () => {
     console.log("save measurement object");
     if(this.state.trackedMeasurementType){
       this._createMeasurementReport(this.state.trackedMeasurementType, this.state.selectedScaleValue);

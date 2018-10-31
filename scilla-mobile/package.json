@@ -44,7 +44,6 @@
     "react-native-easy-grid": "^0.2.0",
     "react-native-firebase": "^4.2.0",
     "react-native-step-indicator": "0.0.9",
-    "react-native-svg": "^6.5.0",
     "react-navigation": "^2.13.0",
     "react-redux": "^5.0.7",
     "redux": "^4.0.0",

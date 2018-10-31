@@ -22,24 +22,24 @@ type Props = {
 
 export class MeasurementSelectionBtn extends React.Component<Props, any> {
   render() {
-    let btnStyle = this._getAdditionalBtnStyle();
+    let additionalStyle = this._addAdditionalBtnStyle();
     return (
       <Button 
         {...this.props} 
         rounded
         bordered = {!this.props.selected}
-        style={[this.props.style, btnStyle]}
+        style = {[this.props.style, additionalStyle]}
       >
         <AppText 
-          style = {this.props.selected ? null : Colors.primaryTextColor}>
+          style = {this.props.selected ? null : {color: Colors.primaryTextColor}}>
             {this.props.measurementType}
           </AppText>
       </Button>
       )
   }
 
-  _getAdditionalBtnStyle() {
-    let btnStyle = this.props.styles.btn;
+  _addAdditionalBtnStyle() {
+    let additionalStyle = {}
     let color = _.get(
       ColorsForMeasurementTypes, 
       this.props.measurementType, 
@@ -47,11 +47,11 @@ export class MeasurementSelectionBtn extends React.Component<Props, any> {
     );
 
     if (this.props.selected) {
-      btnStyle.backgroundColor = color;
+      additionalStyle.backgroundColor = color;
     } else {
-      btnStyle.borderColor = color;
+      additionalStyle.borderColor = color;
     }
     
-    return btnStyle;
+    return additionalStyle;
   }
 }
