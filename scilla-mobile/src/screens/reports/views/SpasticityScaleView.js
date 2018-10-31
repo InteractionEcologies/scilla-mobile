@@ -30,9 +30,9 @@ export default class SpasticityScaleView extends React.Component<Props, any> {
               selectedScaleValueText = {null}
               updateSelectedScaleValue = {this.props.updateSelectedScaleValue}
               minValue = {0}
-              maxValue = {10}
-              minText = {'No Spasticity'}
-              maxText = {'Worst possible Spasticity'}
+              maxValue = {5}
+              minText = {'No Spasticity pain'}
+              maxText = {'Worst possible spasticity pain'}
               ></ScaleSlider>
         </View>
       );

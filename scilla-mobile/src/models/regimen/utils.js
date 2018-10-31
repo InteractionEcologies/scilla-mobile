@@ -1,7 +1,8 @@
 // @flow
 import type {
   TreatmentObject,
-  TreatmentDetailOption
+  TreatmentDetailOption,
+  DateTypeISO8601
 } from "../../libs/intecojs";
 
 import {
@@ -40,6 +41,33 @@ export class BaclofenUtils {
     // }
     return ""
   }
+
+  /**
+  * @throws {NotExistError} 
+  */ 
+  static getDosageByDate(date: DateTypeISO8601, debug: bool = true): number {
+  if(debug) {
+      if (date === '2018-09-15'){
+        return 5; 
+      }
+      else if(date === '2018-09-22'){
+        return 10; 
+      }
+      else if(date === '2018-09-29'){
+        return 15; 
+      }
+      else if(date === '2018-10-06'){
+        return 20; 
+      }
+      else if(date === '2018-10-13'){
+        return 25; 
+      }
+      else{
+        return 30; 
+      }
+  }
+  return 10;
+}
 }
 
 export class RegimenUtils {

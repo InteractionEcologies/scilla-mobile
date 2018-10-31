@@ -1,3 +1,4 @@
+
 .expo/**/*
 
 # Xcode
@@ -46,7 +47,9 @@ buck-out
 .gradle
 local.properties
 *.iml
-/android/
+**/*/android/app/build/
+build/
+/build/
 
 # Node
 node_modules

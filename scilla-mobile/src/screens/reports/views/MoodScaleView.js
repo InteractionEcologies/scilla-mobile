@@ -26,10 +26,10 @@ export default class MoodScaleView extends React.Component<Props, any> {
             <ScaleSlider 
               type = {this.props.type}
               selectedScaleValue = {this.props.selectedScaleValue}
-              selectedScaleValueText = {this.renderScaleValueText()}
+              selectedScaleValueText = {null}
               updateSelectedScaleValue = {this.props.updateSelectedScaleValue}
-              minValue = {-3}
-              maxValue = {3}
+              minValue = {0}
+              maxValue = {5}
               minText = {'Depressed'}
               maxText = {'Manic'}
               ></ScaleSlider>
@@ -37,7 +37,7 @@ export default class MoodScaleView extends React.Component<Props, any> {
       );
     }
 
-    renderScaleValueText(){
-      return this.props.selectedScaleValue === 0 ? 'Normal' : null
-    }
+    // renderScaleValueText(){
+    //   return this.props.selectedScaleValue === 0 ? 'Normal' : null
+    // }
   }

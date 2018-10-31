@@ -11,6 +11,7 @@ target 'scilla-mobile' do
   pod 'Firebase/Auth', '5.3.0'
   pod 'Firebase/Firestore', '5.3.0'
 
+  pod 'RNSVG', :path => '../node_modules/react-native-svg'
   
   pod 'ExpoKit',
     :git => "http://github.com/expo/expo.git",
@@ -109,6 +110,8 @@ target 'scilla-mobile' do
     :podspec => "../node_modules/react-native/third-party-podspecs/glog.podspec",
     :inhibit_warnings => true
 
+
+  pod 'RNSVG', :path => '../node_modules/react-native-svg'
 
   post_install do |installer|
     installer.pods_project.main_group.tab_width = '2';
