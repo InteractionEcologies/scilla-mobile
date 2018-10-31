@@ -48,26 +48,26 @@ export default class SleepScaleView extends React.Component<Props, any> {
         scaleValueText = 'Feeling active, vital, alert, or wide awake';
         break; 
       case 1:
-        scaleValueText = 'Functioning at high levels, but not at peak; able to concentrate'
+        scaleValueText = 'Functioning at high levels, but not at peak, able to concentrate'
         break;
       case 2:
-        scaleValueText = 'Awake, but relaxed; responsive but not fully alert'
+        scaleValueText = 'Awake, but relaxed, responsive but not fully alert'
         break;
       case 3:
         scaleValueText = 'Somewhat foggy, let down'
         break;
       case 4:
-        scaleValueText = 'Foggy; losing interest in remaining awake; slwoed down'
+        scaleValueText = 'Foggy, losing interest in remaining awake, slowed down'
         break;
       case 5:
-        scaleValueText = 'Sleepy, woozy, fighting sleep; prefer to lie down'
+        scaleValueText = 'Sleepy, woozy, fighting sleep, prefer to lie down'
         break;
       case 6:
-        scaleValueText = 'No longer fighting sleep, sleep onset soon;having dream-like thoughts'
+        scaleValueText = 'No longer fighting sleep, sleep onset soon; having dream-like thoughts'
         break;
       
       default: 
-        scaleValueText = 'Awake, but relaxed; responsive but not fully alert'
+        scaleValueText = 'Awake, but relaxed, responsive but not fully alert'
         break;
     }
     return scaleValueText;
