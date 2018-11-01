@@ -1,7 +1,7 @@
 // @flow
 import React from "react";
-import { StyleSheet } from 'react-native';
-import { Content, View, Button, Card, CardItem } from "native-base";
+import { StyleSheet, ScrollView  } from 'react-native';
+import { Content, View, Button, Card, CardItem} from "native-base";
 import { AppText, Title } from "../../components";
 import moment from "moment";
 import AppState from "../../app/AppState";
@@ -25,7 +25,7 @@ import {
   VictoryVoronoiContainer, 
   VictoryTooltip, 
   VictoryGroup 
-} from "../../libs/victory-native";
+} from "../../libs/victory-native/lib";
 
 import { 
   ColorsForMeasurementTypes, 
@@ -309,12 +309,12 @@ export default class AnalysisMainScreen extends React.Component<any, State> {
         'y': +displacedY.toFixed(2)
       })
     }
-
     return data
   }
 
   render() {
     return (
+      <ScrollView>
       <Content contentContainerStyle={styles.mainView}>
         <Title>Symptom and side effects under different dosages</Title> 
         <View style={styles.btnView}>
@@ -359,6 +359,7 @@ export default class AnalysisMainScreen extends React.Component<any, State> {
           </Svg>
         </View>
       </Content>
+      </ScrollView>
     )
   }
 
@@ -373,31 +374,9 @@ export default class AnalysisMainScreen extends React.Component<any, State> {
           style = {styles.btn}
           onPress = {() => this._onBtnPress(type)}
         />
-        // <Button
-        //     key = {i}
-        //     rounded
-        //     bordered = {!selected}
-        //     style = {this._createBtnStyle(selected, type)}
-        //     onPress = {()=>this._onBtnPress(type)}
-        // >
-        //   <AppText style={selected?null:styles.btnText}>{type}</AppText>
-        // </Button>
-
       );
     })
   }
-
-  // _createBtnStyle(selected: bool, type:string){
-  //   let btnStyle = styles.btn;
-    
-  //   if(selected) {
-  //     btnStyle.backgroundColor = ColorsForMeasurementTypes[type];
-  //   } else {
-  //     btnStyle.borderColor = ColorsForMeasurementTypes[type];
-  //   }
-    
-  //   return btnStyle;
-  // }
 
   _onBtnPress = (pressedType:string) => {
       if(this.state.selectedMeasurementTypes.includes(pressedType)){
@@ -428,9 +407,6 @@ const styles = StyleSheet.create({
     marginTop: 30,
     marginBottom: 50,
     marginLeft: 10
-  },
-  btnText:{
-    color:'black'
   },
   btn: {
     height: 50,
