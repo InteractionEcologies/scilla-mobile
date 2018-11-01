@@ -29,7 +29,7 @@ export default class BaclofenScaleView extends React.Component<Props, any> {
               selectedScaleValueText = {null}
               updateSelectedScaleValue = {this.props.updateSelectedScaleValue}
               minValue = {0}
-              maxValue = {10}
+              maxValue = {5}
               minText = {'No at all'}
               maxText = {'Highest Balcofen Amount'}
               ></ScaleSlider>

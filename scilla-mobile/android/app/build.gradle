@@ -99,15 +99,29 @@ apply from: 'expo.gradle'
 
 
 dependencies {
+<<<<<<< HEAD
   implementation project(':react-native-svg')
   implementation fileTree(dir: 'libs', include: ['*.jar'])
 
+=======
+    compile project(':react-native-firebase')
+>>>>>>> jeff/f/rescue-android
   implementation project(':react-native-firebase')
   implementation "com.google.android.gms:play-services-base:15.0.1"
   implementation "com.google.firebase:firebase-core:16.0.1"
   implementation "com.google.firebase:firebase-auth:16.0.2"
+<<<<<<< HEAD
 
   implementation 'com.android.support:multidex:1.0.1'
+=======
+  implementation "com.google.firebase:firebase-firestore:17.0.2"
+
+  implementation project(':react-native-svg')
+  implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+
+  implementation 'com.android.support:multidex:1.0.2'
+>>>>>>> jeff/f/rescue-android
 
   // Our dependencies
   implementation 'com.android.support:appcompat-v7:27.1.1'

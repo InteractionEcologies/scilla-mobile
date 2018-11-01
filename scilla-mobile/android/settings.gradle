@@ -1,0 +1,9 @@
+include ':app'
+include ':react-native-firebase'
+project(':react-native-firebase').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-firebase/android')
+
+// Have to change the path to ../node_modules/expo/node_modules/react-native-svg/android to use the react-native-svg
+// provided by Expo. Since adding our own react-native-svg can introduce issues, we cannot follow
+// the standard installation guideline provided by react-native-svg
+include ':react-native-svg'
+project(':react-native-svg').projectDir = new File(rootProject.projectDir, '../node_modules/expo/node_modules/react-native-svg/android')

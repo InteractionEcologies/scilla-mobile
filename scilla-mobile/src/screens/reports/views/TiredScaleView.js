@@ -29,9 +29,9 @@ export default class TiredScaleView extends React.Component<Props, any> {
               selectedScaleValueText = {null}
               updateSelectedScaleValue = {this.props.updateSelectedScaleValue}
               minValue = {0}
-              maxValue = {10}
-              minText = {'No tiredness'}
-              maxText = {'Worst possible tiredness'}
+              maxValue = {5}
+              minText = {'Very energetic'}
+              maxText = {'Very tired'}
               ></ScaleSlider>
         </View>
       );

@@ -29,12 +29,12 @@ export default class SleepScaleView extends React.Component<Props, any> {
             <ScaleSlider 
               type = {this.props.type}
               selectedScaleValue = {this.props.selectedScaleValue}
-              selectedScaleValueText = {this.renderScaleValueText()}
+              selectedScaleValueText = {null}
               updateSelectedScaleValue = {this.props.updateSelectedScaleValue}
               minValue = {0}
-              maxValue = {6}
-              minText = {''}
-              maxText = {''}
+              maxValue = {5}
+              minText = {'Not sleepy at all'}
+              maxText = {'Very sleepy'}
               ></ScaleSlider>
       </View>
     );
@@ -65,7 +65,6 @@ export default class SleepScaleView extends React.Component<Props, any> {
       case 6:
         scaleValueText = 'No longer fighting sleep, sleep onset soon; having dream-like thoughts'
         break;
-      
       default: 
         scaleValueText = 'Awake, but relaxed, responsive but not fully alert'
         break;

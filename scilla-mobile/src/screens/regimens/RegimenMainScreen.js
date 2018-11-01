@@ -1,6 +1,6 @@
 // @flow
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, ScrollView } from "react-native";
 import {
   Container, Header, Content, Button,
   Footer, Text, Card, CardItem, Body
@@ -152,11 +152,13 @@ export default class RegimenMainScreen extends React.Component<any, State> {
   render() {
     return (
       <Container>
-        <Content contentContainerStyle={AppStyles.content}>
-          <View style={AppStyles.contentBody}>
-            {this.renderRegimen()}
-          </View>
-        </Content>
+        <ScrollView>
+          <Content contentContainerStyle={AppStyles.content}>
+            <View style={AppStyles.contentBody}>
+              {this.renderRegimen()}
+            </View>
+          </Content>
+        </ScrollView>
       </Container>
     )
   }
