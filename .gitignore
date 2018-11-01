@@ -42,7 +42,7 @@ buck-out
 
 # Android
 .idea
-.gradle
+.gradle/
 local.properties
 *.iml
 **/android/**/build/
@@ -73,3 +73,9 @@ package-lock.json
 
 # ReactCommon subdir shouldn't have Xcode project
 /ReactCommon/**/*.xcodeproj
+
+# Expo related
+EXBuildConstants.json
+EXBuildConstants.plist
+EXBuildConstants.plist.bak
+**/.expo/packager-info.json

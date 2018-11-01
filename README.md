@@ -8,13 +8,16 @@ A mobile app to help patients with Spinal Cord Injury or Disease (SCI/D) learn t
   * `scilla-mobile/libs/intecojs/`: for sharing code between Inteco projects.  
 
 ## Major Dependencies
-* React Native
-* react-navigation
+* react-navigation 
 * React Native (v0.55.4)
 * Expo (v30.0.0)
 * React Native Firebase (npm) (v4.2)
-* React Native Firebase (cocoapod) (v5.3.0)
-* react-native-svg (v6.2.2)
+* React Native Firebase (iOS SDK) (v5.3.0)
+* react-native-svg (v6.2.2) in Expo
+  * Android Gradle builds the react-native-svg in Expo rather than the standard one. 
+* Victory (visualization)
+  * We forked a `victory-native` and placed it under `scilla-mobile/src/libs`. This contains a version that uses the react-native-svg provided by Expo. 
+  * We still dependent on other `victory-<xxx>` packages, those packages do not use `react-native-svg` thus it is safe to use. See `scilla-mobile/package.json` for the ones we dependent on. These dependencies are copied from `victory-native/package.json`
 
 ## Development Environments
 * **Visual Studio Code** 
