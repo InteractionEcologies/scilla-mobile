@@ -1,0 +1,9 @@
+{
+  "expoServerPort": 19000,
+  "expoServerNgrokUrl": "https://27-a6f.chuanche.scilla-mobile.exp.direct",
+  "packagerNgrokUrl": "https://packager.27-a6f.chuanche.scilla-mobile.exp.direct",
+  "ngrokPid": 81323,
+  "devToolsPort": 19002,
+  "packagerPort": 19001,
+  "packagerPid": 81273
+}
