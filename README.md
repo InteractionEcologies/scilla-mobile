@@ -9,17 +9,18 @@ A mobile app to help patients with Spinal Cord Injury or Disease (SCI/D) learn t
 
 ## Major Dependencies
 * React Native
-* Expo 
 * react-navigation
-* Firebase
+* React Native (v0.55.4)
+* Expo (v30.0.0)
+* React Native Firebase (npm) (v4.2)
+* React Native Firebase (cocoapod) (v5.3.0)
+* react-native-svg (v6.2.2)
 
 ## Development Environments
-* **Visual Studio Code** (v1.26.1)
+* **Visual Studio Code** 
 * **React Native** (v0.55.4)
 * **node** (v8.11.4 LTS)
 * **Expo** (v30.0.0)
-* **React Native Firebase (npm)** (v4.2)
-* **React Native Firebase (cocoapod)** (v5.3.0)
 * **Flow** 
 * **Jest**
 
