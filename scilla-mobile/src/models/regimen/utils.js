@@ -6,12 +6,12 @@ import type {
 } from "../../libs/intecojs";
 
 import {
-  DateFormatTimeOfDay,
+  DateFormatTimeOfDay, TreatmentDetailOptions,
 } from "../../libs/intecojs";
 import { Regimen } from "./";
 import moment from "moment";
 import _ from "lodash";
-import { PartOfDayOptions } from "./";
+import { PartOfDayOptions, IRegimenPhase, BaclofenRegimenPhase } from "./";
 
 export class BaclofenUtils {
   static computeWeeksByDosageDeficit(deficitDoseMg: number): number {
@@ -46,28 +46,56 @@ export class BaclofenUtils {
   * @throws {NotExistError} 
   */ 
   static getDosageByDate(date: DateTypeISO8601, debug: bool = true): number {
-  if(debug) {
-      if (date === '2018-09-15'){
-        return 5; 
-      }
-      else if(date === '2018-09-22'){
-        return 10; 
-      }
-      else if(date === '2018-09-29'){
-        return 15; 
-      }
-      else if(date === '2018-10-06'){
-        return 20; 
-      }
-      else if(date === '2018-10-13'){
-        return 25; 
-      }
-      else{
-        return 30; 
-      }
+    if(debug) {
+        if (date === '2018-09-15'){
+          return 5; 
+        }
+        else if(date === '2018-09-22'){
+          return 10; 
+        }
+        else if(date === '2018-09-29'){
+          return 15; 
+        }
+        else if(date === '2018-10-06'){
+          return 20; 
+        }
+        else if(date === '2018-10-13'){
+          return 25; 
+        }
+        else{
+          return 30; 
+        }
+    }
+    return 10;
   }
-  return 10;
-}
+
+  static getDosageByRegimenPhase(regimenPhase: IRegimenPhase) {
+    if(regimenPhase instanceof BaclofenRegimenPhase) {
+      let totalDosage = 0;
+      let treatmentObjs = regimenPhase.treatmentObjects;
+
+      for(let obj of treatmentObjs) {
+        switch(obj.option) {
+          case TreatmentDetailOptions.baclofen5mg: 
+            totalDosage += 5;
+            break;
+          case TreatmentDetailOptions.baclofen10mg: 
+            totalDosage += 10;
+            break;
+          case TreatmentDetailOptions.baclofen15mg: 
+            totalDosage += 15;
+            break;
+          case TreatmentDetailOptions.baclofen20mg: 
+            totalDosage += 20;
+            break;
+        }
+      }
+
+      return totalDosage;
+    } else {
+      throw TypeError("This regimen is not a baclofen regimen.")
+    }
+  }
 }
 
 export class RegimenUtils {

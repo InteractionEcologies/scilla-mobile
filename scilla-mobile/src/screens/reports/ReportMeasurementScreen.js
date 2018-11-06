@@ -62,6 +62,7 @@ export default class ReportMeasurmentScreen extends React.Component<any, State> 
   _createMeasurementReport = (type: MeasurementType, value: MeasurementValue) =>{
     let user = appService.auth.currentUser;
     let uid = user.uid;
+
     this.newReport = {
         id: appService.generatePushID(),
         type: type,

@@ -33,6 +33,7 @@ import {
   RequiredMeasurementTypesInDailyEval, 
   DailyEvalQuestionPriorityMap
 } from "./constants";
+import { Regimen } from "../../models/regimen";
 
 const appState = new AppState();
 const appService = new AppService();
@@ -64,8 +65,9 @@ export default class ReportDailyEvaluationScreen extends React.Component<any, St
     dailyEvalReportObjId: null
   }
 
-  dailyEvalViews = []
-  newDailyEvalReport = null
+  dailyEvalViews = [];
+  regimen: Regimen;
+  newDailyEvalReport = null;
   
   componentWillFocusSubscription: any;
 
@@ -78,6 +80,7 @@ export default class ReportDailyEvaluationScreen extends React.Component<any, St
   }
 
   componentDidMount() {
+    this.regimen = this.props.navigation.getParam('regimen', null);
     this.initializeState();
     this.getInSituMeasurements();
   }
@@ -203,11 +206,20 @@ export default class ReportDailyEvaluationScreen extends React.Component<any, St
   _createDailyEvalReport = (meaurementsByType:{[key: MeasurementType]:MeasurementValue})=>{
     let user = appService.auth.currentUser;
     let uid = user.uid;
+    let regimenId = this.regimen.id || null;
+    let phase;
+    if(this.regimen && this.regimen.getRegimenPhaseByDate(this.state.selectedDate)) {
+      let regimenPhase = this.regimen.getRegimenPhaseByDate(this.state.selectedDate);
+      phase = regimenPhase.phase
+    }
+
     this.newDailyEvalReport = {
         id: this.state.dailyEvalReportObjId || appService.generatePushID(), 
         uid: uid,
         date: this.state.selectedDate, 
         createdAtTimestamp: moment().unix(),
+        regimenId: regimenId, 
+        regimenPhase: phase,
         measurementsByType: meaurementsByType
     }
     appState.updateDailyEval(this.newDailyEvalReport)

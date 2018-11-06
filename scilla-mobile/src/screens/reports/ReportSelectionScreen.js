@@ -11,7 +11,9 @@ import { ScreenNames } from "../../constants/Screens";
 import _ from "lodash";
 import { OneWeekCalendar } from "../../components";
 import XDate from "xdate";
-import type {
+import { Regimen } from "../../models/regimen";
+import type
+ {
   MeasurementType
 } from "../../libs/intecojs"
 
@@ -34,6 +36,7 @@ export default class ReportSelectionScreen extends React.Component<any, State> {
   }
 
   componentWillFocusSubscription: any;
+  regimen: Regimen;
 
   constructor(props: any) {
     super(props);
@@ -60,6 +63,7 @@ export default class ReportSelectionScreen extends React.Component<any, State> {
     try {
       let regimen = await appState.getLatestRegimen();
       if(regimen) {
+        this.regimen = regimen;
         this.setState({
           trackedMeasurementTypes: [
             ...regimen.getTrackedMeasurementTypes(),
@@ -82,7 +86,7 @@ export default class ReportSelectionScreen extends React.Component<any, State> {
   _goToDailyEvaluationScreen = (date: string) => {
     this.props.navigation.navigate(
       ScreenNames.ReportDailyEvaluation,
-      { selectedDate: date }
+      { selectedDate: date, regimen: this.regimen}
     )
   }
 

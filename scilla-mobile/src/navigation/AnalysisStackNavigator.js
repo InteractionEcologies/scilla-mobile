@@ -4,7 +4,7 @@ import { createStackNavigator } from "react-navigation";
 import TabBarIcon from "../components/TabBarIcon";
 import { Platform } from "react-native";
 
-import AnalysisMainScreen from "../screens/analysis/AnalysisMainScreen";
+import AnalysisMainScreen from "../screens/analysis/AnalysisMainScreen3";
 import { ScreenNames } from "../constants/Screens";
 
 let AnalysisStack = createStackNavigator(

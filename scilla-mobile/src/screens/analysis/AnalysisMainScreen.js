@@ -26,6 +26,10 @@ import {
   VictoryTooltip, 
   VictoryGroup 
 } from "../../libs/victory-native/lib";
+import type {
+  MeasurementReportSummary, 
+  ScoreMap
+} from "../../models/analysis"
 
 import { 
   ColorsForMeasurementTypes, 
@@ -44,20 +48,6 @@ type State = {
   dosageByPhases: number[], // a list of dosages for each phase. (TODO: Why not store this in the summary?)
 }
 
-// Stores the score map for each measurement type for a period of time. 
-type MeasurementReportSummary = {
-  [key: MeasurementType]: ScoreMap
-} 
-
-// Number of reports for each score per measurement. 
-type ScoreMap = {
-  "0": number,
-  "1": number,
-  "2": number,
-  "3": number,
-  "4": number,
-  "5": number
-} 
 
 export default class AnalysisMainScreen extends React.Component<any, State> {
   static navigationOptions: any = {
@@ -78,7 +68,7 @@ export default class AnalysisMainScreen extends React.Component<any, State> {
   async initializeState() {
     try { 
       let regimen = await appState.getLatestRegimen();
-      this._initMeasurementReportSummariesByPhases(regimen);
+      await this._initMeasurementReportSummariesByPhases(regimen);
       this._initDosageByPhases(regimen);
 
       this.setState({
@@ -91,11 +81,11 @@ export default class AnalysisMainScreen extends React.Component<any, State> {
     }
   }
 
-  _initMeasurementReportSummariesByPhases(regimen: Regimen) {
+  async _initMeasurementReportSummariesByPhases(regimen: Regimen) {
     let measurementReportSummariesByPhases = [];
 
-    regimen.getRegimenPhases().forEach((regimenPhase)=>{
-      let summary = this._createMeasurementReportSummaryForPeriod(
+    regimen.getRegimenPhases().forEach(async (regimenPhase)=>{
+      let summary = await this._createMeasurementReportSummaryForPeriod(
         regimenPhase.startDate, 
         regimenPhase.endDate
       )
@@ -136,7 +126,7 @@ export default class AnalysisMainScreen extends React.Component<any, State> {
       measurementReportSummary[measurementType] = this._initScoreMap();
       
       dailyEvalReports.forEach(report => {
-        if(_.includes(report.measurementsByType, measurementType)) {
+        if(_.has(report.measurementsByType, measurementType)) {
           let value: string = report.measurementsByType[measurementType].toString();
           measurementReportSummary[measurementType][value] += 1;
         }
@@ -167,10 +157,91 @@ export default class AnalysisMainScreen extends React.Component<any, State> {
     }
   }
 
+  render() {
+    return (
+      <ScrollView>
+      <Content contentContainerStyle={styles.mainView}>
+        <Title>Symptom and side effects under different dosages</Title> 
+        <View style={styles.btnView}>
+          {this.renderSelectionButtons()}
+        </View>
+        <View>
+          <Svg width="400" height="360" >
+            <VictoryLabel x={25} y={65} 
+              text={"Ave \nScore"}
+            />
+            {/* <VictoryChart
+                containerComponent={
+                  <VictoryVoronoiContainer/>
+                }
+                groupComponents = {
+                  <g transform="translate(5, 40)" />
+              }
+            > */}
+              <G transform={"translate(5, 40)"}>
+                <VictoryAxis
+                  tickValues={this.state.dosageByPhases}
+                  tickFormat = {(tick)=> `${tick}mg`}
+                  standalone={false}
+                  domain={[this.state.dosageByPhases[0]-2, 
+                            this.state.dosageByPhases[this.state.dosageByPhases.length-1]+2]}
+                />
+                <VictoryAxis
+                  dependentAxis
+                  standalone={false}
+                  tickFormat = {(tick)=> {if(tick>=0 && tick<=5){return `${tick}`}}}
+                  domain={[-0.5, 5.5]}
+                  style={{
+                    grid: {
+                        stroke: "#ccc",
+                        strokeWidth: 1
+                      }
+                  }}
+                  />
+                {this.renderChart()}
+              </G>
+            {/* </VictoryChart> */}
+          </Svg>
+        </View>
+      </Content>
+      </ScrollView>
+    )
+  }
+
+  renderSelectionButtons = (): any => {
+    return this.state.trackedMeasurementTypes.map( (type: string, i: number): any => {
+      let selected: boolean = this.state.selectedMeasurementTypes.includes(type)
+      return (
+        <MeasurementSelectionBtn
+          key = {i}
+          measurementType = {type}
+          selected = {selected}
+          style = {styles.btn}
+          onPress = {() => this._onBtnPress(type)}
+        />
+      );
+    })
+  }
+
+  _onBtnPress = (pressedType:string) => {
+      if(this.state.selectedMeasurementTypes.includes(pressedType)){
+        let selectedMeasurementTypes = this.state.selectedMeasurementTypes.filter(type=>type!==pressedType)
+        this.setState({
+          selectedMeasurementTypes
+        })
+      } else {
+        this.setState({
+          selectedMeasurementTypes: [...this.state.selectedMeasurementTypes, pressedType]
+        })
+      }
+  }
+
+
   renderChart =() =>{
 
     if (this.state.selectedMeasurementTypes.length > 1) {
       let chart = []
+
       this.state.selectedMeasurementTypes.forEach((type,i)=>{
         let meanData = []
         let color = ColorsForMeasurementTypes[type]
@@ -310,85 +381,6 @@ export default class AnalysisMainScreen extends React.Component<any, State> {
       })
     }
     return data
-  }
-
-  render() {
-    return (
-      <ScrollView>
-      <Content contentContainerStyle={styles.mainView}>
-        <Title>Symptom and side effects under different dosages</Title> 
-        <View style={styles.btnView}>
-          {this.renderSelectionButtons()}
-        </View>
-        <View>
-          <Svg width="400" height="360" >
-            <VictoryLabel x={25} y={65} 
-              text={"Ave \nScore"}
-            />
-            {/* <VictoryChart
-                containerComponent={
-                  <VictoryVoronoiContainer/>
-                }
-                groupComponents = {
-                  <g transform="translate(5, 40)" />
-              }
-            > */}
-              <G transform={"translate(5, 40)"}>
-                <VictoryAxis
-                    tickValues={this.state.dosageByPhases}
-                    tickFormat = {(tick)=> `${tick}mg`}
-                    standalone={false}
-                    domain={[this.state.dosageByPhases[0]-2, 
-                              this.state.dosageByPhases[this.state.dosageByPhases.length-1]+2]}
-                  />
-                  <VictoryAxis
-                    dependentAxis
-                    standalone={false}
-                    tickFormat = {(tick)=> {if(tick>=0 && tick<=5){return `${tick}`}}}
-                    domain={[-0.5, 5.5]}
-                    style={{
-                      grid: {
-                          stroke: "#ccc",
-                          strokeWidth: 1
-                        }
-                    }}
-                  />
-                {this.renderChart()}
-              </G>
-            {/* </VictoryChart> */}
-          </Svg>
-        </View>
-      </Content>
-      </ScrollView>
-    )
-  }
-
-  renderSelectionButtons = (): any => {
-    return this.state.trackedMeasurementTypes.map( (type: string, i: number): any => {
-      let selected: boolean = this.state.selectedMeasurementTypes.includes(type)
-      return (
-        <MeasurementSelectionBtn
-          key = {i}
-          measurementType = {type}
-          selected = {selected}
-          style = {styles.btn}
-          onPress = {() => this._onBtnPress(type)}
-        />
-      );
-    })
-  }
-
-  _onBtnPress = (pressedType:string) => {
-      if(this.state.selectedMeasurementTypes.includes(pressedType)){
-        let selectedMeasurementTypes = this.state.selectedMeasurementTypes.filter(type=>type!==pressedType)
-        this.setState({
-          selectedMeasurementTypes
-        })
-      } else {
-        this.setState({
-          selectedMeasurementTypes: [...this.state.selectedMeasurementTypes, pressedType]
-        })
-      }
   }
 }
 
