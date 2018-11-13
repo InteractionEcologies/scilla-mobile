@@ -10,8 +10,8 @@ import expolib_v1.okhttp3.OkHttpClient;
 
 // Needed for `react-native link`
 // import com.facebook.react.ReactApplication;
-import io.invertase.firebase.RNFirebasePackage;
 import com.horcrux.svg.SvgPackage;
+import io.invertase.firebase.RNFirebasePackage;
 import io.invertase.firebase.auth.RNFirebaseAuthPackage;
 import io.invertase.firebase.firestore.RNFirebaseFirestorePackage;
 
@@ -31,10 +31,10 @@ public class MainApplication extends ExpoApplication {
 
         // Needed for `react-native link`
         // new MainReactPackage(),
+            new SvgPackage(),
             new RNFirebasePackage(),
             new RNFirebaseAuthPackage(),
-            new RNFirebaseFirestorePackage(),
-            new SvgPackage()
+            new RNFirebaseFirestorePackage()
     );
   }
 

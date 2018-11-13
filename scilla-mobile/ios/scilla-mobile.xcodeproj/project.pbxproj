@@ -194,7 +194,7 @@
 				TargetAttributes = {
 					B56386401DB9693800A0598C = {
 						CreatedOnToolsVersion = 8.0;
-						DevelopmentTeam = Y545HXXP3K;
+						DevelopmentTeam = R3STN86BB8;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -462,14 +462,14 @@
 			baseConfigurationReference = 2C1548D9E4CB1AEFA5CCAE6D /* Pods-scilla-mobile.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = Y545HXXP3K;
+				DEVELOPMENT_TEAM = R3STN86BB8;
 				INFOPLIST_FILE = "$(SRCROOT)/scilla-mobile/Supporting/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.ccjeffhuang.scilla;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dora.scilla;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -480,14 +480,14 @@
 			baseConfigurationReference = A47FE4D7F70906B7DC8CE39B /* Pods-scilla-mobile.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = Y545HXXP3K;
+				DEVELOPMENT_TEAM = R3STN86BB8;
 				INFOPLIST_FILE = "$(SRCROOT)/scilla-mobile/Supporting/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.ccjeffhuang.scilla;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dora.scilla;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
