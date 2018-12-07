@@ -15,6 +15,10 @@ import type {
 import { Regimen } from "../../models/regimen";
 import _ from "lodash";
 import { BaclofenUtils } from "../../models/regimen/utils";
+import { AnalysisUtils } from "../../models/analysis/utils";
+import type { 
+  DailyEvalDataPoint 
+} from "../../models/analysis";
 import { NotExistError } from "../../libs/intecojs";
 import { 
   VictoryChart, 
@@ -26,28 +30,32 @@ import {
   VictoryTooltip, 
   VictoryGroup 
 } from "../../libs/victory-native/lib";
-import type {
-  MeasurementReportSummary, 
-  ScoreMap
-} from "../../models/analysis"
-
+import { DailyEvalDataFrame } from "../../models/analysis/";
+import { IRegimenPhase } from "../../models/regimen";
 import { 
   ColorsForMeasurementTypes, 
-  DefaultColorForMeasurement 
+  DefaultColorForMeasurement,
+  PlottableMeasurementTypes
 } from "./constants";
 import { MeasurementSelectionBtn } from "./views/MeasurementSelectionBtn";
 import { Svg } from "expo";
+import { ScatterPlot } from "./views/ScatterPlot";
+import { DotPlot } from "./views/DotPlot";
+import { fakeDailyEvals } from "../../datafixtures/fakeDailyEvals";  
 const { Circle, Rect, G } = Svg; 
 
-const appState = new AppState();
+const appState: AppState = new AppState();
 
 type State = {
   trackedMeasurementTypes: MeasurementType[],
   selectedMeasurementTypes: string[],
-  measurementReportSummariesByPhases: MeasurementReportSummary[],
-  dosageByPhases: number[], // a list of dosages for each phase. (TODO: Why not store this in the summary?)
 }
 
+const SCOPE = "AnalysisMainScreen";
+const X_AXIS_PADDING = 2;
+const Y_AXIS_PADDING = 0.5;
+const MIN_MEASUREMENT_SCORE = 0;
+const MAX_MEASUREMENT_SCORE = 5;
 
 export default class AnalysisMainScreen extends React.Component<any, State> {
   static navigationOptions: any = {
@@ -57,159 +65,104 @@ export default class AnalysisMainScreen extends React.Component<any, State> {
   state = {
     trackedMeasurementTypes: [],
     selectedMeasurementTypes: [],
-    measurementReportSummariesByPhases: [], 
-    dosageByPhases: []
   }
 
+  dailyEvalDataFrame = new DailyEvalDataFrame()
+
   componentDidMount() {
+    console.log(SCOPE, "componentDidMount");
     this.initializeState()
   }
 
   async initializeState() {
     try { 
       let regimen = await appState.getLatestRegimen();
-      await this._initMeasurementReportSummariesByPhases(regimen);
-      this._initDosageByPhases(regimen);
+      this.dailyEvalDataFrame = await this.createDailyEvalDataFrame(regimen);
+      this.dailyEvalDataFrame.summarize();
 
       this.setState({
         trackedMeasurementTypes: regimen.getTrackedMeasurementTypes(),
-        selectedMeasurementTypes: [regimen.getTrackedMeasurementTypes()[0]]
+        selectedMeasurementTypes: [regimen.getTrackedMeasurementTypes()[0]],
       })
-      
+    console.log(this.dailyEvalDataFrame)
     } catch(e) {
       console.log(e)
     }
   }
 
-  async _initMeasurementReportSummariesByPhases(regimen: Regimen) {
-    let measurementReportSummariesByPhases = [];
+  async createDailyEvalDataFrame(regimen: Regimen) {
+    let dailyEvals = await this.getDailyEvals(regimen);
+    let dataPoints = await this.convertDailyEvalsToDataPoints(regimen, dailyEvals);
+    let dataframe = new DailyEvalDataFrame();
+    dataframe.addDataPoints(dataPoints);
+    return dataframe;
+  }
 
-    regimen.getRegimenPhases().forEach(async (regimenPhase)=>{
-      let summary = await this._createMeasurementReportSummaryForPeriod(
-        regimenPhase.startDate, 
-        regimenPhase.endDate
-      )
-      measurementReportSummariesByPhases.push(summary);
-    })  
+  async getDailyEvals(regimen: Regimen) {
+    // let startDate = regimen.startDate;
+    // let today = moment().format(DateFormatISO8601);
+    // return await appState.getDailyEvalsByDateRange(
+    //   startDate,
+    //   today
+    // )
+    return fakeDailyEvals
+  }
 
-    this.setState({
-      measurementReportSummariesByPhases: measurementReportSummariesByPhases
+  async convertDailyEvalsToDataPoints(regimen: Regimen, dailyEvals: DailyEvaluationObject[]) {
+    let allPoints: DailyEvalDataPoint[] = [];
+
+    dailyEvals.forEach( (dailyEval) => {
+      let dosage = this.getDosage(regimen, dailyEval);
+      let points = AnalysisUtils.convertDailyEvalObjToDataPoints(dailyEval, dosage);
+      allPoints = allPoints.concat(points);
     })
+    return allPoints;
   }
 
-  _initDosageByPhases(regimen: Regimen) {
-    let dosageByPhases = []
-    regimen.getRegimenPhases().forEach((regimenPhase)=>{
-      let dosageInThisPhase = this._getDosageByDate(regimenPhase.startDate);
-      dosageByPhases.push(dosageInThisPhase);
-    }) 
-
-    this.setState({dosageByPhases: dosageByPhases})
-  }
-
-  async _createMeasurementReportSummaryForPeriod(
-    startDate: string, 
-    endDate: string
-  ): MeasurementReportSummary {
+  getDosage(regimen: Regimen, dailyEval: DailyEvaluationObject): number {
     try {
-      let dailyEvalReportsByDateRange = await appState.getDailyEvalsByDateRange(startDate, endDate);
-      return this._countScores(dailyEvalReportsByDateRange);
-    } catch(e) {
-      console.log(e);
-    }
-  }
-
-  _countScores = (dailyEvalReports: DailyEvaluationObject[]): MeasurementReportSummary => {
-    let measurementReportSummary: MeasurementReportSummary = {};
-
-    for (let measurementType of this.state.trackedMeasurementTypes) {
-      measurementReportSummary[measurementType] = this._initScoreMap();
-      
-      dailyEvalReports.forEach(report => {
-        if(_.has(report.measurementsByType, measurementType)) {
-          let value: string = report.measurementsByType[measurementType].toString();
-          measurementReportSummary[measurementType][value] += 1;
-        }
-      })
-    }
-    return measurementReportSummary
-  }
-
-  _initScoreMap(): ScoreMap {
-    return {
-      "0" : 0,
-      "1" : 0,
-      "2" : 0,
-      "3" : 0,
-      "4" : 0,
-      "5" : 0
-    }
-  }
-
-  _getDosageByDate(date: string){
-    try {
-        return BaclofenUtils.getDosageByDate(date);
+      let regimenPhase = this.getRegimenPhaseOfDailyEval(regimen, dailyEval);
+      return BaclofenUtils.getDosageByRegimenPhase(regimenPhase);
     } catch (e) {
-        if (e.name = NotExistError.name) {
-          console.log(e.name)
-        }
-        return -1; // error;
+      if(e.name === NotExistError.name) {
+        return parseInt(dailyEval.measurementsByType[MeasurementTypes.baclofenAmount], 10) || -1;
+      }
+    }
+    return -1;
+  }
+
+  getRegimenPhaseOfDailyEval(regimen: Regimen, dailyEval: DailyEvaluationObject) {
+    let regimenId = dailyEval.regimenId; 
+    let phase = dailyEval.regimenPhase; 
+    let regimenPhase = regimen.getRegimenPhaseByDate(dailyEval.date);
+    if(regimen.id === regimenId && regimenPhase.phase === phase) {
+      return regimenPhase
+    } else {
+      throw new NotExistError("This daily evaluation does not match the latest regimen.");
     }
   }
 
   render() {
     return (
       <ScrollView>
-      <Content contentContainerStyle={styles.mainView}>
-        <Title>Symptom and side effects under different dosages</Title> 
-        <View style={styles.btnView}>
+        <Content contentContainerStyle={styles.mainView}>
+          <Title style = {styles.title}>Symptom and side effects under different dosages</Title> 
           {this.renderSelectionButtons()}
-        </View>
-        <View>
-          <Svg width="400" height="360" >
-            <VictoryLabel x={25} y={65} 
-              text={"Ave \nScore"}
-            />
-            {/* <VictoryChart
-                containerComponent={
-                  <VictoryVoronoiContainer/>
-                }
-                groupComponents = {
-                  <g transform="translate(5, 40)" />
-              }
-            > */}
-              <G transform={"translate(5, 40)"}>
-                <VictoryAxis
-                  tickValues={this.state.dosageByPhases}
-                  tickFormat = {(tick)=> `${tick}mg`}
-                  standalone={false}
-                  domain={[this.state.dosageByPhases[0]-2, 
-                            this.state.dosageByPhases[this.state.dosageByPhases.length-1]+2]}
-                />
-                <VictoryAxis
-                  dependentAxis
-                  standalone={false}
-                  tickFormat = {(tick)=> {if(tick>=0 && tick<=5){return `${tick}`}}}
-                  domain={[-0.5, 5.5]}
-                  style={{
-                    grid: {
-                        stroke: "#ccc",
-                        strokeWidth: 1
-                      }
-                  }}
-                  />
-                {this.renderChart()}
-              </G>
-            {/* </VictoryChart> */}
-          </Svg>
-        </View>
-      </Content>
+          {this.renderChart()}
+        </Content>
       </ScrollView>
     )
   }
 
   renderSelectionButtons = (): any => {
-    return this.state.trackedMeasurementTypes.map( (type: string, i: number): any => {
+    let plottableTypes = []
+    this.state.trackedMeasurementTypes.forEach(type=>{
+       if(_.includes(PlottableMeasurementTypes, type)){
+          plottableTypes.push(type)
+      }
+    })
+
+    let buttons = plottableTypes.map( (type: string, i: number): any => {
       let selected: boolean = this.state.selectedMeasurementTypes.includes(type)
       return (
         <MeasurementSelectionBtn
@@ -221,6 +174,11 @@ export default class AnalysisMainScreen extends React.Component<any, State> {
         />
       );
     })
+    return (
+      <View style={styles.btnView}>
+        {buttons}
+      </View>
+    )
   }
 
   _onBtnPress = (pressedType:string) => {
@@ -236,151 +194,44 @@ export default class AnalysisMainScreen extends React.Component<any, State> {
       }
   }
 
+  renderChart = () => {
+    let meanDataPointsByType = this.dailyEvalDataFrame
+                                  .getMeanDataPointsByTypes(this.state.selectedMeasurementTypes)
 
-  renderChart =() =>{
+    if(this.state.selectedMeasurementTypes.length !== 1) {
 
-    if (this.state.selectedMeasurementTypes.length > 1) {
-      let chart = []
+      console.log("render scatter plot");
+      return <ScatterPlot 
+        width={400}
+        height={400}
+        selectedMeasurementTypes={this.state.selectedMeasurementTypes}
+        meanDataPoints={meanDataPointsByType}
+        xDomain={[0 - X_AXIS_PADDING, 30 + X_AXIS_PADDING]}
+        yDomain={[
+          MIN_MEASUREMENT_SCORE - Y_AXIS_PADDING, 
+          MAX_MEASUREMENT_SCORE + Y_AXIS_PADDING
+        ]}
+        xTicks={[0, 5, 10, 15, 20, 25, 30]}
+      />      
+    } else {
+        let dataPoints = this.dailyEvalDataFrame
+                          .getDisplacedDataPointsByType(this.state.selectedMeasurementTypes[0])
 
-      this.state.selectedMeasurementTypes.forEach((type,i)=>{
-        let meanData = []
-        let color = ColorsForMeasurementTypes[type]
-        this.state.measurementReportSummariesByPhases.forEach((numOfReportsByScore,i)=>{
-          let dosage = this.state.dosageByPhases[i] 
-          meanData.push({
-            'x': dosage,
-            'y': this._getMeanScore(numOfReportsByScore[type])
-          })        
-        })
-        chart.push(            
-          <VictoryScatter
-            key = {`scatter${i}`}
-            style={{ data: { fill: color}, labels: { fill: color} }}
-            domain={{x:[this.state.dosageByPhases[0]-2
-                        ,this.state.dosageByPhases[this.state.dosageByPhases.length-1]+2],
-                    y:[-0.5,5.5]}}
-            standalone={false}
-            size={9}
-            data={meanData}
-            labels={(d) => `y: ${d.y}`}
-            labelComponent={
-                <VictoryTooltip
-                  style={{ fontSize: 10 }}
-                  renderInPortal={false}
-                />
-            }
-          />
-          )
-        chart.push(
-          <VictoryLine
-            key = {`line${i}`}
-            style={{
-              data: { stroke: color},
-            }}
-            data={meanData}
-            domain={{x:[this.state.dosageByPhases[0]-2
-                        ,this.state.dosageByPhases[this.state.dosageByPhases.length-1]+2],
-                      y:[-0.5,5.5]}}
-            standalone={false}
-            //name="linePoints"
-          />
-        )
-      })
-      return (
-        <G> 
-          {chart}
-        </G>
-      ) 
-    } else if (this.state.selectedMeasurementTypes.length === 1){
-      let meanData = []
-      let data = []
-      let selectedMeasurementTypes = this.state.selectedMeasurementTypes[0]
-      let color = ColorsForMeasurementTypes[selectedMeasurementTypes]
-      this.state.measurementReportSummariesByPhases.forEach((numOfReportsByScore,i) => {
-
-          let dosage = this.state.dosageByPhases[i] 
-          meanData.push({
-            'x': dosage,
-            'y': this._getMeanScore(numOfReportsByScore[selectedMeasurementTypes])
-          }) 
-          
-          _.keys(numOfReportsByScore[selectedMeasurementTypes]).forEach((score) => {
-            let count = numOfReportsByScore[selectedMeasurementTypes][score]
-            if(count === 1){
-              data.push({
-                'x': dosage,
-                'y': parseInt(score, 10)
-              })
-            } else if(count > 1){            
-              data= [...data, ...this._getDisplacedDataPosition(dosage, parseInt(score, 10), count)]
-            }
-          })
-      })
-      return(
-            <G>
-              <VictoryScatter
-                style={{ data: { fill: color} }}
-                domain={{x:[this.state.dosageByPhases[0]-2
-                            ,this.state.dosageByPhases[this.state.dosageByPhases.length-1]+2],
-                          y:[-0.5,5.5]}}
-                standalone={false}
-                size={5}
-                data={data}
-              />
-              <VictoryLine
-                style={{
-                  data: { stroke: color ,  strokeWidth: 6.5, strokeOpacity: 0.5},
-                }}
-                data={meanData}
-                domain={{x:[this.state.dosageByPhases[0]-2
-                            ,this.state.dosageByPhases[this.state.dosageByPhases.length-1]+2],
-                          y:[-0.5,5.5]}}
-                standalone={false}
-                interpolation="monotoneX"
-                animate={{
-                  duration: 500,
-                }}
-              />
-            </G>
-      );
-    }  
-  }
-
-  _getMeanScore = (numOfReportsByScore:any) => {
-    let weightedSum = 0
-    let totalCounts = 0 
-    _.keys(numOfReportsByScore).forEach((score)=>{
-      weightedSum += parseInt(score)*numOfReportsByScore[score]
-      totalCounts += numOfReportsByScore[score]
-    }) 
-    return totalCounts===0? 0: weightedSum / totalCounts
-  }
-
-  _getDisplacedDataPosition = (x: number, y: number, count: number) => {
-    let data=[]
-    let numberOfColumns = 2 
-    let numberOfRows = Math.ceil(count / numberOfColumns)
-    let step = 0.2
-    let stepx = step*5
-    let baselineY = y - ((numberOfRows-1)/2)*step
-    let baselineX = x - (numberOfColumns/2)*stepx/2
-
-    for(let i=0 ; i<count ; i++){
-      let nthColumn = (i) % numberOfColumns
-      let displacedX = baselineX + nthColumn*stepx
-      if(count%2 !==0 && i===count-1){
-        displacedX = x
-      }
-      
-      let nthRow = Math.floor(i / numberOfColumns) 
-      let displacedY = baselineY + nthRow*step 
-
-      data.push({
-        'x': +displacedX.toFixed(2),
-        'y': +displacedY.toFixed(2)
-      })
+        console.log("render dot plot");
+        return <DotPlot
+          width={400}
+          height={400}
+          selectedMeasurementTypes={this.state.selectedMeasurementTypes}
+          meanDataPoints={meanDataPointsByType}
+          dotDataPoints={dataPoints}
+          xDomain={[0 - X_AXIS_PADDING, 30 + X_AXIS_PADDING]}
+          yDomain={[
+            MIN_MEASUREMENT_SCORE - Y_AXIS_PADDING, 
+            MAX_MEASUREMENT_SCORE + Y_AXIS_PADDING
+          ]}
+          xTicks={[0, 5, 10, 15, 20, 25, 30]}
+        />
     }
-    return data
   }
 }
 
@@ -396,15 +247,20 @@ const styles = StyleSheet.create({
     width: 340,
     flexDirection: "row",
     flexWrap: 'wrap',
-    marginTop: 30,
+    marginTop: 20,
     marginBottom: 50,
-    marginLeft: 10
   },
   btn: {
     height: 50,
     marginRight: 6,
     marginBottom: 6,
     backgroundColor: null,
-    borderColor: null
+    borderColor: null, 
+    width: 155,
+    justifyContent: 'center',
+  },
+  title: {
+    marginTop: 30,
+
   }
 })

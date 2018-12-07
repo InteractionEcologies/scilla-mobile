@@ -10,3 +10,10 @@ export const ColorsForMeasurementTypes = {
 }
 
 export const DefaultColorForMeasurement = ColorsForMeasurementTypes[MeasurementTypes.sleepQuality];
+
+export const PlottableMeasurementTypes = [
+  MeasurementTypes.sleepQuality,
+  MeasurementTypes.spasticitySeverity, 
+  MeasurementTypes.tiredness, 
+  MeasurementTypes.mood,
+]

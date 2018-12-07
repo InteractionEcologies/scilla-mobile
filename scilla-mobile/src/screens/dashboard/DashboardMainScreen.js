@@ -1,6 +1,6 @@
 // @flow
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, ScrollView } from "react-native";
 import { Container, Content, Header, Body, Left, Button, Icon } from "native-base"; 
 import { AppText } from "../../components";
 import AppService from "../../app/AppService";
@@ -173,9 +173,7 @@ export default class DashboardMainScreen extends React.Component<any, State> {
           />
         </View>
         <Content contentContainerStyle={styles.content}>
-          
-          <View style={styles.mainView}>
-
+          <ScrollView style={styles.mainView}>
             <TreatmentListView
               treatmentMap={this.state.treatmentMap}
               complianceReportMap={this.state.complianceReportMap}
@@ -183,7 +181,7 @@ export default class DashboardMainScreen extends React.Component<any, State> {
               onTreatmentCompiled={this.onTreatmentCompiled}
               onTreatmentSnoozed={this.onTreatmentSnoozed}
             />
-          </View>
+          </ScrollView>
         </Content>
       </Container>
     )

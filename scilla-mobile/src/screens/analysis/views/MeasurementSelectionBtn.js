@@ -33,7 +33,7 @@ export class MeasurementSelectionBtn extends React.Component<Props, any> {
         <AppText 
           style = {this.props.selected ? null : {color: Colors.primaryTextColor}}>
             {this.props.measurementType}
-          </AppText>
+        </AppText>
       </Button>
       )
   }

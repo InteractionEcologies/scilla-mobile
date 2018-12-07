@@ -8,14 +8,16 @@ import type {
 import { IRegimenPhase} from "../regimen"
 import { MeasurementTypes } from "../../libs/intecojs";
 import { BaclofenUtils } from "../../models/regimen";
+import {PlottableMeasurementTypes} from "../../screens/analysis/constants"
 import _ from "lodash";
 
-export const PlottableMeasurementTypes = [
-  MeasurementTypes.sleepQuality,
-  MeasurementTypes.spasticitySeverity, 
-  MeasurementTypes.tiredness, 
-  MeasurementTypes.mood
-]
+// export const PlottableMeasurementTypes = [
+//   MeasurementTypes.sleepQuality,
+//   MeasurementTypes.spasticitySeverity, 
+//   MeasurementTypes.tiredness, 
+//   MeasurementTypes.mood,
+//   MeasurementTypes.baclofenAmount
+// ]
   
 const Scope = "AnalysisUtils"
 

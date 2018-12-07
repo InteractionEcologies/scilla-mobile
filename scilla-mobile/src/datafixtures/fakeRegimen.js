@@ -11,7 +11,7 @@ import {
 } from "../libs/intecojs"
 
 export const fakeRegimenObject: RegimenObject = {
-  id: 'jcvowngiad1349ifj0asdji',
+  id: '-LSLsAx4ALSzzuqc61fF',
   uid: '12345',
   type: RegimenTypes.incBaclofen,
   name: 'Baclofen',

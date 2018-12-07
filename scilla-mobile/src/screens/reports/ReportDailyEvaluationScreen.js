@@ -97,7 +97,8 @@ export default class ReportDailyEvaluationScreen extends React.Component<any, St
 
   async initializeState() {
     try {
-      let dailyEvalReportObj = await appState.getDailyEvalByDate(this.state.selectedDate);     
+      let dailyEvalReportObj = await appState.getDailyEvalByDate(this.state.selectedDate);
+      console.log(dailyEvalReportObj)   
       this.setState({
         measurementsByType: dailyEvalReportObj.measurementsByType,
         dailyEvalReportObjId: dailyEvalReportObj.id
@@ -106,6 +107,7 @@ export default class ReportDailyEvaluationScreen extends React.Component<any, St
       console.log(e);
       if(e.name === 'NotExistError'){
         this._createInitialMeasurementsByType();
+        console.log('cannot find daily eval')  
       }
     }
   }
@@ -137,7 +139,9 @@ export default class ReportDailyEvaluationScreen extends React.Component<any, St
 
   async getInSituMeasurements(){
     try {
-      let allMeasurements = await appState.getMeasurementsByDate(this.state.selectedDate);
+      //let allMeasurements = await appState.getMeasurementsByDate(this.state.selectedDate);
+      let allMeasurements = await appState.getMeasurementsByDate('2018-11-26');
+      console.log(allMeasurements)     
       this.setState({
         inSituMeasurements: allMeasurements
       })

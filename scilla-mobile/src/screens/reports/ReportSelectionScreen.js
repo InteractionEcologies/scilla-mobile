@@ -32,7 +32,7 @@ export default class ReportSelectionScreen extends React.Component<any, State> {
 
   state = {
     selectedDate: moment().format(DateFormatISO8601),
-    trackedMeasurementTypes: []
+    trackedMeasurementTypes: ['Mood', 'Daily Evaluation']
   }
 
   componentWillFocusSubscription: any;
@@ -176,7 +176,6 @@ export default class ReportSelectionScreen extends React.Component<any, State> {
           );  
         }
       })
-    
     return optionButtons;
   }
 

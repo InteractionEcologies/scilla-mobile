@@ -12,15 +12,19 @@ import {
   ColorsForMeasurementTypes, 
   DefaultColorForMeasurement 
 } from "../constants";
-import { 
+import {
+  VictoryChart,
   VictoryLabel,
   VictoryAxis,
   VictoryScatter,
-  VictoryLine
+  VictoryLine,
+  VictoryTooltip,
+  VictoryVoronoiContainer
 } from "../../../libs/victory-native/lib"
 import type {
   Point2D, 
-  DailyEvalDataPoint
+  DailyEvalDataPoint,
+  MeanDataSummary
 } from "../../../models/analysis"
 import _ from "lodash";
 import { Svg } from "expo";
@@ -30,7 +34,7 @@ type Props = {
   width: number, 
   height: number,
   selectedMeasurementTypes: MeasurementType[],
-  dataPoints: DailyEvalDataPoint[],
+  meanDataPoints: DailyEvalDataPoint[],
   xDomain: number[],
   yDomain: number[],
   xTicks: number[]
@@ -50,10 +54,12 @@ export class ScatterPlot extends React.Component<Props, any> {
           width = {this.props.width}
           height = {this.props.height}
         >
-          <VictoryLabel 
-            text={"Avg \n Score"}
-          />
           <G transform={"translate(5,40)"}>
+            <VictoryLabel 
+              text={"Avg Score"}
+              dx={20}
+              dy={25}
+            />
             {this.renderXAxis()}
             {this.renderYAxis()}
             {this.renderGraph()}
@@ -97,52 +103,73 @@ export class ScatterPlot extends React.Component<Props, any> {
   }
 
   renderGraph() {
-    // let chartLayers = [];
-    // this.props.selectedMeasurementTypes.forEach((type: MeasurementType, i: number) => {
-    //   chartLayers.push(this._createALayerOfMeanPointsByType(type, meanData));
-    //   chartLayers.push(this._createALayerOfMeanLineByType(type, meanData));
-    // })
-    // return (
-    //   <G>{chartLayers}</G>
-    // )
+    let chartLayers = [];
+    if(this.props.meanDataPoints.length>1){
+      let groupedMeanDataPoints = _.groupBy(this.props.meanDataPoints, 'type')
+      console.log(groupedMeanDataPoints)
+      this.props.selectedMeasurementTypes.forEach((type: MeasurementType, i: number) => {
+        chartLayers.push(this._createALayerOfMeanPointsByType(type, groupedMeanDataPoints[type]));
+        chartLayers.push(this._createALayerOfMeanLineByType(type, groupedMeanDataPoints[type]));
+      })
+    }
+    return (
+       <G>{chartLayers}</G>
+    )
   }
 
   _createALayerOfMeanPointsByType(type: MeasurementType, points: DailyEvalDataPoint[]) {
     // For each measurement type, create a list of points for mean at each
     // dosage level, 
-    // if(points.length === 0) return;
-    // let dosages = this.props.xTicks;
-    // let color = _.get(ColorsForMeasurementTypes, type, DefaultColorForMeasurement);
+    if(!points) return;
+    //let dosages = this.props.xTicks;
+    let color = _.get(ColorsForMeasurementTypes, type, DefaultColorForMeasurement);
 
-    // // Ploting the mean for each phase
-    // return (
-    //   <VictoryScatter
-    //     key = {`scatterplot-${type}`}
-    //     style={{ data: { fill: color}, labels: { fill: color} }}
-    //     domain={this._getXYDomains()}
-    //     standalone={false}
-    //     size={9}
-    //     data={points}
-    //   />
-    // )
+    // Ploting the mean for each phase
+    return (
+      <VictoryScatter
+        key = {`scatterplot-${type}`}
+        style={{ data: { fill: color}, labels: { fill: color} }}
+        domain={this._getXYDomains()}
+        standalone={false}
+        size={9}
+        data={points}
+        x={d=>d.dosage}
+        y={d=>d.value}
+        labelComponent={
+          <VictoryTooltip
+            style={{ fontSize: 10 }}
+            renderInPortal={false}
+          />
+        }
+      />
+    )
   }
 
-  _createALayerOfMeanLineByType(type: MeasurementType, points: Point2D[]) {
-    // if(points.length === 0) return;
-    // let color = _.get(ColorsForMeasurementTypes, type, DefaultColorForMeasurement);
-    // let dosages = this.props.dataframe.getDosages();
+  _createALayerOfMeanLineByType(type: MeasurementType, points: DailyEvalDataPoint[]) {
+    if(!points || points.length <= 1) return;
+    let color = _.get(ColorsForMeasurementTypes, type, DefaultColorForMeasurement);
+    //let dosages = this.props.dataframe.getDosages();
     
-    // return (
-    //   <VictoryLine
-    //     key = {`line-${type}`}
-    //     style={{
-    //       data: {stroke: color},
-    //     }}
-    //     data={points}
-    //     domain={this._getXYDomains()}
-    //     standalone={false}
-    //   />
-    // )
+    return (
+      <VictoryLine
+        key = {`line-${type}`}
+        style={{
+          data: {stroke: color},
+        }}
+        domain={this._getXYDomains()}
+        standalone={false}
+        data={points}
+        x={d=>d.dosage}
+        y={d=>d.value}
+      />
+    )
+  }
+
+  _getXYDomains(){
+    return {
+      x: this.props.xDomain,
+      y: this.props.yDomain
+    }
   }
 
 }

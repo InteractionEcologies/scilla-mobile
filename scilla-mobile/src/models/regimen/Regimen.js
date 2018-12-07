@@ -165,7 +165,7 @@ export class Regimen implements IRegimenCore, IRegimenCustom {
       MeasurementTypes.sleepQuality, 
       MeasurementTypes.spasticitySeverity,
       MeasurementTypes.baclofenAmount,
-      MeasurementTypes.tiredness
+      MeasurementTypes.tiredness,
     ];
     return trackedMeasurementTypes;
   }
