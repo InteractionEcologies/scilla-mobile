@@ -1,5 +1,5 @@
 source 'https://github.com/CocoaPods/Specs.git'
-platform :ios, '9.0'
+platform :ios, '10.0'
 
 target 'scilla-mobile' do
   
@@ -108,7 +108,8 @@ target 'scilla-mobile' do
     :podspec => "../node_modules/react-native/third-party-podspecs/glog.podspec",
     :inhibit_warnings => true
 
-  pod 'RNSVG', :path => '../node_modules/react-native-svg'
+#    This may be the one causing trouble as ExpoKit has a react-native-svg
+#  pod 'RNSVG', :path => '../node_modules/react-native-svg'
 
   post_install do |installer|
     installer.pods_project.main_group.tab_width = '2';

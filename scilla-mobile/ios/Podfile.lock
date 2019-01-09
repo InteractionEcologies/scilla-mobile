@@ -1,6 +1,6 @@
 PODS:
   - Amplitude-iOS (3.14.1)
-  - Analytics (3.6.9)
+  - Analytics (3.6.10)
   - AppAuth (0.95.0)
   - Bolts (1.9.0):
     - Bolts/AppLinks (= 1.9.0)
@@ -24,8 +24,8 @@ PODS:
   - CocoaLumberjack/Default (3.2.1)
   - CocoaLumberjack/Extensions (3.2.1):
     - CocoaLumberjack/Default
-  - Crashlytics (3.11.0):
-    - Fabric (~> 1.8.0)
+  - Crashlytics (3.12.0):
+    - Fabric (~> 1.9.0)
   - DoubleConversion (1.1.5)
   - EXAdsAdMob (1.0.0):
     - EXCore
@@ -34,7 +34,7 @@ PODS:
     - EXCore
   - EXBarCodeScannerInterface (1.0.0):
     - EXCore
-  - EXCamera (1.1.0):
+  - EXCamera (1.1.1):
     - EXBarCodeScannerInterface
     - EXCore
     - EXFaceDetectorInterface
@@ -118,7 +118,7 @@ PODS:
     - JKBigInteger2 (= 0.0.5)
     - lottie-ios (~> 2.5.0)
     - React
-  - EXPrint (1.0.0):
+  - EXPrint (1.2.0):
     - EXCore
   - EXReactNativeAdapter (1.1.1):
     - EXCore
@@ -134,13 +134,13 @@ PODS:
     - EXCore
   - EXSMS (1.0.2):
     - EXCore
-  - Fabric (1.8.0)
+  - Fabric (1.9.0)
   - FBAudienceNetwork (4.99.0)
-  - FBSDKCoreKit (4.38.0):
+  - FBSDKCoreKit (4.39.1):
     - Bolts (~> 1.9)
-  - FBSDKLoginKit (4.38.0):
+  - FBSDKLoginKit (4.39.1):
     - FBSDKCoreKit
-  - FBSDKShareKit (4.38.0):
+  - FBSDKShareKit (4.39.1):
     - FBSDKCoreKit
   - Firebase/Auth (5.3.0):
     - Firebase/CoreOnly
@@ -216,33 +216,33 @@ PODS:
     - GoogleNetworkingUtilities (~> 1.0)
     - GoogleUtilities (~> 1.0)
   - GoogleSymbolUtilities (1.1.2)
-  - GoogleToolboxForMac/Defines (2.1.4)
-  - "GoogleToolboxForMac/NSData+zlib (2.1.4)":
-    - GoogleToolboxForMac/Defines (= 2.1.4)
+  - GoogleToolboxForMac/Defines (2.2.0)
+  - "GoogleToolboxForMac/NSData+zlib (2.2.0)":
+    - GoogleToolboxForMac/Defines (= 2.2.0)
   - GoogleUtilities (1.3.2):
     - GoogleSymbolUtilities (~> 1.1)
-  - gRPC (1.16.0):
-    - gRPC-RxLibrary (= 1.16.0)
-    - gRPC/Main (= 1.16.0)
-  - gRPC-Core (1.16.0):
-    - gRPC-Core/Implementation (= 1.16.0)
-    - gRPC-Core/Interface (= 1.16.0)
-  - gRPC-Core/Implementation (1.16.0):
+  - gRPC (1.17.0):
+    - gRPC-RxLibrary (= 1.17.0)
+    - gRPC/Main (= 1.17.0)
+  - gRPC-Core (1.17.0):
+    - gRPC-Core/Implementation (= 1.17.0)
+    - gRPC-Core/Interface (= 1.17.0)
+  - gRPC-Core/Implementation (1.17.0):
     - BoringSSL-GRPC (= 0.0.2)
-    - gRPC-Core/Interface (= 1.16.0)
+    - gRPC-Core/Interface (= 1.17.0)
     - nanopb (~> 0.3)
-  - gRPC-Core/Interface (1.16.0)
-  - gRPC-ProtoRPC (1.16.0):
-    - gRPC-ProtoRPC/Main (= 1.16.0)
-  - gRPC-ProtoRPC/Main (1.16.0):
-    - gRPC (= 1.16.0)
-    - gRPC-RxLibrary (= 1.16.0)
+  - gRPC-Core/Interface (1.17.0)
+  - gRPC-ProtoRPC (1.17.0):
+    - gRPC-ProtoRPC/Main (= 1.17.0)
+  - gRPC-ProtoRPC/Main (1.17.0):
+    - gRPC (= 1.17.0)
+    - gRPC-RxLibrary (= 1.17.0)
     - Protobuf (~> 3.0)
-  - gRPC-RxLibrary (1.16.0)
-  - gRPC/Main (1.16.0):
-    - gRPC-Core (= 1.16.0)
-    - gRPC-RxLibrary (= 1.16.0)
-  - GTMSessionFetcher/Core (1.2.0)
+  - gRPC-RxLibrary (1.17.0)
+  - gRPC/Main (1.17.0):
+    - gRPC-Core (= 1.17.0)
+    - gRPC-RxLibrary (= 1.17.0)
+  - GTMSessionFetcher/Core (1.2.1)
   - JKBigInteger2 (0.0.5)
   - leveldb-library (1.20)
   - lottie-ios (2.5.2)
@@ -479,14 +479,14 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   Amplitude-iOS: 4a3c8807b2ea5369dc11e87e23825bff01e5a922
-  Analytics: 6541ce337e99d9f7a2240a8b3953940a7be5f998
+  Analytics: 63744ad4afa65c3bcdcdb7a94b62515bde5b3900
   AppAuth: 137f6bb6fc9dfbaf2cf9f6fcff1d336ff0163bc6
   Bolts: ac6567323eac61e203f6a9763667d0f711be34c8
   boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
   BoringSSL-GRPC: 2a230d9cd93e7ce39916044f645cebb31f37dde6
   Branch: 0d98d22745a9b68bcb4fa6dc1c6a92b64d4fdd7b
   CocoaLumberjack: 2800c03334042fe80589423c8d80e582dcaec482
-  Crashlytics: 1448070c1d2731ab71ea7c3faf84ac0f69657287
+  Crashlytics: 07fb167b1694128c1c9a5a5cc319b0e9c3ca0933
   DoubleConversion: e22e0762848812a87afd67ffda3998d9ef29170c
   EXAdsAdMob: e3487aceb377e0412f8665a48f3b72fc5f3d7723
   EXBarCodeScanner: bae21e0fd0176f1defef73dc5686102ae7c3dd65
@@ -512,17 +512,17 @@ SPEC CHECKSUMS:
   EXPermissions: 1c524493270ba64f494f805b6e0e75d4b498ecb5
   EXPermissionsInterface: 814a15d3259873c39646ed3cfe58bb49160445c1
   ExpoKit: 8bd26597709ed939c5dd6316bd9902b0d406cb3e
-  EXPrint: 7e89a677edf046516d1c7c812c24e7714f040bdd
+  EXPrint: b6aab9715518cf67954ae260b71e28afd843353e
   EXReactNativeAdapter: 93f6b26a2bb583e653e5fab04377704840e1a0e8
   EXSegment: 558683a67d8e898448d9a3af71f3b36af7664ce9
   EXSensors: 06a11a8c6c08d62fa20ae64e61cd602be2bf36a2
   EXSensorsInterface: eca1381ec807ec2439e2f1607f3fa4297deaaf20
   EXSMS: 3fa7cd245d744abc70a918c6d991e09c63ba46e3
-  Fabric: 4ac1cdfef3004ccd83ce0959b91eda8a6e37df72
+  Fabric: f988e33c97f08930a413e08123064d2e5f68d655
   FBAudienceNetwork: 80275c0a28574ff5ce820abdc251d05e07e6ae7a
-  FBSDKCoreKit: 2ab7fdbf600dc6b628ba7a49aa29d357a7b4c74e
-  FBSDKLoginKit: 634fa27e72e33620eb6389253337342c03d4a407
-  FBSDKShareKit: 00290e3db446eed603ff80ac629dcc5e80cf8b74
+  FBSDKCoreKit: f442aa96179cc9b382bb4abeb7e340a47cca8f91
+  FBSDKLoginKit: c3079d9a4db27c492287b1eed7a4272b28cf8a59
+  FBSDKShareKit: 27d7b982e7b1f4638da2f2b1ab6eba5afc6b5888
   Firebase: 68afeeb05461db02d7c9e3215cda28068670f4aa
   FirebaseAnalytics: b3628aea54c50464c32c393fb2ea032566e7ecc2
   FirebaseAuth: 463b8ce33bd5d05f706dcd4615499e3212b4132b
@@ -539,13 +539,13 @@ SPEC CHECKSUMS:
   GoogleNetworkingUtilities: 3edd3a8161347494f2da60ea0deddc8a472d94cb
   GoogleSignIn: 3d571172b8603be39dcb1705d8217146bb76fe62
   GoogleSymbolUtilities: 631ee17048aa5e9ab133470d768ea997a5ef9b96
-  GoogleToolboxForMac: 91c824d21e85b31c2aae9bb011c5027c9b4e738f
+  GoogleToolboxForMac: ff31605b7d66400dcec09bed5861689aebadda4d
   GoogleUtilities: 8bbc733218aad26306f9d4a253823986110e3358
-  gRPC: e35d5286c526bb4dd03662a314dce9599b83b3a5
-  gRPC-Core: 24f0344f259b87b477cfd50e1c80a743bbc48113
-  gRPC-ProtoRPC: 3d07afd59f65bf29f0456724978035d2d12e903e
-  gRPC-RxLibrary: a4bfc6fbb4fb5ed45f85a2317435bc08ace76ac5
-  GTMSessionFetcher: 0c4baf0a73acd0041bf9f71ea018deedab5ea84e
+  gRPC: 72b71666056dcb12235b5238f0ff5948fd60321a
+  gRPC-Core: 4028031ed2c5267cca0d846c876d8046b1ecb9b6
+  gRPC-ProtoRPC: 94e90774dd0dc089dece93ec22384d8383988f3f
+  gRPC-RxLibrary: f2873a17e8133f66d8ce972f8805aa7a518ae974
+  GTMSessionFetcher: 32aeca0aa144acea523e1c8e053089dec2cb98ca
   JKBigInteger2: e91672035c42328c48b7dd015b66812ddf40ca9b
   leveldb-library: 08cba283675b7ed2d99629a4bc5fd052cd2bb6a5
   lottie-ios: 3fef45d3fabe63e3c7c2eb603dd64ddfffc73062
@@ -555,6 +555,6 @@ SPEC CHECKSUMS:
   Stripe: 76c203e21555089b708e6cbe972a3e3baf1ab4d8
   yoga: a23273df0088bf7f2bb7e5d7b00044ea57a2a54a
 
-PODFILE CHECKSUM: ce2bf287e254a3a9a38bb9237922c55a03883c9f
+PODFILE CHECKSUM: 3f9673829e8a453274eca6b187e5bb675390f1c1
 
 COCOAPODS: 1.5.3
