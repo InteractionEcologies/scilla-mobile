@@ -6,7 +6,7 @@ import { AppLoading, Asset, Font, Icon } from 'expo';
 import { StyleProvider, Container, Root } from "native-base";
 import getTheme from "./src/constants/native-base-theme/components";
 import commonColor from "./src/constants/native-base-theme/variables/commonColor";
-import AppNavigator from './src/navigation/AppNavigator';
+import AppContainer from './src/navigation/AppNavigator';
 import AppService from "./src/app/AppService";
 import Colors from "./src/constants/Colors";
 
@@ -35,7 +35,7 @@ export default class App extends React.Component<any, any> {
           <View style={styles.container}>
             {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
             <Root>
-              <AppNavigator />
+              <AppContainer />
             </Root>
           </View>
         </StyleProvider>

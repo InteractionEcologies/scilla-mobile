@@ -29,7 +29,7 @@ RegimenStack.navigationOptions = {
       focused={focused}
       name={
         Platform.OS === 'ios'
-          ? `ios-medkit${focused ? '' : '-outline'}`
+          ? `ios-medkit`
           : 'md-medkit'              
       }
     />

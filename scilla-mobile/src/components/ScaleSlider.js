@@ -2,7 +2,7 @@
 import React from "react";
 import { Text, View, Button, Icon } from "native-base";
 import { StyleSheet, Slider } from "react-native";
-import { AppText } from "./index";
+import { AppText } from "./StyledText";
 import type { MeasurementValue } from "../libs/intecojs";
 
 type Props = {

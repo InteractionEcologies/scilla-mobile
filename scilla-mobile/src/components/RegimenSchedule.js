@@ -1,7 +1,7 @@
 // @flow
 import React from "react";
 import { View, StyleSheet } from "react-native";
-import { AppText, AppHeaderText } from "./";
+import { AppText, AppHeaderText } from "./StyledText";
 
 import _ from "lodash";
 import moment from "moment";

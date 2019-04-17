@@ -6,7 +6,9 @@ import type {
 import {
   RegimenTypes
 } from "../../libs/intecojs";
-import { Regimen, IncBaclofenRegimen, DecBaclofenRegimen } from "./"; 
+import { IncBaclofenRegimen  } from "./IncBaclofenRegimen"; 
+import { Regimen} from "./Regimen";
+import { DecBaclofenRegimen } from "./DecBaclofenRegimen";
 
 export class RegimenFactory {
   static createRegimen(type: RegimenType): Regimen {

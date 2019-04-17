@@ -4,10 +4,6 @@ import type {
   TreatmentObject
 } from "../../libs/intecojs";
 
-import type {
-  
-} from "../../libs/intecojs/types/scilla";
-
 import {
   DateFormatTimeOfDay,
   TreatmentDetailOptions,
@@ -15,9 +11,10 @@ import {
 } from "../../libs/intecojs";
 import { 
   SPLIT_AFTERNOON,
-  SPLIT_EVENING,
-  PartOfDayOptions,
-} from "./"
+  SPLIT_EVENING
+} from "./constants";
+
+import { PartOfDayOptions } from "./RegimenPhase"
 import _ from "lodash";
 import moment from "moment";
 

@@ -13,7 +13,7 @@ target 'scilla-mobile' do
   
   pod 'ExpoKit',
     :git => "http://github.com/expo/expo.git",
-    :tag => "ios/2.8.4",
+    :tag => "ios/2.10.4",
     :subspecs => [
       "Core"
     ],
@@ -76,6 +76,12 @@ target 'scilla-mobile' do
     :path => "../node_modules/expo-sensors-interface/ios"
   pod 'EXSMS',
     :path => "../node_modules/expo-sms/ios"
+  pod 'EXLocalization',
+    :path => "../node_modules/expo-localization/ios"
+  pod 'EXTaskManagerInterface',
+    :path => "../node_modules/expo-task-manager-interface/ios"
+  pod 'EXAppLoaderProvider',
+    :path => "../node_modules/expo-app-loader-provider/ios"
 
   pod 'React',
     :path => "../node_modules/react-native",

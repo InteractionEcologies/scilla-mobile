@@ -10,7 +10,8 @@ A mobile app to help patients with Spinal Cord Injury or Disease (SCI/D) learn t
 ## Major Dependencies
 * react-navigation 
 * React Native (v0.55.4)
-* Expo (v30.0.0)
+* Expo (v32.0.0)
+* NativeBase (v2.12.1)
 * React Native Firebase (npm) (v4.2)
 * React Native Firebase (iOS SDK) (v5.3.0)
 * react-native-svg (v6.2.2) in Expo
@@ -23,7 +24,7 @@ A mobile app to help patients with Spinal Cord Injury or Disease (SCI/D) learn t
 * **Visual Studio Code** 
 * **React Native** (v0.55.4)
 * **node** (v8.11.4 LTS)
-* **Expo** (v30.0.0)
+* **Expo** (v32.0.0)
 * **Flow** 
 * **Jest**
 
@@ -55,3 +56,11 @@ A mobile app to help patients with Spinal Cord Injury or Disease (SCI/D) learn t
 * Run unittest with specific module `npm run test -- [module name]`
   * E.g., `npm run test -- FirebaseDS --watch`
   * To show `console.log` under this mode, we cannot use watch (not sure why). Thus, just run `npm run test -- Firebase` for example. 
+
+
+Expo Upgrade Guide
+=================
+* Expo typically release upgrade walkthrough for sdk update. 
+  * Usually we need to change package.json to point to the new versions of react and expo. 
+  * `rm -rf node_modules`
+  * `npm install`

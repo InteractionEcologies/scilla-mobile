@@ -26,7 +26,7 @@ import {
   UNDEFINED_TIMESTAMP
 } from "../../libs/intecojs";
 
-import { IRegimenPhase } from "./";
+import { IRegimenPhase } from "./RegimenPhase";
 
 import moment from "moment";
 import _ from "lodash";

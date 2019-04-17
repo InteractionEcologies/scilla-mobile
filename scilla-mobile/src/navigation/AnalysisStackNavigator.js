@@ -20,7 +20,7 @@ AnalysisStack.navigationOptions = {
       focused={focused}
       name={
         Platform.OS === 'ios'
-          ? `ios-stats${focused ? '': '-outline'}`
+          ? `ios-stats`
           : 'md-stats'
       }
     />

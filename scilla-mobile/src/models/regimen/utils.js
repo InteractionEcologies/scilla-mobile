@@ -8,10 +8,10 @@ import type {
 import {
   DateFormatTimeOfDay, TreatmentDetailOptions,
 } from "../../libs/intecojs";
-import { Regimen } from "./";
+import { Regimen } from "./Regimen";
 import moment from "moment";
 import _ from "lodash";
-import { PartOfDayOptions, IRegimenPhase, BaclofenRegimenPhase } from "./";
+import { PartOfDayOptions, IRegimenPhase, BaclofenRegimenPhase } from "./RegimenPhase";
 
 export class BaclofenUtils {
   static computeWeeksByDosageDeficit(deficitDoseMg: number): number {

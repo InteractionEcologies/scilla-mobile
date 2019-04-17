@@ -1,7 +1,7 @@
 // @flow
 import React from "react";
 import { View, StyleSheet } from "react-native";
-import { AppText } from "./index";
+import { AppText } from "./StyledText";
 import type {
 
 } from "../libs/intecojs";

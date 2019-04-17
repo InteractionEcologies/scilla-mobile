@@ -1,4 +1,5 @@
 # Xcode
+# ! indicates things that should not be ignored. 
 !**/*.xcodeproj
 !**/*.pbxproj
 !**/*.xcworkspacedata
@@ -23,12 +24,12 @@ project.xcworkspace
 **/ios/build/
 
 # Gradle
-/build/
-/RNTester/android/app/build/
-/RNTester/android/app/gradle/
-/RNTester/android/app/gradlew
-/RNTester/android/app/gradlew.bat
-/ReactAndroid/build/
+build/
+RNTester/android/app/build/
+RNTester/android/app/gradle/
+**/*/RNTester/android/app/gradlew
+**/*/RNTester/android/app/gradlew.bat
+ReactAndroid/build/
 
 # Buck
 .buckd
@@ -45,7 +46,12 @@ buck-out
 .gradle/
 local.properties
 *.iml
-**/android/**/build/
+/scilla-mobile/android/**/build/
+/scilla-mobile/android/**/local.properties
+/scilla-mobile/android/captures
+/scilla-mobile/android/expoview/libs/ReactAndroid-temp
+/scilla-mobile/android/versioned-react-native/ReactAndroid
+ReactAndroid-temp.aar
 
 # Node
 node_modules
@@ -58,8 +64,27 @@ node_modules
 yarn.lock
 package-lock.json
 
+# Dynamic Macros
+EXBuildConstants.json
+EXBuildConstants.plist
+EXBuildConstants.plist.bak
+/scilla-mobile/android/expoview/src/main/java/host/exp/exponent/generated/ExponentBuildConstants.java
+/scilla-mobile/android/app/src/androidTest/java/host/exp/exponent/generated/TestBuildConstants.java
+.kernel-ngrok-url
+
+# Template files
+/scilla-mobile/android/app/src/main/AndroidManifest.xml
+# I might need this
+# /scilla-mobile/android/app/google-services.json  
+/scilla-mobile/android/expoview/src/main/java/host/exp/exponent/generated/ExponentKeys.java
+/scilla-mobile/android/app/fabric.properties
+/scilla-mobile/ios/Exponent/Generated/EXKeys.h
+/scilla-mobile/ios/ExponentIntegrationTests/EXTestEnvironment.plist
+/exponent-view-template/ios/Podfile
+
 # OS X
 .DS_Store
+/scilla-mobile/ios/Pods/
 
 # Test generated files
 /ReactAndroid/src/androidTest/assets/AndroidTestBundle.js
@@ -74,8 +99,9 @@ package-lock.json
 # ReactCommon subdir shouldn't have Xcode project
 /ReactCommon/**/*.xcodeproj
 
-# Expo related
-EXBuildConstants.json
-EXBuildConstants.plist
-EXBuildConstants.plist.bak
+# Expo 
+.expo
 **/.expo/packager-info.json
+
+# VSCode
+.vscode

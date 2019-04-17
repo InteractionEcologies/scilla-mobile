@@ -12,15 +12,14 @@ import {
   RegimenGoalOptions,
   DateFormatISO8601,
 } from "../../libs/intecojs";
-import { Regimen, IRegimenPhase } from "./";
+import { Regimen } from "./Regimen";
+import { IRegimenPhase } from "./RegimenPhase";
 import moment from "moment";
 import _ from "lodash";
-import { 
-  BaclofenRegimenPhaseDef, 
-  BaclofenUtils, 
-  REGIMEN_BACLOFEN_DAYS,
-  BaclofenRegimenPhase,
-} from "./";
+import { BaclofenRegimenPhaseDef } from "./BaclofenRegimenPhaseDef";
+import { REGIMEN_BACLOFEN_DAYS } from "./constants"
+import { BaclofenRegimenPhase } from "./RegimenPhase";
+import { BaclofenUtils } from "./utils";
 
 export class IncBaclofenRegimen extends Regimen {
 

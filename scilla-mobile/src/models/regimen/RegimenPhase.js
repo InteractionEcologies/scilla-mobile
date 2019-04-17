@@ -13,7 +13,7 @@ import {
 } from "../../libs/intecojs";
 import { 
   BaclofenRegimenPhaseDef,
-} from "./";
+} from "./BaclofenRegimenPhaseDef";
 import { Treatment } from "./Treatment";
 import _ from "lodash";
 
