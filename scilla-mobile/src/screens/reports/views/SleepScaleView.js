@@ -1,13 +1,11 @@
 // @flow
 import React from 'react';
-import { Text, View, Button, Icon, Card, CardItem } from "native-base";
-import { AppText, Title, ScaleSlider } from "../../../components";
+import { View } from "native-base";
+import { AppText, ScaleSlider } from "../../../components";
 import styles from "../ReportStyles"; 
-import { SleepScales }  from "../../../libs/intecojs"; 
-import _ from "lodash";
 import type {
   MeasurementValue
-} from "../../../libs/intecojs";
+} from "../../../libs/scijs";
 
 type Props = {
   type: string,
@@ -22,7 +20,7 @@ export default class SleepScaleView extends React.Component<Props, any> {
     let headlineText = this.props.isDailyEvalView? 
                         "Rate today's overall sleepliness" 
                         : "How do you feel sleepliness now?"; 
-    let scaleValueText = this.renderScaleValueText()
+    // let scaleValueText = this.renderScaleValueText()
     return (
       <View style={styles.mainView}>
           <AppText style={styles.headlineText}>{headlineText}</AppText> 

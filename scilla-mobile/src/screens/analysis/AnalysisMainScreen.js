@@ -1,48 +1,32 @@
 // @flow
 import React from "react";
 import { StyleSheet, ScrollView  } from 'react-native';
-import { Content, View, Button, Card, CardItem} from "native-base";
-import { AppText, Title } from "../../components";
-import moment from "moment";
+import { Content, View } from "native-base";
+import { Title } from "../../components";
 import AppState from "../../app/AppState";
-import { MeasurementTypes, DateFormatISO8601 } from "../../libs/intecojs"; 
+import { MeasurementTypes } from "../../libs/scijs"; 
 import type {
-  MeasurementObject,
   MeasurementType,
-  MeasurementValue,
   DailyEvaluationObject
-} from "../../libs/intecojs"
-import { Regimen } from "../../libs/intecojs/models/regimen";
+} from "../../libs/scijs"
+import { Regimen } from "../../libs/scijs/models/regimen";
 import _ from "lodash";
-import { BaclofenUtils } from "../../libs/intecojs/models/regimen/utils";
+import { BaclofenUtils } from "../../libs/scijs/models/regimen/utils";
 import { AnalysisUtils } from "../../models/analysis/utils";
 import type { 
   DailyEvalDataPoint 
 } from "../../models/analysis";
-import { NotExistError } from "../../libs/intecojs";
-import { 
-  VictoryChart, 
-  VictoryAxis, 
-  VictoryScatter, 
-  VictoryLine, 
-  VictoryLabel, 
-  VictoryVoronoiContainer, 
-  VictoryTooltip, 
-  VictoryGroup 
-} from "../../libs/victory-native/lib";
+import { NotExistError } from "../../libs/scijs";
 import { DailyEvalDataFrame } from "../../models/analysis/";
-import { IRegimenPhase } from "../../libs/intecojs/models/regimen";
 import { 
-  ColorsForMeasurementTypes, 
-  DefaultColorForMeasurement,
   PlottableMeasurementTypes
 } from "./constants";
 import { MeasurementSelectionBtn } from "./views/MeasurementSelectionBtn";
-import { Svg } from "expo";
+// import { Svg } from "expo";
 import { ScatterPlot } from "./views/ScatterPlot";
 import { DotPlot } from "./views/DotPlot";
 import { fakeDailyEvals } from "../../datafixtures/fakeDailyEvals";  
-const { Circle, Rect, G } = Svg; 
+// const { Circle, Rect, G } = Svg; 
 
 const appState: AppState = new AppState();
 

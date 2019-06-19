@@ -1,11 +1,9 @@
 // @flow
 import React from 'react';
-import { Text, View, Button, Icon } from "native-base";
-import { AppText, Title, ScaleSlider } from "../../../components";
+import { View } from "native-base";
+import { AppText, ScaleSlider } from "../../../components";
 import styles from "../ReportStyles"; 
-import { TirednessScales }  from "../../../libs/intecojs"; 
-import _ from "lodash";
-import type { MeasurementValue } from "../../../libs/intecojs";
+import type { MeasurementValue } from "../../../libs/scijs";
 
 type Props = {
   type: string,

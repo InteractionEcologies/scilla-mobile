@@ -1,30 +1,22 @@
 // @flow
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { View } from "react-native";
 import type {
   MeasurementType
-} from "../../../libs/intecojs";
-import { MeasurementTypes, DateFormatISO8601 } from "../../../libs/intecojs"; 
-import { 
-  DailyEvalDataFrame
-} from "../../../models/analysis";
+} from "../../../libs/scijs";
 import { 
   ColorsForMeasurementTypes, 
   DefaultColorForMeasurement 
 } from "../constants";
 import {
-  VictoryChart,
   VictoryLabel,
   VictoryAxis,
   VictoryScatter,
   VictoryLine,
   VictoryTooltip,
-  VictoryVoronoiContainer
 } from "../../../libs/victory-native/lib"
 import type {
-  Point2D, 
-  DailyEvalDataPoint,
-  MeanDataSummary
+  DailyEvalDataPoint
 } from "../../../models/analysis"
 import _ from "lodash";
 import { Svg } from "expo";
@@ -41,8 +33,6 @@ type Props = {
 
 }
 
-const X_AXIS_PADDING = 2;
-const Y_AXIS_PADDING = 0.5;
 const MIN_MEASUREMENT_SCORE = 0;
 const MAX_MEASUREMENT_SCORE = 5;
 

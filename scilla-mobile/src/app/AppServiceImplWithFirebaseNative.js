@@ -1,9 +1,11 @@
 // @flow
 import { IAppService } from "./IAppService";
 import type { AppServiceConfig } from "./IAppService";
-import { FirebaseNativeAuth, FirebaseDS, IAuth, IDataSource,
+import { FirebaseDS, IAuth, IDataSource,
   generatePushIDFunc
-} from "../libs/intecojs";
+} from "../libs/scijs";
+import {  FirebaseNativeAuth } from "../network/FirebaseNativeAuth";
+
 import firebase from "react-native-firebase";
 
 export class AppServiceImplWithFirebaseNative implements IAppService {

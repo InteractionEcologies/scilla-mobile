@@ -2,7 +2,7 @@
 import * as firebase from "firebase";
 import { FirebaseDS, FirebaseAuth, PersistenceTypes,
   Utils, DateFormatISO8601, NotExistError
-} from "../libs/intecojs"
+} from "../libs/scijs"
 import { FirebaseConfig } from "../constants/FirebaseConfig";
 import { fakeUser, fakeUserProfile, fakeComplianceReport,
   fakeMeasurement,

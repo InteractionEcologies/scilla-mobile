@@ -3,12 +3,7 @@ import React from "react";
 import { View, StyleSheet } from "react-native";
 import { AppText, AppHeaderText } from "./StyledText";
 
-import _ from "lodash";
-import moment from "moment";
-
-import type { TreatmentObject, RegimenPhaseObject } from "../libs/intecojs";
-import { TreatmentDetailOptions } from "../libs/intecojs";
-import { RegimenUtils, IRegimenPhase, Treatment, PartOfDayOptions } from "../libs/intecojs/models/regimen";
+import { RegimenUtils, IRegimenPhase, PartOfDayOptions } from "../libs/scijs/models/regimen";
 
 type Props = {
   regimenPhases: IRegimenPhase[],
@@ -69,9 +64,9 @@ export class RegimenSchedule extends React.Component<Props, any> {
   }
 }
 
-type ThreePillTableHeaderProps = {
-  columns: string[]
-}
+// type ThreePillTableHeaderProps = {
+//   columns: string[]
+// }
 
 class ThreePillTableHeader extends React.Component<any, any> {
   render() {
@@ -88,10 +83,10 @@ class ThreePillTableHeader extends React.Component<any, any> {
   }
 }
 
-type ThreePillTableRowProps = {
-  rowIndex: number, 
-  values: string[]
-}
+// type ThreePillTableRowProps = {
+//   rowIndex: number, 
+//   values: string[]
+// }
 
 class ThreePillTableRow extends React.Component<any, any> {
   _renderPillRegions = () => {

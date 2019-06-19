@@ -1,31 +1,29 @@
 // @flow
 import React from "react";
-import { View, StyleSheet } from "react-native";
-import { AppText } from "./StyledText";
 import type {
 
-} from "../libs/intecojs";
+} from "../libs/scijs";
 
 export class RegimenPhaseBriefing extends React.Component<any, any> {
   render() {
-
+    return <div></div>
   }
 }
 
-type NPillTableHeaderProps = {
-  numColumns: number,
-  columns: string[]
-}
+// type NPillTableHeaderProps = {
+//   numColumns: number,
+//   columns: string[]
+// }
 
-class NPillTableHeader extends React.Component<any, NPillTableHeaderProps> {
+// class NPillTableHeader extends React.Component<any, NPillTableHeaderProps> {
 
-}
+// }
 
-type NPillTableRowProps = {
-  numColumns: number,
-  values: string[]
-}
+// type NPillTableRowProps = {
+//   numColumns: number,
+//   values: string[]
+// }
 
-class NPillTableRow extends React.Component<any, any> {
+// class NPillTableRow extends React.Component<any, any> {
 
-}
+// }

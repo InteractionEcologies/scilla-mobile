@@ -5,13 +5,13 @@ import type {
   ComplianceReportObject,
   MeasurementObject,
   DailyEvaluationObject
-} from "../libs/intecojs";
+} from "../libs/scijs";
 import {
   MeasurementTypes,
   UserRoles,
   SpasticityScales,
   ComplianceStatusOptions
-} from "../libs/intecojs"
+} from "../libs/scijs"
 
 import { fakeRegimenObject } from "./fakeRegimen";
 

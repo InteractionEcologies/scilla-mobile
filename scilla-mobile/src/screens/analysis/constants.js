@@ -1,5 +1,5 @@
 // @flow
-import { MeasurementTypes } from "../../libs/intecojs";
+import { MeasurementTypes } from "../../libs/scijs";
 
 export const ColorsForMeasurementTypes = {
   [MeasurementTypes.sleepQuality]: '#EA5656',

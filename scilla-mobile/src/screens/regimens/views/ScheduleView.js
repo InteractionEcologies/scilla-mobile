@@ -1,10 +1,8 @@
 // @flow
 import React from "react";
-import { View, StyleSheet } from "react-native";
-import type { RegimenPhaseObject } from "../../../libs/intecojs";
-import RegimenStyles from "../RegimenStyles";
+import { View } from "react-native";
 import { Title, AppText, DotPageIndicator, RegimenSchedule } from "../../../components";
-import { Regimen, IRegimenPhase } from "../../../libs/intecojs/models/regimen";
+import { IRegimenPhase } from "../../../libs/scijs/models/regimen";
 
 type Props = {
   numStates: number, 

@@ -1,12 +1,8 @@
 // @flow
 import React from 'react';
-import { View, StyleSheet } from "react-native"
-import { Content, Card, CardItem, Body, Icon,
-  Button, Left, Right
-} from "native-base";
-import { AppText, Title, RoundedCard, RoundedCardItem } from "../../../components";
-import type { ComplianceReportObject } from '../../../libs/intecojs';
-import { Treatment } from "../../../libs/intecojs/models/regimen";
+import { View } from "react-native";
+import type { ComplianceReportObject } from '../../../libs/scijs';
+import { Treatment } from "../../../libs/scijs/models/regimen";
 import ComplianceReportCard from "./ComplianceReportCard";
 import _ from "lodash";
 
@@ -47,28 +43,28 @@ export default class TreatmentListView extends React.Component<Props, any> {
   }
 }
 
-const styles = StyleSheet.create({
-  card: {
-    borderRadius: 8,
-  },
-  cardItem: {
-    justifyContent: 'center'
-  },
-  buttonRow: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: "center",
-    alignItems: 'center',
-    height: 60
-  },
-  button: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    height: 55
-  },
-  icon: {
-    fontSize: 40
-    // height: 
-  }
-})
+// const styles = StyleSheet.create({
+//   card: {
+//     borderRadius: 8,
+//   },
+//   cardItem: {
+//     justifyContent: 'center'
+//   },
+//   buttonRow: {
+//     flex: 1,
+//     flexDirection: 'row',
+//     justifyContent: "center",
+//     alignItems: 'center',
+//     height: 60
+//   },
+//   button: {
+//     flex: 1,
+//     flexDirection: 'column',
+//     justifyContent: 'center',
+//     height: 55
+//   },
+//   icon: {
+//     fontSize: 40
+//     // height: 
+//   }
+// })

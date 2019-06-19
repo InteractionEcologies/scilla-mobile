@@ -4,9 +4,9 @@ import { View, StyleSheet } from "react-native";
 import { Button } from "native-base";
 import { Ionicons } from '@expo/vector-icons';
 import { AppText, Title, RoundedCard, RoundedCardItem } from "../../../components";
-import type { ComplianceReportObject, DateTypeTimeOfDay } from '../../../libs/intecojs';
-import { ComplianceStatusOptions, DateFormatISO8601, DateFormatTimeOfDay } from "../../../libs/intecojs";
-import { Treatment } from "../../../libs/intecojs/models/regimen";
+import type { ComplianceReportObject, DateTypeTimeOfDay } from '../../../libs/scijs';
+import { ComplianceStatusOptions, DateFormatTimeOfDay } from "../../../libs/scijs";
+import { Treatment } from "../../../libs/scijs/models/regimen";
 import moment from "moment";
 import Colors from "../../../constants/Colors";
 

@@ -1,12 +1,9 @@
 // @flow
 import React from "react";
 import { View, StyleSheet } from "react-native";
-import { Button, Form, Item, Label, Input } from "native-base";
-import { Title, AppText, DotPageIndicator
+import { Form, Item, Label, Input } from "native-base";
+import { Title, DotPageIndicator
 } from "../../../components";
-import RegimenStyles from "../RegimenStyles";
-import { RegimenTypes } from "../../../libs/intecojs";
-import type { RegimenType } from "../../../libs/intecojs";
 import _ from "lodash";
 
 type Props = {

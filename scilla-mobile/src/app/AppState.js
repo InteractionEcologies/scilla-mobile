@@ -1,25 +1,22 @@
 // @flow
-import { Regimen, RegimenFactory } from "../libs/intecojs/models/regimen";
+import { Regimen, RegimenFactory } from "../libs/scijs/models/regimen";
 import AppService from "./AppService";
 import { IAppState } from "./IAppState";
 import { 
-  NotImplementedError,
   RegimenStatusOptions,
   DateFormatISO8601,
   NotExistError
-} from "../libs/intecojs";
+} from "../libs/scijs";
 import type { 
   RegimenObject,
   UserId,
   MeasurementObject, 
-  MeasurementType,
   DailyEvaluationObject,
   ComplianceReportObject, 
   UserProfileObject,
   DateTypeISO8601
-} from "../libs/intecojs";
+} from "../libs/scijs";
 import _ from "lodash";
-import idx from "idx";
 import moment from "moment";
 
 /* AppState Singleton 

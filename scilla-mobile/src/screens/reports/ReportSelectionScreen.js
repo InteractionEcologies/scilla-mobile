@@ -1,21 +1,21 @@
 // @flow
 import React from "react";
-import { Container, Content, Text, View, Icon, Button, Card, CardItem, Body } from "native-base";
+import { Container, Content, View, Button, Card, CardItem } from "native-base";
 import { ScrollView } from "react-native";
-import { AppText, Title, DotPageIndicator } from "../../components";
+import { AppText, Title } from "../../components";
 import moment from "moment";
 import AppState from "../../app/AppState";
-import { MeasurementTypes, DateFormatISO8601 } from "../../libs/intecojs"; 
+import { DateFormatISO8601 } from "../../libs/scijs"; 
 import styles from "./ReportStyles"; 
 import { ScreenNames } from "../../constants/Screens";
 import _ from "lodash";
 import { OneWeekCalendar } from "../../components";
 import XDate from "xdate";
-import { Regimen } from "../../libs/intecojs/models/regimen";
+import { Regimen } from "../../libs/scijs/models/regimen";
 import type
  {
   MeasurementType
-} from "../../libs/intecojs"
+} from "../../libs/scijs"
 
 const appState = new AppState();
 const DAILY_EVALUATION_MEASUREMENT_TYPE = "Daily Evaluation"

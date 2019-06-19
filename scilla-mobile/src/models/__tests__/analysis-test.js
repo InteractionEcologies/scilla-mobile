@@ -2,7 +2,7 @@
 import { DailyEvalDataFrame } from "../analysis";
 import { 
     MeasurementTypes
-} from "../../libs/intecojs";
+} from "../../libs/scijs";
 import _ from "lodash";
 
 describe("daily evaluation data frame", () => {

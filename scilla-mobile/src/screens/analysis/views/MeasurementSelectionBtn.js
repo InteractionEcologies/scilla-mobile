@@ -1,12 +1,10 @@
 // @flow
 import React from "react";
-import { StyleSheet } from "react-native";
-import { Text } from "native-base";
 import { AppText } from "../../../components";
 import Colors from "../../../constants/Colors";
 import type {
   MeasurementType
-} from "../../../libs/intecojs";
+} from "../../../libs/scijs";
 import { 
   ColorsForMeasurementTypes, 
   DefaultColorForMeasurement 

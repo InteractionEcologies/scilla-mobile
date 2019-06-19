@@ -1,6 +1,6 @@
 // @flow
 import React from "react";
-import { Container, Content, Text, View, Icon, Button, Toast, Card, CardItem} from "native-base";
+import { Container, Content, View, Button, Toast, Card, CardItem} from "native-base";
 import { AppText, Title } from "../../components";
 import MoodScaleView from './views/MoodScaleView';
 import SleepScaleView from './views/SleepScaleView';
@@ -8,12 +8,12 @@ import BaclofenScaleView from './views/BaclofenScaleView';
 import SpasticityScaleView from './views/SpasticityScaleView';
 import TiredScaleView from './views/TiredScaleView';
 import moment from "moment";
-import { MeasurementTypes, DateFormatISO8601, DateFormatTimeOfDay } from "../../libs/intecojs"; 
+import { MeasurementTypes, DateFormatISO8601 } from "../../libs/scijs"; 
 import type { 
   MeasurementType,
   MeasurementObject,
   MeasurementValue
-} from "../../libs/intecojs";
+} from "../../libs/scijs";
 import AppService from "../../app/AppService";
 import styles from "./ReportStyles"; 
 import { ScreenNames } from "../../constants/Screens";
@@ -94,18 +94,18 @@ export default class ReportMeasurmentScreen extends React.Component<any, State> 
 
   render(){
     let { currentDate } = this.state;
-    let markedDates = {
-      [currentDate]: {
-        selected: true
-      }
-    }
+    // let markedDates = {
+    //   [currentDate]: {
+    //     selected: true
+    //   }
+    // }
 
     return(
       <Container style={styles.container}>
         <Content contentContainerStyle={styles.content}>
         <Card style={styles.selectionCard}>
           <CardItem style = {styles.cardDate} bordered>
-            <Title style={styles.titleText}>{this.state.currentDate}</Title>   
+            <Title style={styles.titleText}>{currentDate}</Title>   
           </CardItem>
           <CardItem style = {styles.cardItems}>
           {this.renderScale()}

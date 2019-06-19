@@ -1,14 +1,13 @@
 // @flow
 import type { 
   RegimenObject
-} from "../libs/intecojs";
+} from "../libs/scijs";
 import {
   RegimenTypes,
   RegimenStatusOptions,
-  RegimenGoalOptions,
   MeasurementTypes,
   TreatmentDetailOptions
-} from "../libs/intecojs"
+} from "../libs/scijs"
 
 export const fakeRegimenObject: RegimenObject = {
   id: '-LSLsAx4ALSzzuqc61fF',
@@ -21,7 +20,7 @@ export const fakeRegimenObject: RegimenObject = {
   regimenParam: {
     currentDoseMg: 0
   },
-  regimenGoal: RegimenGoalOptions.baclofen30mg,
+  regimenGoal: 30,
   trackedMeasurementTypes: [
     MeasurementTypes.sleepQuality, 
     MeasurementTypes.mood, 

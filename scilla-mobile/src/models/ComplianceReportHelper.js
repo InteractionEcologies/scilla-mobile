@@ -1,13 +1,14 @@
+// @flow
+
 import type { 
   ComplianceReportObject, 
   ComplianceStatus
-} from "../libs/intecojs";
+} from "../libs/scijs";
 import {
   DateFormatTimeOfDay,
   ComplianceStatusOptions
-} from "../libs/intecojs"
+} from "../libs/scijs"
 import moment from "moment";
-// @flow
 
 export class ComplianceReportHelper {
   static toggleSkipAndGetNewStatus(report: ComplianceReportObject): ComplianceStatus {
@@ -24,9 +25,9 @@ export class ComplianceReportHelper {
 
   static toggleTakeAndGetNewStatus(report: ComplianceReportObject): ComplianceStatus {
     let { status } = report;
-    if( status == ComplianceStatusOptions.skip) {
+    if( status === ComplianceStatusOptions.skip) {
       status = ComplianceStatusOptions.took
-    } else if (status == ComplianceStatusOptions.took) {
+    } else if (status === ComplianceStatusOptions.took) {
       status = ComplianceStatusOptions.undefined
     } else {
       status = ComplianceStatusOptions.took

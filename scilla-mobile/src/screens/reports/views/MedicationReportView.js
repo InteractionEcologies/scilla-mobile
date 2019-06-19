@@ -1,11 +1,9 @@
 // @flow
 import React from 'react';
-import { Text, View, Button, Icon } from "native-base";
-import { AppText, Title } from "../../../components";
+import { View, Button } from "native-base";
+import { AppText } from "../../../components";
 import styles from "../ReportStyles"; 
-import _ from "lodash";
-import { DateFormatISO8601 } from "../../../libs/intecojs";
-import type { MeasurementType, MeasurementValue } from "../../../libs/intecojs";
+import type { MeasurementType, MeasurementValue } from "../../../libs/scijs";
 import { 
   RequiredCheckboxMeasurementTypesInDailyEval
 } from "../constants";

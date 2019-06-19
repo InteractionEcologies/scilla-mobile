@@ -1,25 +1,19 @@
 // @flow
 import React from "react";
 // import { Machine, State } from "xstate";
-import { Action, State, withStateMachine } from "react-automata";
-import { Icon, Text, Button, Container, Content,
-  Card, CardItem
+import { Action, withStateMachine } from "react-automata";
+import { Icon, Button, Container, Content
 } from 'native-base';
-import { View, StyleSheet, Image } from "react-native";
+import { View } from "react-native";
 import moment from "moment";
-
-import type { NavigationNavigatorProps } from "react-navigation";
 import type { 
-  RegimenType,
-  RegimenGoalOption,
-  RegimenPhaseObject
-} from "../../libs/intecojs";
+  RegimenType
+} from "../../libs/scijs";
 import { 
   RegimenTypes, 
-  RegimenGoalOptions,
   DateFormatISO8601
-} from "../../libs/intecojs";
-import { Regimen, RegimenFactory, IRegimenPhase } from "../../libs/intecojs/models/regimen";
+} from "../../libs/scijs";
+import { Regimen, RegimenFactory, IRegimenPhase } from "../../libs/scijs/models/regimen";
 
 import { ScreenNames } from "../../constants/Screens";
 import styles from "./RegimenStyles"; 
@@ -35,11 +29,11 @@ import GoalSuggestionView from "./views/GoalSuggestionView";
 import ScheduleView from "./views/ScheduleView";
 import CompletionView from "./views/CompletionView";
 
-import { DotPageIndicator, AppText } from "../../components";
+import { AppText } from "../../components";
 import AppService from "../../app/AppService";
-const appService = new AppService();
-
 import AppState from "../../app/AppState";
+
+const appService = new AppService();
 const appState = new AppState();
 
 
@@ -157,7 +151,7 @@ type States = {
   // regimen object state
   selectedRegimenType: RegimenType, 
   currentDoseMg: number,
-  regimenGoal: RegimenGoalOption,
+  regimenGoal: number,
   startDate: ?string,
   regimenPhases: IRegimenPhase[],
 
@@ -172,7 +166,7 @@ class RegimenCreationScreens
   state = {
     selectedRegimenType: RegimenTypes.incBaclofen,
     currentDoseMg: 0,
-    regimenGoal: RegimenGoalOptions.undefined,
+    regimenGoal: 0,
     startDate: null,
     regimenPhases: [],
 
@@ -181,10 +175,6 @@ class RegimenCreationScreens
   }
 
   regimen: Regimen = RegimenFactory.createRegimen(RegimenTypes.incBaclofen)
-
-  constructor(props: any) {
-    super(props);
-  }
 
   componentDidMount() {
 
@@ -254,7 +244,7 @@ class RegimenCreationScreens
     } else if (newDoseMg < 0) {
       this._disableNextStep(WarningMessages.dosageCanNotBeNagative);
     } else if (newDoseMg === 60) {
-      if (this.regimen.type == RegimenTypes.incBaclofen) {
+      if (this.regimen.type === RegimenTypes.incBaclofen) {
         this._disableNextStep(WarningMessages.dosageHighAlready);
       } else {
         this._enableNextStep();

@@ -1,9 +1,9 @@
 // @flow
 import React from 'react';
-import { Text, View, Button, Icon, Item, Input } from "native-base";
-import { AppText, Title } from "../../../components";
+import { View, Item, Input } from "native-base";
+import { AppText } from "../../../components";
 import styles from "../ReportStyles"; 
-import type { MeasurementValue } from "../../../libs/intecojs";
+import type { MeasurementValue } from "../../../libs/scijs";
 
 type Props = {
   type: string,

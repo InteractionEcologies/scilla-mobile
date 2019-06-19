@@ -19,12 +19,12 @@ import {
   MeasurementTypes,
   DateFormatISO8601,
   NotExistError
-} from "../../libs/intecojs";
+} from "../../libs/scijs";
 import type {
   MeasurementObject,
   MeasurementType,
   MeasurementValue
-} from "../../libs/intecojs"
+} from "../../libs/scijs"
 import _ from "lodash";
 import styles from "./ReportStyles"; 
 import XDate from "xdate";
@@ -33,7 +33,7 @@ import {
   RequiredMeasurementTypesInDailyEval, 
   DailyEvalQuestionPriorityMap
 } from "./constants";
-import { Regimen } from "../../libs/intecojs/models/regimen";
+import { Regimen } from "../../libs/scijs/models/regimen";
 
 const appState = new AppState();
 const appService = new AppService();

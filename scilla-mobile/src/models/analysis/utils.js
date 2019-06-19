@@ -1,13 +1,10 @@
 // @flow
 import type {
   DailyEvaluationObject
-} from "../../libs/intecojs"
+} from "../../libs/scijs"
 import type {
   DailyEvalDataPoint
 } from "./index"
-import { IRegimenPhase} from "../../libs/intecojs/models/regimen"
-import { MeasurementTypes } from "../../libs/intecojs";
-import { BaclofenUtils } from "../../libs/intecojs/models/regimen";
 import {PlottableMeasurementTypes} from "../../screens/analysis/constants"
 import _ from "lodash";
 
@@ -19,7 +16,7 @@ import _ from "lodash";
 //   MeasurementTypes.baclofenAmount
 // ]
   
-const Scope = "AnalysisUtils"
+// const Scope = "AnalysisUtils";
 
 export class AnalysisUtils {
   static convertDailyEvalObjToDataPoints(

@@ -1,12 +1,12 @@
 // @flow
-import { Regimen } from "../libs/intecojs/models/regimen";
+import { Regimen } from "../libs/scijs/models/regimen";
 import type
-{ MeasurementObject, MeasurementType,
+{ MeasurementObject, 
   DailyEvaluationObject,
   ComplianceReportObject, 
   UserProfileObject,
   DateTypeISO8601
-} from "../libs/intecojs";
+} from "../libs/scijs";
 
 export interface IAppState {
 

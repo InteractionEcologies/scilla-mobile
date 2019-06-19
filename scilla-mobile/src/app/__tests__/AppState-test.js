@@ -4,8 +4,8 @@ import { AppServiceImplWithFirebaseWeb } from "../AppServiceImplWithFirebaseWeb"
 import { fakeUser } from "../../datafixtures/core";
 import { fakeRegimenObject } from "../../datafixtures/fakeRegimen";
 import {
-  UserRoles, DateFormatISO8601, UNDEFINED_TIMESTAMP, UNDEFINED_DATE, ComplianceStatusOptions
-} from "../../libs/intecojs"
+  UserRoles, DateFormatISO8601, UNDEFINED_TIMESTAMP, ComplianceStatusOptions
+} from "../../libs/scijs"
 import _ from "lodash";
 import moment from "moment";
 
@@ -38,7 +38,7 @@ describe('AppState with AppService implemented with Firebase Web SDK', () => {
   }
 
   it('Get user id', () => {
-    let uid = appState._getUid();
+    appState._getUid();
   })
 
   it('Get user profile', async () => {
@@ -49,7 +49,6 @@ describe('AppState with AppService implemented with Firebase Web SDK', () => {
 
   it('Get compliance reports for a date of a regimen', async () => {
     let regimenObj = createAndGetRegimenObjFromDS();
-    let regimenId = regimenObj.id;
     let dateOfSecondRegimenPhase = moment(regimenObj.startDate).add(8, 'days');
     let dateStr = dateOfSecondRegimenPhase.format(DateFormatISO8601);
 

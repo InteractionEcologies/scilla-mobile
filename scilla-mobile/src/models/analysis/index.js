@@ -3,18 +3,19 @@ import type {
   MeasurementType, 
   DateTypeISO8601,
   MeasurementValue
-} from "../../libs/intecojs"; 
+} from "../../libs/scijs"; 
 import _ from "lodash";
-
-export type MeasurementReportSummary = {
-  [key: MeasurementType]: ScoreMap
-}
 
 // Number of reports for each score per measurement. 
 export type ScoreMap = {
   [score: string]: number,
   mean?: number
 } 
+
+export type MeasurementReportSummary = {
+  [key: MeasurementType]: ScoreMap
+}
+
 
 export type Point2D = {
   x: number, 

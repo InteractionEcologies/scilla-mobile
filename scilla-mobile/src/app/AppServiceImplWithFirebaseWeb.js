@@ -3,8 +3,7 @@ import * as firebase from 'firebase';
 import { FirebaseConfig } from "../constants/FirebaseConfig";
 import { FirebaseAuth, FirebaseDS, IAuth, IDataSource,
   generatePushIDFunc
-} from "../libs/intecojs";
-import type { Persistence } from "../libs/intecojs"; 
+} from "../libs/scijs";
 import { IAppService } from "./IAppService";
 import type { AppServiceConfig } from "./IAppService";
 

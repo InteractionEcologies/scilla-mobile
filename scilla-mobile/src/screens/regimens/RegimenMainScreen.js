@@ -2,28 +2,23 @@
 import React from "react";
 import { View, StyleSheet, ScrollView } from "react-native";
 import {
-  Container, Header, Content, Button,
-  Footer, Text, Card, CardItem, Body
+  Container, Content, Button,
+  Card, CardItem, Body
 } from "native-base";
 
-import { connect } from "react-redux";
 import { ScreenNames } from "../../constants/Screens";
-import AppService from "../../app/AppService";
 import { AppText } from "../../components"
 import { fakeRegimenObject } from "../../datafixtures/fakeRegimen";
-import { RegimenFactory, Regimen } from "../../libs/intecojs/models/regimen";
+import { RegimenFactory, Regimen } from "../../libs/scijs/models/regimen";
 import type { 
-  RegimenObject,
   RegimenPhaseObject
-} from "../../libs/intecojs";
+} from "../../libs/scijs";
 import {
   DateFormatUXFriendly,
-  DateFormatISO8601,
-  Utils
-} from "../../libs/intecojs";
+  DateFormatISO8601
+} from "../../libs/scijs";
 import _ from "lodash";
 import moment from "moment";
-import RegimenStyles from "./RegimenStyles";
 import { Styles as AppStyles } from "../../constants/Styles";
 import AppState from "../../app/AppState";
 import { Calendar } from "../../components/Calendar";
@@ -34,7 +29,6 @@ type State = {
   currentRegimenPhaseObject: ?RegimenPhaseObject
 }
 
-const appService = new AppService();
 const appState = new AppState();
 
 export default class RegimenMainScreen extends React.Component<any, State> {
@@ -112,7 +106,7 @@ export default class RegimenMainScreen extends React.Component<any, State> {
       _.map(regimenPhases, (regimenPhase) => {
         let startDate = regimenPhase.startDate;
         let endDate = regimenPhase.endDate
-        let treatmentObjs = regimenPhase.treatmentObjects;
+        // let treatmentObjs = regimenPhase.treatmentObjects;
         
         let color = this.phaseColors[regimenPhase.phase % this.phaseColors.length ]
         let curDateM = moment(startDate);

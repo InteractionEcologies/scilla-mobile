@@ -1,5 +1,5 @@
 // @flow
-import { IAuth, IDataSource } from "../libs/intecojs";
+import { IAuth, IDataSource } from "../libs/scijs";
 
 export type AppServiceConfig = {
   disableAuthPersistence?: boolean

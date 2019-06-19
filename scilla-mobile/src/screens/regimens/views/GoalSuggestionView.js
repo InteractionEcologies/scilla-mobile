@@ -1,17 +1,13 @@
 // @flow
 import React from "react";
 import { View, StyleSheet } from "react-native";
-import { Button } from "native-base";
 import { Title, AppText, DotPageIndicator
 } from "../../../components";
-import RegimenStyles from "../RegimenStyles";
-import { RegimenTypes, RegimenGoalOptions } from "../../../libs/intecojs";
-import type { RegimenType, RegimenGoalOption } from "../../../libs/intecojs";
 
 type Props = {
   numStates: number, 
   currentStateIndex: number,
-  regimenGoal: RegimenGoalOption
+  regimenGoal: number
 }
 
 export default class GoalSuggestionView extends React.Component<Props, any> {
@@ -31,14 +27,17 @@ export default class GoalSuggestionView extends React.Component<Props, any> {
   _renderSuggestedDosage() {
     let text = "";
     switch(this.props.regimenGoal) {
-      case RegimenGoalOptions.baclofen0mg:
+      case 0:
         text = "0";
         break;
-      case RegimenGoalOptions.baclofen30mg:
+      case 30:
         text = "30";
         break;
-      case RegimenGoalOptions.baclofen60mg:
+      case 60:
         text = "60";
+        break;
+      default:
+        text = "Unknown";
         break;
     }
     return (

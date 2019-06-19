@@ -1,5 +1,5 @@
 // @flow
-import { MeasurementTypes } from "../../libs/intecojs";
+import { MeasurementTypes } from "../../libs/scijs";
 
 export const RequiredMeasurementTypesInDailyEval = [
   MeasurementTypes.exerciseTime,
@@ -16,10 +16,12 @@ export const RequiredCheckboxMeasurementTypesInDailyEval = [
 // A question with lower number will be shown first in daily evaluation
 export const DailyEvalQuestionPriorityMap = {
   [MeasurementTypes.spasticitySeverity]: 1,
-  [MeasurementTypes.tiredness]: 2,
-  [MeasurementTypes.mood]: 3,
-  [MeasurementTypes.sleepQuality]: 4,
-  [MeasurementTypes.baclofenAmount]: 5,
+  [MeasurementTypes.sleepiness]: 2, 
+  [MeasurementTypes.weakness]: 3,
+  [MeasurementTypes.tiredness]: 4,
+  [MeasurementTypes.mood]: 5,
+  [MeasurementTypes.sleepQuality]: 6,
+  [MeasurementTypes.baclofenAmount]: 7,
 
 
   [MeasurementTypes.exerciseTime]: 10,

@@ -1,8 +1,6 @@
 // @flow
 import React from "react";
-import { View, Text, StyleSheet } from "native-base";
-import type { RegimenType } from "../../../libs/intecojs";
-import { RegimenTypes } from "../../../libs/intecojs";
+import { View } from "native-base";
 import styles from "../RegimenStyles";
 import { TextBullet, Title, AppText, 
   DotPageIndicator

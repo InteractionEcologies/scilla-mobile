@@ -3,7 +3,7 @@ import { fakeUserProfile } from "./core";
 import type
 {
   DailyEvaluationObject
-} from "../libs/intecojs";
+} from "../libs/scijs";
 
 export const fakeDailyEvals: DailyEvaluationObject[] = [
   {
