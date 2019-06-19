@@ -181,7 +181,6 @@ class RegimenCreationScreens extends React.Component<any, States>
 
   // MARK: - Regimen Creation Process
   initRegimen = () => {
-    console.log('init regimen');
     this.regimen = RegimenFactory.createRegimen(this.state.selectedRegimenType);
     let user = appService.auth.currentUser;
     let uid = user.uid;
@@ -190,7 +189,6 @@ class RegimenCreationScreens extends React.Component<any, States>
   }
 
   setRegimenParam = () => {
-    console.log("setRegimenParam");
 
     this.regimen.setRegimenParam({
       currentDoseMg: this.state.currentDoseMg

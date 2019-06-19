@@ -26,7 +26,6 @@ export class OneWeekCalendar extends Calendar {
       this.props.firstDay,
       this.props.current
     );
-    console.log(days);
 
     const weeks = [];
     while (days.length) {
@@ -34,7 +33,6 @@ export class OneWeekCalendar extends Calendar {
     }
     let indicator;
     const current = parseDate(this.props.current);
-    console.log(this.props.current);
     
     if (current) {
       const lastMonthOfDay = current.clone().addMonths(1, true).setDate(1).addDays(-1).toString('yyyy-MM-dd');

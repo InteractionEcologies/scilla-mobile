@@ -58,7 +58,10 @@ export default class AppState implements IAppState {
       return this.getOrInitComplianceReportsForDate(today);
     }).then(()=>{})
     .catch( (error) => {
-      console.log(error);
+      // console.log(error);
+      if (error.name === "NotExisterror") {
+        console.log("Regimen does not exist.")
+      }
     });
   }
 

@@ -243,15 +243,14 @@ class Calendar extends Component {
 
   render() {
     const days = dateutils.page(this.state.currentMonth, this.props.firstDay);
-    console.log(days);
-
+    
     const weeks = [];
     while (days.length) {
       weeks.push(this.renderWeek(days.splice(0, 7), weeks.length));
     }
     let indicator;
     const current = parseDate(this.props.current);
-    console.log(this.props.current);
+    
     if (current) {
       const lastMonthOfDay = current.clone().addMonths(1, true).setDate(1).addDays(-1).toString('yyyy-MM-dd');
       if (this.props.displayLoadingIndicator &&
