@@ -1,6 +1,9 @@
 # Scilla Mobile
 A mobile app to help patients with Spinal Cord Injury or Disease (SCI/D) learn the right Baclofen medication plan. 
 
+## Introduction
+We develop this mobile application with an ejected version of Expo. Expo can be think of a layer on top of React Native, it provides Javascript and native SDK to access native functionalities that available in React Native. One can develop Expo without ejecting -- if they only rely on the functionalities provided by Expo. If developing in this way, developers do not need to create their own iOS and Android builds. However, in our case, we want to access the full functionalities of firebase native SDK and we dependent on a native charting library (victory-native). To use these, we do need to eject from Expo, and use the vanilla React Native. We can still access Expo functionalities via ExpoKit, however we will need to create our iOS and Android builds, as the default Expo build does not come with the native libraries we want to use. 
+
 ## Repo structures
 * `scilla-mobile`: the main source file for the mobile app. 
 * Besides `scilla-mobile/`, this repo contains two other submodules. 
@@ -8,9 +11,13 @@ A mobile app to help patients with Spinal Cord Injury or Disease (SCI/D) learn t
   * `scilla-mobile/libs/scijs/`: for sharing code between Inteco projects.  
 
 ## Major Dependencies
+* **Visual Studio Code** 
+* **React Native** (v0.55.4)
+* **node** (v8.11.4 LTS)
+* **Expo** (v32.0.0)
+* **Flow** 
+* **Jest**
 * react-navigation 
-* React Native (v0.55.4)
-* Expo (v32.0.0)
 * NativeBase (v2.12.1)
 * React Native Firebase (npm) (v4.2)
 * React Native Firebase (iOS SDK) (v5.3.0)
@@ -19,14 +26,6 @@ A mobile app to help patients with Spinal Cord Injury or Disease (SCI/D) learn t
 * Victory (visualization)
   * We forked a `victory-native` and placed it under `scilla-mobile/src/libs`. This contains a version that uses the react-native-svg provided by Expo. 
   * We still dependent on other `victory-<xxx>` packages, those packages do not use `react-native-svg` thus it is safe to use. See `scilla-mobile/package.json` for the ones we dependent on. These dependencies are copied from `victory-native/package.json`
-
-## Development Environments
-* **Visual Studio Code** 
-* **React Native** (v0.55.4)
-* **node** (v8.11.4 LTS)
-* **Expo** (v32.0.0)
-* **Flow** 
-* **Jest**
 
 ## Development Setup
 ### Setup Development Environment
@@ -57,6 +56,7 @@ A mobile app to help patients with Spinal Cord Injury or Disease (SCI/D) learn t
 * Disable Instant Run (In Preferences > Build, Execution, Deployment)
 * Run the code. 
 
+
 ## Unitesting (with Jest)
 * Run all unittests with autowatch `npm run test:all`
 * Run unittest once `npm run test`
@@ -76,26 +76,14 @@ A mobile app to help patients with Spinal Cord Injury or Disease (SCI/D) learn t
 * Show the debugging menu on iPhone
   * `cmd + D`
 
-Expo Upgrade Guide
-=================
+## Expo Upgrade Guide
 * Expo typically release upgrade walkthrough for sdk update. 
   * Usually we need to change package.json to point to the new versions of react and expo. 
   * `rm -rf node_modules`
   * `npm install`
 
-Notes
-==============
-## Notes on Expo pgrade
-* npm module (package.json)
-  * expo
-  * expokit
-  * react-native
-* iOS and Android package lives in node_modules, so have to upgrade package.json first, then do `npm install`. 
-* Once node_modules is upgraded, will need to change the Podfile for iOS
-  * Podfile for Expo is setup so that we will fetch `ExpoKit` (the core ExpoKit library) from github using a certain release, and the rest of expo modules (e.g., EXGL) from node_modules. 
 
-
-# Project Structure
+## Project Structure
 * `App.js`: entry point of the mobile app. 
   * Expo by default export this file as the main entry point. 
 * `src/`
@@ -120,9 +108,16 @@ Notes
 * `flow-typed/`: contains type definitions for third party libraries. They are installed via `flow-typed install XXX`
 * `ios/`: contains ios-specific code
 * `android/`: contains Android-specific code. 
-  
-## Configuration files
-* `.flowconfig`: configuring static type checking. 
-* `.babelrc`: Expo uses babel for code transpile. 
+
+
+# Other Notes
+## Notes on Expo upgrade
+* npm module (package.json)
+  * expo
+  * expokit
+  * react-native
+* iOS and Android package lives in node_modules, so have to upgrade package.json first, then do `npm install`. 
+* Once node_modules is upgraded, will need to change the Podfile for iOS
+  * Podfile for Expo is setup so that we will fetch `ExpoKit` (the core ExpoKit library) from github using a certain release, and the rest of expo modules (e.g., EXGL) from node_modules. 
 
 

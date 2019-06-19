@@ -82,7 +82,9 @@ export default class DashboardMainScreen extends React.Component<any, State> {
         complianceReportMap: complianceReportMap
       })
     } catch (e) {
-      console.log(e);
+      if(e.name === "NotExistError") {
+        console.log("Regimen does not exist.")
+      }
     }
   }
 

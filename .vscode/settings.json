@@ -10,5 +10,6 @@
   "javascript.validate.enable": false,
   "todo-tree.grouped": true,
   "todo-tree.expanded": true,
-  "search-node-modules.path": "./scilla-mobile/node_modules"
+  "search-node-modules.path": "./scilla-mobile/node_modules",
+  "eslint.enable": true
 }

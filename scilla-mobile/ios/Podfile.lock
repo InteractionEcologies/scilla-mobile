@@ -50,9 +50,6 @@ PODS:
     - EXCore
   - EXImageLoaderInterface (2.0.0):
     - EXCore
-  - EXLocalAuthentication (2.0.0):
-    - EXConstantsInterface
-    - EXCore
   - EXLocation (2.0.1):
     - EXCore
     - EXPermissionsInterface
@@ -282,7 +279,6 @@ DEPENDENCIES:
   - EXFont (from `../node_modules/expo-font/ios`)
   - EXFontInterface (from `../node_modules/expo-font-interface/ios`)
   - EXImageLoaderInterface (from `../node_modules/expo-image-loader-interface/ios`)
-  - EXLocalAuthentication (from `../node_modules/expo-local-authentication/ios`)
   - EXLocation (from `../node_modules/expo-location/ios`)
   - EXMediaLibrary (from `../node_modules/expo-media-library/ios`)
   - EXPermissions (from `../node_modules/expo-permissions/ios`)
@@ -376,8 +372,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-font-interface/ios"
   EXImageLoaderInterface:
     :path: "../node_modules/expo-image-loader-interface/ios"
-  EXLocalAuthentication:
-    :path: "../node_modules/expo-local-authentication/ios"
   EXLocation:
     :path: "../node_modules/expo-location/ios"
   EXMediaLibrary:
@@ -424,28 +418,27 @@ SPEC CHECKSUMS:
   CocoaLumberjack: 2800c03334042fe80589423c8d80e582dcaec482
   Crashlytics: 07fb167b1694128c1c9a5a5cc319b0e9c3ca0933
   DoubleConversion: bb338842f62ab1d708ceb63ec3d999f0f3d98ecd
-  EXAppLoaderProvider: 2638ca3d779c8baae37e63352c785e5e2dad70d5
-  EXCameraInterface: 6d990173e3f6355e575f44b38dcf61d0c90bc47e
-  EXConstants: 4ab8da18840ebae518e15541164fbaf7907e58c2
-  EXConstantsInterface: c60c068f94b78c8805bfeb35bd2bbaf859293de5
-  EXCore: 70e5cb8627048c5373820d6372faa54cbefb3b12
-  EXFaceDetectorInterface: 8727fe51fbd189a94ccd70152a25cdef913a0ae5
-  EXFileSystem: 0872826fd9ebc7d842a5e389b088c93f5b9fab88
-  EXFileSystemInterface: 8e1225e4e1776ea7abf997a7ded593b4b8e86863
-  EXFont: 5c0220788732ef1c4bfe0f5079a003b4c64add95
-  EXFontInterface: 06126ec4f6a67415426074c3383a82b241f087c1
-  EXImageLoaderInterface: 3f460f6ff344ba6c4e00621806c0d1d76249cd8f
-  EXLocalAuthentication: b70696613cb24d726d3c98a1818c22c481a46b01
-  EXLocation: 54f562edcc410be18699a364e80fcabcf97228f0
-  EXMediaLibrary: f91c4f6ff2c9be8102e06d0a4d08987231a7e286
-  EXPermissions: dd31cb432c078eed1f4c1e290bc32649d5280bd3
-  EXPermissionsInterface: 76f80a0dcd16afde36498e3d3aa168cb43999558
+  EXAppLoaderProvider: d58a41a76500ac02945b31984e203424767ef68d
+  EXCameraInterface: 410321357463f15aa5810616debf0e365d28e19a
+  EXConstants: df0136052a3fd8a0dd55c4be955b4013148e5e9d
+  EXConstantsInterface: 82819cabd73bbe63c489e2dd432b9ae44a05f077
+  EXCore: b73cdd59ca9115ae860bfb087e12ed41bb01d35e
+  EXFaceDetectorInterface: 490e9e744fb90efad2b435e145ffce35fb7b28cd
+  EXFileSystem: 6300c99ae83e44d7ce5032faa5b70e68559a6570
+  EXFileSystemInterface: 8988f60990aeeb056bb87358f61429edc045fe2d
+  EXFont: f173b1535331343f3502daf2be2b01f58c75ea48
+  EXFontInterface: 976790c70b507de85ee4a89e99f90a733baa157e
+  EXImageLoaderInterface: 45e823804c00295db7d3b030f30da9635ae9226d
+  EXLocation: 29490b297d749b81b63a1c3a93305d577b755326
+  EXMediaLibrary: f4e94309ca3b4dd165b07f9a6ffcfda10a229ff2
+  EXPermissions: f623f719bb5d6c11beac9ec4df918cb653f96276
+  EXPermissionsInterface: 8b2e85d263f98a4e7493ed7b04e02dadccc515ec
   ExpoKit: 68b31d554c510f5cb4eadc58670fb9af7a22beea
-  EXReactNativeAdapter: 253efa069b53a6c8be7c3f2afd49ef6b4e97e902
-  EXSegment: cfe9aed31dbd7f1455724afe89a4920e5dad0049
-  EXSensorsInterface: 9e845bc03ad23a846fa6bcd4e2a60f1d0b1a6906
-  EXSMS: 2a2f1abfb2f37b686e892261678c70f39c9b7fa8
-  EXTaskManagerInterface: f9869b0f902ba7ccead16e0768c6dd75603163e0
+  EXReactNativeAdapter: 51812e123e5620e1ca3f50d95d2c84e992a81685
+  EXSegment: 2b0b82b9aa68a2974581b73029be11dcb040d0e0
+  EXSensorsInterface: a83fdcd27791e57f53f02b85e0103eb011d75b50
+  EXSMS: 997c68a398b9c29ed89a537966e182bb344ffc07
+  EXTaskManagerInterface: a82814720a2cce703b39e402ab2d2188fc8d6e02
   Fabric: f988e33c97f08930a413e08123064d2e5f68d655
   FBAudienceNetwork: 80275c0a28574ff5ce820abdc251d05e07e6ae7a
   FBSDKCoreKit: f442aa96179cc9b382bb4abeb7e340a47cca8f91
@@ -474,9 +467,9 @@ SPEC CHECKSUMS:
   lottie-ios: a50d5c0160425cd4b01b852bb9578963e6d92d31
   nanopb: 2901f78ea1b7b4015c860c2fdd1ea2fee1a18d48
   Protobuf: 7a877b7f3e5964e3fce995e2eb323dbc6831bb5a
-  React: 1fe0eb13d90b625d94c3b117c274dcfd2e760e11
-  yoga: b1ce48b6cf950b98deae82838f5173ea7cf89e85
+  React: b4e0982b0ed6a7de90e96cf6fe5cf036aeadd1ec
+  yoga: 5e2e4bcf11188977f799b64625dc5913c2aea8fd
 
-PODFILE CHECKSUM: b659192920f24fa48235c39ed82797c3454e22e5
+PODFILE CHECKSUM: d1a4ae1c14cd613ca76765a017d4f04b3834ce9f
 
-COCOAPODS: 1.5.3
+COCOAPODS: 1.7.2

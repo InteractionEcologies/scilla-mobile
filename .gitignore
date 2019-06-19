@@ -105,3 +105,6 @@ EXBuildConstants.plist.bak
 
 # VSCode
 .vscode
+
+# Jest
+scilla-mobile/dist/

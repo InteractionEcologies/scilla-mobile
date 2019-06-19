@@ -83,7 +83,9 @@ export default class RegimenMainScreen extends React.Component<any, State> {
   async initializeState() {
     try {
       let regimen = await appState.getLatestRegimen();
-      let today = moment().local().format(DateFormatISO8601)
+
+      // Find today's regimen phase. 
+      let today = moment().local().format(DateFormatISO8601);
       let regimenPhaseObject = regimen.getRegimenPhaseObjByDate(today);
       if(regimenPhaseObject) {
         this.setState({
@@ -92,7 +94,10 @@ export default class RegimenMainScreen extends React.Component<any, State> {
         });
       }
     } catch (e) {
-      console.log(e);
+      // Regimen does not exist. Do nothing. 
+      if(e.name === "NotExisterror") {
+        console.log("Regimen does not exist");
+      } 
     }
   }
 
@@ -176,7 +181,6 @@ export default class RegimenMainScreen extends React.Component<any, State> {
     }
 
     let markedDates = this.getMarkedDays();
-    console.log(markedDates);
       
     return (
       <View style={{width: '100%'}}>

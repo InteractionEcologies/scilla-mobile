@@ -160,8 +160,7 @@ type States = {
   warningMessage: ?string,
 }
 
-class RegimenCreationScreens 
-  extends React.Component<any, States>
+class RegimenCreationScreens extends React.Component<any, States>
 {
   state = {
     selectedRegimenType: RegimenTypes.incBaclofen,

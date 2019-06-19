@@ -5,7 +5,7 @@ A mobile app to help patients with Spinal Cord Injury or Disease (SCI/D) learn t
 * `scilla-mobile`: the main source file for the mobile app. 
 * Besides `scilla-mobile/`, this repo contains two other submodules. 
   * `scilla-mobile.wiki`: for documentation purpose. 
-  * `scilla-mobile/libs/intecojs/`: for sharing code between Inteco projects.  
+  * `scilla-mobile/libs/scijs/`: for sharing code between Inteco projects.  
 
 ## Major Dependencies
 * react-navigation 
@@ -15,7 +15,10 @@ A mobile app to help patients with Spinal Cord Injury or Disease (SCI/D) learn t
 * React Native Firebase (npm) (v4.2)
 * React Native Firebase (iOS SDK) (v5.3.0)
 * react-native-svg (v6.2.2) in Expo
-  * Android Gradle builds the react-native-svg in Expo rather than the standard one. 
+  * Expo comes with a `react-native-svg` already while `victory-native` also dependes on a `react-native-svg`. 
+  * If we install two versions of this library, it will create problem on the native ends –– iOS and Android built can only connect to one version. 
+  * To solve this problem, I fork `victory-native` and change it to depend on Expo's version. 
+  * In this case, we shouldn't manually install any `react-native-svg` dependencies on the native ends. 
 * Victory (visualization)
   * We forked a `victory-native` and placed it under `scilla-mobile/src/libs`. This contains a version that uses the react-native-svg provided by Expo. 
   * We still dependent on other `victory-<xxx>` packages, those packages do not use `react-native-svg` thus it is safe to use. See `scilla-mobile/package.json` for the ones we dependent on. These dependencies are copied from `victory-native/package.json`
@@ -46,8 +49,7 @@ A mobile app to help patients with Spinal Cord Injury or Disease (SCI/D) learn t
   * `expo start -c`
 * Use XCode to open `scilla-mobile.xcworkspace`
 * Navigate to the `ios/` folder under terminal. Install dependency via Cocoapods. (`pod install`)
-* Build an run the ios code on a simulator. 
-* 
+* Build an run the ios code on a simulator
 
 ## Android
 * Use Android Studio to open the `android` folder. 
@@ -76,6 +78,16 @@ Expo Upgrade Guide
   * Usually we need to change package.json to point to the new versions of react and expo. 
   * `rm -rf node_modules`
   * `npm install`
+
+## iOS
+* The relevant files include: 
+  * `ios/Podfile`
+  * `ios/scilla-mobile/AppDelegate.h`
+  * `ios/scilla-mobile/AppDelegate.m`
+
+## Android
+* The relevant files include:
+  * 
 
 Notes
 ==============
