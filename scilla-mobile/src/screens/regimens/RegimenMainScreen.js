@@ -32,6 +32,7 @@ type State = {
 const appState = new AppState();
 
 export default class RegimenMainScreen extends React.Component<any, State> {
+  _isMounted = false
   static navigationOptions: any = {
     title: "Regimen"
   };
@@ -61,18 +62,21 @@ export default class RegimenMainScreen extends React.Component<any, State> {
     // DEBUG
     // Stub the data.
     // this.addFakeData();
+    this._isMounted = true;
 
     this.initializeState();
   }
 
   componentWillFocus = (payload: any) => {
-    console.info("willFocus", payload);
+    // console.info("willFocus", payload);
     this.initializeState();
   }
 
   componentWillUnmount() {
     this.componentWillFocusSubscription.remove();
+    this._isMounted = false;
   }
+
 
   addFakeData() {
     let regimenObject = fakeRegimenObject;
@@ -81,6 +85,7 @@ export default class RegimenMainScreen extends React.Component<any, State> {
   }
 
   async initializeState() {
+    if(!this._isMounted) return;
     try {
       let regimen = await appState.getLatestRegimen();
 
@@ -144,6 +149,10 @@ export default class RegimenMainScreen extends React.Component<any, State> {
     this.props.navigation.navigate(ScreenNames.RegimenCreation);
   }
 
+  goToRedeemRegimen = () => {
+    this.props.navigation.navigate(ScreenNames.RegimenRedeem);
+  }
+
   goToUpdateRegimen = (regimenId: string) => {
     console.dir(regimenId);
   }
@@ -166,7 +175,12 @@ export default class RegimenMainScreen extends React.Component<any, State> {
     if(this.state.regimen) {
       return this._renderActiveRegimen();
     } else {
-      return this._renderRegimenCreation();
+      // Currently we don't allow users to create their own 
+      // regimens. All the regimens are created by the research team, 
+      // based on a clinician's prescription. 
+      // return this._renderRegimenCreation();
+
+      return this._renderRegimenRedeem();
     }
   }
 
@@ -215,6 +229,14 @@ export default class RegimenMainScreen extends React.Component<any, State> {
     return (
       <Button full onPress={this.goToCreateRegimen}>
         <AppText>Create Regimen</AppText>
+      </Button>
+    )
+  }
+
+  _renderRegimenRedeem() {
+    return (
+      <Button full onPress={this.goToRedeemRegimen}>
+        <AppText>Redeem Regimen by Code</AppText>
       </Button>
     )
   }

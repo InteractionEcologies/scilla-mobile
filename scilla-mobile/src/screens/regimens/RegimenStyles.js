@@ -6,8 +6,10 @@ const styles = StyleSheet.create({
   mainView: {
     alignItems: 'center',
     justifyContent: 'flex-start',
-    width: '90%',
-    flex: 0.8
+    marginTop: 10,
+    // width: '100%',
+    width: 'auto',
+    flex: 1
   },
   nextBackBtnView: {
     height: 50,

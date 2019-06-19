@@ -6,6 +6,8 @@ import TabBarIcon from '../components/TabBarIcon';
 
 import RegimenMainScreen from "../screens/regimens/RegimenMainScreen";
 import RegimenCreationScreens from "../screens/regimens/RegimenCreationScreens";
+import RegimenRedeemScreen from "../screens/regimens/RegimenRedeemScreen";
+
 import {ScreenNames} from "../constants/Screens";
 
 // let routeConfigs = {};
@@ -16,6 +18,7 @@ let RegimenStack = createStackNavigator(
   {
     [ScreenNames.RegimenMain]: RegimenMainScreen, 
     [ScreenNames.RegimenCreation]: RegimenCreationScreens,
+    [ScreenNames.RegimenRedeem]: RegimenRedeemScreen
   },
   {
     initialRouteName: ScreenNames.RegimenMain

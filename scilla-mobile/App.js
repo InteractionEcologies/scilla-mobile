@@ -32,10 +32,12 @@ export default class App extends React.Component<any, any> {
     } else {
       return (
         <StyleProvider style={getTheme(commonColor)}>
-          <View style={styles.container}>
+          <View>
             {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
             <Root>
-              <AppContainer />
+              <Container style={styles.container}>
+                <AppContainer />
+              </Container>
             </Root>
           </View>
         </StyleProvider>

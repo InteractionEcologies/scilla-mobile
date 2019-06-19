@@ -8,6 +8,7 @@ export const ScreenNames = {
   // Regimen 
   RegimenMain: "RegimenMain",
   RegimenCreation: 'RegimenCreation',
+  RegimenRedeem: "RegimenRedeem",
   
   // Reports
   ReportSelection: "ReportSelection",
