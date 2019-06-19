@@ -19,7 +19,7 @@ import {
   RegimenGoalOptions,
   DateFormatISO8601
 } from "../../libs/intecojs";
-import { Regimen, RegimenFactory, IRegimenPhase } from "../../models/regimen";
+import { Regimen, RegimenFactory, IRegimenPhase } from "../../libs/intecojs/models/regimen";
 
 import { ScreenNames } from "../../constants/Screens";
 import styles from "./RegimenStyles"; 

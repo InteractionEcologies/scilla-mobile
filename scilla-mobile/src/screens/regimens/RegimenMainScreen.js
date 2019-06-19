@@ -11,7 +11,7 @@ import { ScreenNames } from "../../constants/Screens";
 import AppService from "../../app/AppService";
 import { AppText } from "../../components"
 import { fakeRegimenObject } from "../../datafixtures/fakeRegimen";
-import { RegimenFactory, Regimen } from "../../models/regimen";
+import { RegimenFactory, Regimen } from "../../libs/intecojs/models/regimen";
 import type { 
   RegimenObject,
   RegimenPhaseObject

@@ -6,7 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { AppText, Title, RoundedCard, RoundedCardItem } from "../../../components";
 import type { ComplianceReportObject, DateTypeTimeOfDay } from '../../../libs/intecojs';
 import { ComplianceStatusOptions, DateFormatISO8601, DateFormatTimeOfDay } from "../../../libs/intecojs";
-import { Treatment } from "../../../models/regimen";
+import { Treatment } from "../../../libs/intecojs/models/regimen";
 import moment from "moment";
 import Colors from "../../../constants/Colors";
 

@@ -40,9 +40,14 @@ A mobile app to help patients with Spinal Cord Injury or Disease (SCI/D) learn t
 * To start serving the javascript code, use `npm run start`. 
 
 ### iOS
+* Overall 
+* Start expo server 
+  * Move to `/scilla-mobile`
+  * `expo start -c`
 * Use XCode to open `scilla-mobile.xcworkspace`
 * Navigate to the `ios/` folder under terminal. Install dependency via Cocoapods. (`pod install`)
-* Run the code in a simulator. 
+* Build an run the ios code on a simulator. 
+* 
 
 ## Android
 * Use Android Studio to open the `android` folder. 
@@ -57,6 +62,13 @@ A mobile app to help patients with Spinal Cord Injury or Disease (SCI/D) learn t
   * E.g., `npm run test -- FirebaseDS --watch`
   * To show `console.log` under this mode, we cannot use watch (not sure why). Thus, just run `npm run test -- Firebase` for example. 
 
+## Flow
+* 
+
+## Debugging
+### iOS
+* Show the debugging menu on iPhone
+  * `cmd + D`
 
 Expo Upgrade Guide
 =================
@@ -64,3 +76,14 @@ Expo Upgrade Guide
   * Usually we need to change package.json to point to the new versions of react and expo. 
   * `rm -rf node_modules`
   * `npm install`
+
+Notes
+==============
+## Notes on Expo pgrade
+* npm module (package.json)
+  * expo
+  * expokit
+  * react-native
+* iOS and Android package lives in node_modules, so have to upgrade package.json first, then do `npm install`. 
+* Once node_modules is upgraded, will need to change the Podfile for iOS
+  * Podfile for Expo is setup so that we will fetch `ExpoKit` (the core ExpoKit library) from github using a certain release, and the rest of expo modules (e.g., EXGL) from node_modules. 

@@ -12,9 +12,9 @@ import type {
   MeasurementValue,
   DailyEvaluationObject
 } from "../../libs/intecojs"
-import { Regimen } from "../../models/regimen";
+import { Regimen } from "../../libs/intecojs/models/regimen";
 import _ from "lodash";
-import { BaclofenUtils } from "../../models/regimen/utils";
+import { BaclofenUtils } from "../../libs/intecojs/models/regimen/utils";
 import { AnalysisUtils } from "../../models/analysis/utils";
 import type { 
   DailyEvalDataPoint 
@@ -31,7 +31,7 @@ import {
   VictoryGroup 
 } from "../../libs/victory-native/lib";
 import { DailyEvalDataFrame } from "../../models/analysis/";
-import { IRegimenPhase } from "../../models/regimen";
+import { IRegimenPhase } from "../../libs/intecojs/models/regimen";
 import { 
   ColorsForMeasurementTypes, 
   DefaultColorForMeasurement,

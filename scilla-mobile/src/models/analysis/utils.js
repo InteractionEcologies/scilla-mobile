@@ -5,9 +5,9 @@ import type {
 import type {
   DailyEvalDataPoint
 } from "./index"
-import { IRegimenPhase} from "../regimen"
+import { IRegimenPhase} from "../../libs/intecojs/models/regimen"
 import { MeasurementTypes } from "../../libs/intecojs";
-import { BaclofenUtils } from "../../models/regimen";
+import { BaclofenUtils } from "../../libs/intecojs/models/regimen";
 import {PlottableMeasurementTypes} from "../../screens/analysis/constants"
 import _ from "lodash";
 

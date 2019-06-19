@@ -17,7 +17,7 @@ import type {
   ComplianceStatus, 
   DateTypeISO8601
 } from "../../libs/intecojs"
-import { Treatment } from "../../models/regimen";
+import { Treatment } from "../../libs/intecojs/models/regimen";
 import TreatmentListView from "./views/TreatmentListView";
 import Colors from "../../constants/Colors";
 import moment from "moment";

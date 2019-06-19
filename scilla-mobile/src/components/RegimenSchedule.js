@@ -8,7 +8,7 @@ import moment from "moment";
 
 import type { TreatmentObject, RegimenPhaseObject } from "../libs/intecojs";
 import { TreatmentDetailOptions } from "../libs/intecojs";
-import { RegimenUtils, IRegimenPhase, Treatment, PartOfDayOptions } from "../models/regimen";
+import { RegimenUtils, IRegimenPhase, Treatment, PartOfDayOptions } from "../libs/intecojs/models/regimen";
 
 type Props = {
   regimenPhases: IRegimenPhase[],

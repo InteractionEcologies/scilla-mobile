@@ -6,7 +6,7 @@ import { Content, Card, CardItem, Body, Icon,
 } from "native-base";
 import { AppText, Title, RoundedCard, RoundedCardItem } from "../../../components";
 import type { ComplianceReportObject } from '../../../libs/intecojs';
-import { Treatment } from "../../../models/regimen";
+import { Treatment } from "../../../libs/intecojs/models/regimen";
 import ComplianceReportCard from "./ComplianceReportCard";
 import _ from "lodash";
 

@@ -4,7 +4,7 @@ import { View, StyleSheet } from "react-native";
 import type { RegimenPhaseObject } from "../../../libs/intecojs";
 import RegimenStyles from "../RegimenStyles";
 import { Title, AppText, DotPageIndicator, RegimenSchedule } from "../../../components";
-import { Regimen, IRegimenPhase } from "../../../models/regimen";
+import { Regimen, IRegimenPhase } from "../../../libs/intecojs/models/regimen";
 
 type Props = {
   numStates: number, 

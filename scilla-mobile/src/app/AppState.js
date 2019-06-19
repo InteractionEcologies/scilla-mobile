@@ -1,5 +1,5 @@
 // @flow
-import { Regimen, RegimenFactory } from "../models/regimen";
+import { Regimen, RegimenFactory } from "../libs/intecojs/models/regimen";
 import AppService from "./AppService";
 import { IAppState } from "./IAppState";
 import { 

@@ -1,5 +1,5 @@
 // @flow
-import { Regimen } from "../models/regimen";
+import { Regimen } from "../libs/intecojs/models/regimen";
 import type
 { MeasurementObject, MeasurementType,
   DailyEvaluationObject,

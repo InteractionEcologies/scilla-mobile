@@ -11,7 +11,7 @@ import { ScreenNames } from "../../constants/Screens";
 import _ from "lodash";
 import { OneWeekCalendar } from "../../components";
 import XDate from "xdate";
-import { Regimen } from "../../models/regimen";
+import { Regimen } from "../../libs/intecojs/models/regimen";
 import type
  {
   MeasurementType

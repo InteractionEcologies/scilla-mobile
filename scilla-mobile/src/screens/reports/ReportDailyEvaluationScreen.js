@@ -33,7 +33,7 @@ import {
   RequiredMeasurementTypesInDailyEval, 
   DailyEvalQuestionPriorityMap
 } from "./constants";
-import { Regimen } from "../../models/regimen";
+import { Regimen } from "../../libs/intecojs/models/regimen";
 
 const appState = new AppState();
 const appService = new AppService();
