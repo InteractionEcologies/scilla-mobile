@@ -11,6 +11,7 @@
 ./flow-typed
 
 [lints]
+deprecated-utility=off
 
 [options]
 ;all=true
@@ -18,3 +19,6 @@ esproposal.decorators=ignore
 module.system=haste
 
 [strict]
+
+[version]
+0.101.0

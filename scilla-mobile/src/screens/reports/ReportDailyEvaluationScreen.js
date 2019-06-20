@@ -172,7 +172,7 @@ export default class ReportDailyEvaluationScreen extends React.Component<any, St
     });
 
     measurementTypesWithPriority = _.sortBy(measurementTypesWithPriority, 'priority');
-    let sortedMeasurementTypes = _.map(measurementTypesWithPriority, (obj: any) => {
+    let sortedMeasurementTypes = _.map<any, any>(measurementTypesWithPriority, (obj: any) => {
       return obj.type
     });
     return sortedMeasurementTypes;

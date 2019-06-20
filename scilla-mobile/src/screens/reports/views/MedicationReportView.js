@@ -18,7 +18,7 @@ type Props = {
 export default class MedicationReportView extends React.Component<Props,any> {
   
   renderMedicationOptions = () =>{
-    return RequiredCheckboxMeasurementTypesInDailyEval.map((type:string, i:number)=>{
+    return RequiredCheckboxMeasurementTypesInDailyEval.map<any, any>((type:string, i:number)=>{
       let selected: boolean = this.props.selectedValue[type] === true
       return (
         <Button

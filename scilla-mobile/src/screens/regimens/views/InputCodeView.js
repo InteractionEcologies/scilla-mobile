@@ -1,35 +1,80 @@
 // @flow
 import React, { Component } from 'react';
 import styles from "../RegimenStyles";
+import { StyleSheet } from "react-native";
 import { 
   View, 
   Form, 
   Input,
-  Item
+  Item,
+  Button
 } from "native-base";
 import { 
   AppText,
   Title,
   DotPageIndicator 
 } from "../../../components";
-import { Col, Row, Grid } from 'react-native-easy-grid';
 
-const customStyles = {
+const customStyles = StyleSheet.create({
   form: {
-    direction: 'row',
-    justifyContent: 'space-between' 
+    marginTop: 30,
+    // flexDirection: 'row',
+    // justifyContent: 'space-between' 
+  },
+  button: {
+    marginTop: 10,
+    // marginLeft: 'auto',
+    // marginRight: 'auto'
   }
+});
+
+type Props = {
+  onRedeemed: (string) => Promise<void>,
+  errorMsg: string,
 }
 
-class InputCodeView extends Component<any, any> {
+const initialState = {
+  redeemCode: ''
+}
+
+class InputCodeView extends Component<Props, any> {
+  
+  constructor(props: Props) {
+    super(props);
+
+    this.state = initialState;
+
+  }
+
+  handleCodeChange = (redeemCode: string) => {
+    console.log(redeemCode);
+    this.setState({redeemCode: redeemCode});
+  }
+
   render() {
+    const { errorMsg } = this.props;
+    const { redeemCode } = this.state;
     return (
       <View>
         <Title>Hello</Title>
         <AppText>Enter your 4-digit study code</AppText>
-        <Form styles={customStyles.form}>
-            <Item regular><Input /></Item>
+        <Form style={customStyles.form}>
+            <Item regular>
+              <Input
+                onChangeText={this.handleCodeChange}
+                value={redeemCode}
+              />
+            </Item>
         </Form>
+        {!!errorMsg &&
+          <AppText>{errorMsg}</AppText>
+        }
+        <Button 
+          style={customStyles.button}
+          full
+        >
+          <AppText>Redeem</AppText>
+        </Button>
       </View>
     )
   }

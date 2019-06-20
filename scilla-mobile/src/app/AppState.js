@@ -37,8 +37,8 @@ import moment from "moment";
 export default class AppState implements IAppState { 
 
   static instance: AppState
-  appService = new AppService();
-
+  appService = AppService.instance;
+  
   latestRegimen: ?Regimen;
 
   constructor() {

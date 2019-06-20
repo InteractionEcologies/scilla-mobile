@@ -32,10 +32,11 @@ export default class App extends React.Component<any, any> {
     } else {
       return (
         <StyleProvider style={getTheme(commonColor)}>
-          <View>
+          <View style={styles.main}>
             {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
+            {/* Root is used to support ActionSheet and Toast. */}
             <Root>
-              <Container style={styles.container}>
+              <Container>
                 <AppContainer />
               </Container>
             </Root>
@@ -82,7 +83,7 @@ export default class App extends React.Component<any, any> {
 }
 
 const styles = StyleSheet.create({
-  container: {
+  main: {
     flex: 1,
     backgroundColor: Colors.backgroundColor
   },

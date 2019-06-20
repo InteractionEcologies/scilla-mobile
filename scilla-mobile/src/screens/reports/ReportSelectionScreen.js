@@ -158,7 +158,7 @@ export default class ReportSelectionScreen extends React.Component<any, State> {
   }
 
   renderInSituMeasurementTypeOptions = () => {
-    let optionButtons = _.map(
+    let optionButtons = _.map<any, any>(
       this.state.trackedMeasurementTypes,
       (type: string, i: number) => {
         console.log(type);
