@@ -3,7 +3,9 @@
   "main": "node_modules/expo/AppEntry.js",
   "private": true,
   "scripts": {
-    "start": "expo start -c",
+    "start": "expo start",
+    "start:lan": "expo start --lan",
+    "start:localhost": "expo start --localhost",
     "eject": "expo eject",
     "test:all": "npx jest --watchAll --runInBand",
     "test:debug": "npx jest --inspect-brk --runInBand",
@@ -40,6 +42,7 @@
     "react-native-cli": "^2.0.1",
     "react-native-easy-grid": "^0.2.0",
     "react-native-firebase": "^4.3.8",
+    "react-native-modal-datetime-picker": "^7.4.2",
     "react-native-step-indicator": "0.0.9",
     "react-navigation": "^3.0.9",
     "react-redux": "^5.0.7",

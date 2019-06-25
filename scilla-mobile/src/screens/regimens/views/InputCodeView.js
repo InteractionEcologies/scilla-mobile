@@ -30,7 +30,7 @@ const customStyles = StyleSheet.create({
 
 type Props = {
   onRedeemed: (string) => Promise<void>,
-  errorMsg: string,
+  errorMsg: string
 }
 
 const initialState = {
@@ -48,7 +48,12 @@ class InputCodeView extends Component<Props, any> {
 
   handleCodeChange = (redeemCode: string) => {
     console.log(redeemCode);
-    this.setState({redeemCode: redeemCode});
+    this.setState({redeemCode: redeemCode.toUpperCase()});
+  }
+
+  submit = (e: any) => {
+    this.props.onRedeemed(this.state.redeemCode);
+    this.setState({redeemCode: ''})
   }
 
   render() {
@@ -63,6 +68,8 @@ class InputCodeView extends Component<Props, any> {
               <Input
                 onChangeText={this.handleCodeChange}
                 value={redeemCode}
+                autoCorrect={false}
+                autoCapitalize="characters"
               />
             </Item>
         </Form>
@@ -72,6 +79,7 @@ class InputCodeView extends Component<Props, any> {
         <Button 
           style={customStyles.button}
           full
+          onPress={this.submit}
         >
           <AppText>Redeem</AppText>
         </Button>

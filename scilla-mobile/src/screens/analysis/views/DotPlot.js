@@ -100,8 +100,8 @@ export class DotPlot extends React.Component<Props, any> {
       chartLayers.push(this._createALayerOfDots(type, this.props.dotDataPoints));
       chartLayers.push(this._createALayerOfMeanLine(type, this.props.meanDataPoints));
 
-      console.log('dot', this.props.dotDataPoints)
-      console.log('mean', this.props.meanDataPoints)
+      // console.log('dot', this.props.dotDataPoints)
+      // console.log('mean', this.props.meanDataPoints)
     }
 
     return (

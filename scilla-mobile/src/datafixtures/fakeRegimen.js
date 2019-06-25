@@ -11,21 +11,32 @@ import {
 
 export const fakeRegimenObject: RegimenObject = {
   id: '-LSLsAx4ALSzzuqc61fF',
+  
+  redeemCode: '1234', 
+  clinicianName: "Mark Newman",
+  createdForUserFullname: "Jeff Huang",
+  prescribedData: '2019-06-18',
+  createdByEmail: 'chuanche@umich.edu',
+  createdAt: 1561056862,
+
   uid: '12345',
-  type: RegimenTypes.incBaclofen,
+  type: RegimenTypes.genericBaclofen,
   name: 'Baclofen',
-  startDate: '2018-08-20',
-  endDate: '2018-09-08', 
-  status: RegimenStatusOptions.active,
+  startDate: '2019-06-20',
+  endDate: '2019-07-08', 
+
+  status: RegimenStatusOptions.notRedeemed,
   regimenParam: {
-    currentDoseMg: 0
+    startDosageMg: 0,
+    maxDosageMg: 30, 
+    incrementMg: 5, 
+    phaseLengthDays: 7
   },
   regimenGoal: 30,
   trackedMeasurementTypes: [
-    MeasurementTypes.sleepQuality, 
-    MeasurementTypes.mood, 
     MeasurementTypes.spasticitySeverity, 
-    MeasurementTypes.tiredness
+    MeasurementTypes.weakness, 
+    MeasurementTypes.sleepiness
   ],
   regimenPhases: [
     {

@@ -32,5 +32,8 @@ export const DailyEvalQuestionPriorityMap = {
   [MeasurementTypes.accupuncture]: 22, 
   [MeasurementTypes.physicalTherapy]: 23, 
   
-  [MeasurementTypes.memo]: 30
+  [MeasurementTypes.memo]: 30,
+
+  [MeasurementTypes.respiratoryMovement]: 100, 
+  [MeasurementTypes.dizziness]: 101
 }

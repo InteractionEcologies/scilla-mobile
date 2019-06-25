@@ -21,6 +21,8 @@ const onErrorColor = "#ffffff";
 
 const tintColor = '#2f95dc';
 
+const greyColor = '#adadad';
+
 
 export default {
   primaryColor, 
@@ -37,6 +39,7 @@ export default {
   backgroundTextColor,
   surfaceTextColor,
   onErrorColor,
+  greyColor,
 
 
   // TODO: need to remove the color underneath

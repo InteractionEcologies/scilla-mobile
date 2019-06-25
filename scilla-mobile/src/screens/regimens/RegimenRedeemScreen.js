@@ -2,7 +2,9 @@
 import React, { Component } from "react";
 import { Action, withStateMachine } from "react-automata";
 
-import type { DateTypeISO8601, Regimen } from "../../libs/scijs";
+import type { DateTypeISO8601, Regimen, RegimenObject,
+  ReminderConfigObject
+} from "../../libs/scijs";
 
 import { RegimenFactory, RegimenStatusOptions } from "../../libs/scijs";
 import AppState from "../../app/AppState";
@@ -15,24 +17,30 @@ import { StyleSheet } from "react-native";
 import { AppText } from "../../components";
 import { View, Button, Card, CardItem, Content } from "native-base";
 
+import { ScreenNames } from "../../constants/Screens";
 import InputCodeView from "./views/InputCodeView";
 import ConfirmRegimenView from "./views/ConfirmRegimenView";
 import RegimenIntroView from "./views/RegimenIntroView";
 import SelectDateView from "./views/SelectDateView";
+import { fakeRegimenObject } from "../../datafixtures/fakeRegimen";
+import SetupRemindersView from "./views/SetupRemindersView";
+import SelectMeasurementsView from "./views/SelectMeasurementsView";
+import PrecautionView from "./views/PrecautionView";
+import CompletionView from "./views/CompletionView";
 
 // This is a singleton. 
 const appService = AppService.instance;
 const appState = AppState.instance;
 
 const StateNames = {
-  inputCode: 'inputCode',
-  confirmRegimen: 'confirmRegimen',
-  schedule: 'schedule',
-  selectDate: 'selectDate',
-  setupReminders: 'setupReminders',
-  selectMeasurements: 'selectMeasurements',
-  precaution: 'precaution',
-  completion: 'completion',
+  inputCode: 'showInputCode',
+  confirmRegimen: 'showConfirmRegimen',
+  schedule: 'showSchedule',
+  selectDate: 'showSelectDate',
+  setupReminders: 'showSetupReminders',
+  selectMeasurements: 'showSelectMeasurements',
+  precaution: 'showPrecaution',
+  completion: 'showCompletion',
   main: 'main' // back to RegimenMainScreen
 }
 
@@ -45,19 +53,22 @@ const StateMachine = {
   initial: StateNames.inputCode,
   states: {
     [StateNames.inputCode]: {
-      onEntry: StateNames.inputCode
+      onEntry: [StateNames.inputCode, 'hideNavBtns'],
+      on: {
+        [StateEvents.NEXT]: StateNames.confirmRegimen
+      }
     },
     [StateNames.confirmRegimen]: {
-      onEntry: StateNames.confirmRegimen,
+      onEntry: [StateNames.confirmRegimen, 'hideNavBtns'],
       on: {
         [StateEvents.PREVIOUS]: StateNames.inputCode,
         [StateEvents.NEXT]: StateNames.schedule
       },
     },
     [StateNames.schedule]: {
-      onEntry: StateNames.schedule,
+      onEntry: [StateNames.schedule, 'showNavBtns'],
       on: {
-        // Once confirmed can't go back. 
+        [StateEvents.PREVIOUS]: StateNames.confirmRegimen,
         [StateEvents.NEXT]: StateNames.selectDate
       },
     },
@@ -90,10 +101,10 @@ const StateMachine = {
       },
     },
     [StateNames.completion]: {
-      onEntry: StateNames.completion,
+      onEntry: [StateNames.completion, 'saveRegimen'],
       on: {
         [StateEvents.PREVIOUS]: StateNames.precaution,
-        [StateEvents.NEXT]: StateNames.main
+        [StateEvents.NEXT]: StateNames.main,
       },
     },
     [StateNames.main]: {
@@ -107,8 +118,7 @@ const customStyles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: 'flex-start',
     alignItems: 'center',
-    flex: 1,
-    backgroundColor: 'red',
+    flex: 1
   },
   card: {
     marginLeft: 10, 
@@ -119,19 +129,30 @@ const customStyles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: Colors.primaryColor
+    // backgroundColor: Colors.primaryColor
   }
 });
 
 type State = {
   regimen: ?Regimen,
-  errorMsg: string
+  errorMsg: string,
+
+  // In certain views such as regimen redeem, 
+  // we will not use the Back/Next button. 
+  isNextBtnDisplayed: boolean,
+  isBackBtnDisplayed: boolean
 }
 
 const initialState = {
   regimen: null,
-  errorMsg: ''
+  errorMsg: '',
+  isNextBtnDisplayed: true, 
+  isBackBtnDisplayed: true
 }
+
+const NUM_INDICATOR_STATES = 9;
+
+const SCOPE = "RegimenRedeemScreen";
 
 class RegimenRedeemScreen extends Component<any, State> {
 
@@ -139,6 +160,10 @@ class RegimenRedeemScreen extends Component<any, State> {
     super(props);
 
     this.state = initialState;
+  }
+
+  goToMain = () => {
+    this.props.navigation.navigate(ScreenNames.RegimenMain);
   }
 
   goToPrevious = () => {
@@ -150,13 +175,62 @@ class RegimenRedeemScreen extends Component<any, State> {
     console.log("goToNext");
     this.props.transition(StateEvents.NEXT);
   }
+
+  hideNavBtns = () => {
+    this.toggleNavBtns(false);
+  }
+
+  showNavBtns = () => {
+    this.toggleNavBtns(true);
+  }
+
+  toggleNavBtns = (visible: boolean) => {
+    this.setState({ 
+      isNextBtnDisplayed: visible,
+      isBackBtnDisplayed: visible
+    })
+  }
+
+  toggleNextBtn = (visible: boolean) => {
+    this.setState({
+      isNextBtnDisplayed: visible
+    })
+  }
+
+  toggleBackBtn = (visible: boolean) => {
+    this.setState({
+      isBackBtnDisplayed: visible
+    })
+  }
+
+  showBackBtn = () => {
+    this.toggleBackBtn(true);
+  }
+
+  hideBackBtn = () =>  {
+    this.toggleBackBtn(false);
+  }
+
+
+
+  loadFakeRegimen = (): RegimenObject => {
+    return fakeRegimenObject;
+  }
   
-  redeemRegimen = async (code: string) => {
+  // Find a regimen based on code. 
+  findRegimenByCode = async (code: string) => {
+    console.log(SCOPE, "findRegimenByCode");
     // Will set errorMsg. 
     try {
       let regimenObj = await appService.ds.getRegimenByCode(code)
+
+      // Debug
+      // let regimenObj = this.loadFakeRegimen();
+
       let regimen = RegimenFactory.createRegimenFromObj(regimenObj);
-      this.setState({regimen: regimen});
+      this.setState({regimen: regimen}, () => {
+        this.props.transition(StateEvents.NEXT)
+      });
 
     } catch (e) {
       if (e.name === 'NotExistError') {
@@ -167,25 +241,38 @@ class RegimenRedeemScreen extends Component<any, State> {
             errorMsg: "There is a problem with this code." +
               "Please contact the research team."
           })
+      } else {
+        console.log(e);
       }
     }
   }
 
-  confirmRegimen = async () => {
+  // @deprecated. 
+  // Initially we let the user first adopts a regimen, then set the parameters, as 
+  // designed in our UI mockup. However, this creates a problem: what if the user 
+  // adopted a regimen, but did not complete the parameter setup? Currently our
+  // UI mockup does not consider this flow, so I do not allow this flow to happen. 
+  adoptRegimen = async () => {
     // Set the regimen's uid to be the current user. 
     // Change the state of the regimen from notRedeemed to active. 
     let { regimen } = this.state;
     
     if(regimen) {
-      // let user = appService.auth.currentUser;
+      // Move to the next step.       
+      this.props.transition(StateEvents.NEXT);
+    }
+  }
+
+  saveRegimen = async () => {
+    let { regimen } = this.state;
+
+    if(regimen) {
       let userProfile = await appState.getUserProfile();
       regimen.setUserId(userProfile.uid);
       regimen.setStatus(RegimenStatusOptions.active);
-
-      // Save
-      appService.ds.upsertRegimen(regimen.toObj());
-
-      // Move to the next step.       
+      if (regimen) {
+        appService.ds.upsertRegimen(regimen.toObj());
+      }  
     }
   }
 
@@ -194,25 +281,30 @@ class RegimenRedeemScreen extends Component<any, State> {
    * @param  {DateTypeISO8601} startDate
    */
   setRegimenStartDate = (startDate: DateTypeISO8601) => {
-
+    const { regimen } = this.state;
+    if (regimen) {
+      regimen.setStartDate(startDate);
+      regimen.make();
+      this.setState({regimen: regimen});  
+    }
   }
 
-  setReminders = () => {
+  updateReminderConfig = (id: string, config: ReminderConfigObject) => {
+    console.log(SCOPE, "updateReminderConfig");
     // regimen.setReminderConfig(reminderId: string, newConfig: ReminderConfigObject)
     // regimen.setReminderTime(reminderId: string, time: string)
-  }
-
-  toggleReminder = (reminderId: string) => {
-
-  }
-
-  getReminderConfigs = (regimen: Regimen) => {
-    let configs = regimen.reminderConfigs;
-
+    const { regimen } = this.state;
+    if (regimen) {
+      regimen.setReminderConfig(id, config);
+    }
   }
 
   render() {
-    const { regimen, errorMsg } = this.state;
+    const { 
+      errorMsg, isNextBtnDisplayed, isBackBtnDisplayed 
+    } = this.state;
+    let { regimen } = this.state;
+    regimen = ((regimen: any): Regimen);
 
     return (
       <Content>
@@ -220,39 +312,83 @@ class RegimenRedeemScreen extends Component<any, State> {
           <CardItem style={customStyles.cardItem}>
             <Action is={StateNames.inputCode}>
               <InputCodeView 
-                onRedeemed={this.redeemRegimen}
+                onRedeemed={this.findRegimenByCode}
                 errorMsg = {errorMsg}
-
               />
             </Action>
             <Action is={StateNames.confirmRegimen}>
-              <ConfirmRegimenView />
+              <ConfirmRegimenView 
+                regimen={regimen}
+                onConfirmed={this.adoptRegimen}/>
             </Action>
             <Action is={StateNames.schedule}>
-              <RegimenIntroView />
+              <RegimenIntroView 
+                regimen={regimen}
+              />
             </Action>
             <Action is={StateNames.selectDate}>
-              <SelectDateView />
+              <SelectDateView 
+                regimen={regimen}
+                onDateSelected={this.setRegimenStartDate}
+              />
             </Action>
+            <Action is={StateNames.setupReminders}>
+              <SetupRemindersView 
+                regimen={regimen}
+                updateReminderConfig={this.updateReminderConfig}
+              />
+            </Action>
+            <Action is={StateNames.selectMeasurements}>
+              <SelectMeasurementsView 
+                numStates={NUM_INDICATOR_STATES} 
+                currentStateIndex={6}
+                regimen={regimen}
+              />
+            </Action>
+            <Action is={StateNames.precaution}>
+              <PrecautionView
+                numStates={NUM_INDICATOR_STATES} 
+                currentStateIndex={7}
+              />
+            </Action>
+            <Action is={StateNames.completion}>
+              <CompletionView
+                numStates={NUM_INDICATOR_STATES} 
+                currentStateIndex={8}
+              />
+            </Action>
+
           </CardItem>
         </Card>
 
-        <View>
+        
+        <View style={
+          isBackBtnDisplayed === true
+          ? styles.nextBackBtnView
+          : styles.onlyNextBtnView
+        }>
+        { isBackBtnDisplayed &&
           <Button 
+            style={styles.button}
             iconLeft 
             bordered={true}
             onPress={this.goToPrevious}>
-            <AppText>
+            <AppText style={styles.textRight}>
             Back
             </AppText>
           </Button>
+        }
+        { isNextBtnDisplayed &&
           <Button
+            style={styles.button}
             iconRight
             bordered={true}
             onPress={this.goToNext}>
-            <AppText>Next</AppText>
+            <AppText style={styles.textRight}>Next</AppText>
           </Button>
-        </View>
+        }
+      </View>
+      
       </Content>
     )
   }

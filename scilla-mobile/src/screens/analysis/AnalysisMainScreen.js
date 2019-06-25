@@ -68,7 +68,7 @@ export default class AnalysisMainScreen extends React.Component<any, State> {
         trackedMeasurementTypes: regimen.getTrackedMeasurementTypes(),
         selectedMeasurementTypes: [regimen.getTrackedMeasurementTypes()[0]],
       })
-    console.log(this.dailyEvalDataFrame)
+    // console.log(this.dailyEvalDataFrame)
     } catch(e) {
       console.log(e)
     }

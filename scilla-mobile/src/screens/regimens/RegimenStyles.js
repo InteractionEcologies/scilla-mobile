@@ -13,12 +13,23 @@ const styles = StyleSheet.create({
   },
   nextBackBtnView: {
     height: 50,
-    width: 300,
     flexDirection: "row",
     justifyContent: 'space-between',
     left: 0, 
     right: 0,
-    marginTop: 8
+    marginTop: 8,
+    marginLeft: 10, 
+    marginRight: 10
+  },
+  onlyNextBtnView: {
+    height: 50,
+    flexDirection: "row",
+    justifyContent: 'flex-end',
+    left: 0, 
+    right: 0,
+    marginTop: 8,
+    marginLeft: 10, 
+    marginRight: 10,
   },
   button: {
     width: 110

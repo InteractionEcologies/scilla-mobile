@@ -35,7 +35,7 @@ export class DotPageIndicator extends React.Component<Props, any> {
   renderDots() {
     let dots = [];
     for (let i = 0; i < this.props.totalDots; i++) {
-      this._renderDot(i, this.props.activeDotIndex)
+      dots.push(this._renderDot(i, this.props.activeDotIndex));
     }
     return dots
   }
@@ -91,7 +91,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     marginTop: 4, 
-    marginBottom: 4
+    marginBottom: 4,
+    width: '100%',
   }
 });
 
