@@ -8,7 +8,7 @@ import {
 
 import { ScreenNames } from "../../constants/Screens";
 import { AppText } from "../../components"
-import { fakeRegimenObject } from "../../datafixtures/fakeRegimen";
+import { fakeRegimenObject } from "../../libs/scijs/stub/fakeRegimen";
 import { RegimenFactory, Regimen } from "../../libs/scijs/models/regimen";
 import type { 
   RegimenPhaseObject
@@ -20,7 +20,7 @@ import {
 import _ from "lodash";
 import moment from "moment";
 import { Styles as AppStyles } from "../../constants/Styles";
-import AppState from "../../app/AppState";
+import AppStore from "../../app/AppStore";
 import { Calendar } from "../../components/Calendar";
 import Colors from "../../constants/Colors";
 
@@ -29,7 +29,7 @@ type State = {
   currentRegimenPhaseObject: ?RegimenPhaseObject
 }
 
-const appState = new AppState();
+const appStore = new AppStore();
 
 const SCOPE = "RegimenMainScreen";
 
@@ -83,14 +83,14 @@ export default class RegimenMainScreen extends React.Component<any, State> {
   addFakeData() {
     let regimenObject = fakeRegimenObject;
     let regimen = RegimenFactory.createRegimenFromObj(regimenObject);
-    appState.insertRegimen(regimen);
+    appStore.insertRegimen(regimen);
   }
 
   async initializeState() {
     if(!this._isMounted) return;
     let regimen: ?Regimen = null
     try {
-      regimen = await appState.getLatestRegimen();
+      regimen = await appStore.getLatestRegimen();
     } catch (e) {
       // Regimen does not exist. Do nothing. 
       if(e.name === "NotExistError") {

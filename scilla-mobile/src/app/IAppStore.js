@@ -8,7 +8,7 @@ import type
   DateTypeISO8601
 } from "../libs/scijs";
 
-export interface IAppState {
+export interface IAppStore {
 
   initialize(): Promise<void>;
 

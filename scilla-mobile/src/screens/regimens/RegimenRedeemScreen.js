@@ -7,7 +7,7 @@ import type { DateTypeISO8601, Regimen, RegimenObject,
 } from "../../libs/scijs";
 
 import { RegimenFactory, RegimenStatusOptions } from "../../libs/scijs";
-import AppState from "../../app/AppState";
+import AppStore from "../../app/AppStore";
 import AppService from "../../app/AppService";
 
 import styles from "./RegimenStyles";
@@ -22,7 +22,7 @@ import InputCodeView from "./views/InputCodeView";
 import ConfirmRegimenView from "./views/ConfirmRegimenView";
 import RegimenIntroView from "./views/RegimenIntroView";
 import SelectDateView from "./views/SelectDateView";
-import { fakeRegimenObject } from "../../datafixtures/fakeRegimen";
+import { fakeRegimenObject } from "../../libs/scijs/stub/fakeRegimen";
 import SetupRemindersView from "./views/SetupRemindersView";
 import SelectMeasurementsView from "./views/SelectMeasurementsView";
 import PrecautionView from "./views/PrecautionView";
@@ -30,7 +30,7 @@ import CompletionView from "./views/CompletionView";
 
 // This is a singleton. 
 const appService = AppService.instance;
-const appState = AppState.instance;
+const appStore = AppStore.instance;
 
 const StateNames = {
   inputCode: 'showInputCode',
@@ -267,7 +267,7 @@ class RegimenRedeemScreen extends Component<any, State> {
     let { regimen } = this.state;
 
     if(regimen) {
-      let userProfile = await appState.getUserProfile();
+      let userProfile = await appStore.getUserProfile();
       regimen.setUserId(userProfile.uid);
       regimen.setStatus(RegimenStatusOptions.active);
       if (regimen) {
@@ -314,47 +314,58 @@ class RegimenRedeemScreen extends Component<any, State> {
               <InputCodeView 
                 onRedeemed={this.findRegimenByCode}
                 errorMsg = {errorMsg}
+                numStates={NUM_INDICATOR_STATES} 
+                currentStateIndex={0}
               />
             </Action>
             <Action is={StateNames.confirmRegimen}>
               <ConfirmRegimenView 
                 regimen={regimen}
-                onConfirmed={this.adoptRegimen}/>
+                onConfirmed={this.adoptRegimen}
+                numStates={NUM_INDICATOR_STATES} 
+                currentStateIndex={1}
+              />
             </Action>
             <Action is={StateNames.schedule}>
               <RegimenIntroView 
                 regimen={regimen}
+                numStates={NUM_INDICATOR_STATES} 
+                currentStateIndex={2}
               />
             </Action>
             <Action is={StateNames.selectDate}>
               <SelectDateView 
                 regimen={regimen}
                 onDateSelected={this.setRegimenStartDate}
+                numStates={NUM_INDICATOR_STATES} 
+                currentStateIndex={3}
               />
             </Action>
             <Action is={StateNames.setupReminders}>
               <SetupRemindersView 
                 regimen={regimen}
                 updateReminderConfig={this.updateReminderConfig}
+                numStates={NUM_INDICATOR_STATES} 
+                currentStateIndex={4}
               />
             </Action>
             <Action is={StateNames.selectMeasurements}>
               <SelectMeasurementsView 
                 numStates={NUM_INDICATOR_STATES} 
-                currentStateIndex={6}
+                currentStateIndex={5}
                 regimen={regimen}
               />
             </Action>
             <Action is={StateNames.precaution}>
               <PrecautionView
                 numStates={NUM_INDICATOR_STATES} 
-                currentStateIndex={7}
+                currentStateIndex={6}
               />
             </Action>
             <Action is={StateNames.completion}>
               <CompletionView
                 numStates={NUM_INDICATOR_STATES} 
-                currentStateIndex={8}
+                currentStateIndex={7}
               />
             </Action>
 

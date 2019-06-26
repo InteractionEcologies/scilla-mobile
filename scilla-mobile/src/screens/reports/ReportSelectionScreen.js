@@ -4,7 +4,7 @@ import { Container, Content, View, Button, Card, CardItem } from "native-base";
 import { ScrollView } from "react-native";
 import { AppText, Title } from "../../components";
 import moment from "moment";
-import AppState from "../../app/AppState";
+import AppStore from "../../app/AppStore";
 import { DateFormatISO8601 } from "../../libs/scijs"; 
 import styles from "./ReportStyles"; 
 import { ScreenNames } from "../../constants/Screens";
@@ -17,7 +17,7 @@ import type
   MeasurementType
 } from "../../libs/scijs"
 
-const appState = new AppState();
+const appStore = new AppStore();
 const DAILY_EVALUATION_MEASUREMENT_TYPE = "Daily Evaluation"
 
 type State = {
@@ -61,7 +61,7 @@ export default class ReportSelectionScreen extends React.Component<any, State> {
 
   async initializeState() {
     try {
-      let regimen = await appState.getLatestRegimen();
+      let regimen = await appStore.getLatestRegimen();
       if(regimen) {
         this.regimen = regimen;
         this.setState({

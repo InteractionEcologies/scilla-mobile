@@ -1,5 +1,5 @@
 // @flow
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import styles from "../RegimenStyles";
 import { StyleSheet } from "react-native";
 import { 
@@ -18,11 +18,12 @@ import {
 const customStyles = StyleSheet.create({
   form: {
     marginTop: 30,
+    width: 200
     // flexDirection: 'row',
     // justifyContent: 'space-between' 
   },
   button: {
-    marginTop: 10,
+    marginTop: 20,
     // marginLeft: 'auto',
     // marginRight: 'auto'
   }
@@ -30,7 +31,9 @@ const customStyles = StyleSheet.create({
 
 type Props = {
   onRedeemed: (string) => Promise<void>,
-  errorMsg: string
+  errorMsg: string,
+  numStates: number, 
+  currentStateIndex: number
 }
 
 const initialState = {
@@ -60,8 +63,14 @@ class InputCodeView extends Component<Props, any> {
     const { errorMsg } = this.props;
     const { redeemCode } = this.state;
     return (
-      <View>
+      <Fragment>
         <Title>Hello</Title>
+        <DotPageIndicator 
+          totalDots={this.props.numStates}
+          activeDotIndex={this.props.currentStateIndex}
+          dotColor='grey'
+          activeDotColor='black'  
+        />
         <AppText>Enter your 4-digit study code</AppText>
         <Form style={customStyles.form}>
             <Item regular>
@@ -83,7 +92,7 @@ class InputCodeView extends Component<Props, any> {
         >
           <AppText>Redeem</AppText>
         </Button>
-      </View>
+      </Fragment>
     )
   }
 }

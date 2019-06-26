@@ -1,7 +1,7 @@
 // @flow
 import React, { Component, Fragment } from "react";
 
-import { AppText, Title } from "../../../components";
+import { AppText, Title, DotPageIndicator } from "../../../components";
 import { Form, View, Row, Grid, Col, Input, Item, Label, Button } from "native-base";
 import { Platform, StyleSheet } from "react-native";
 import DateTimePicker from "react-native-modal-datetime-picker";
@@ -17,7 +17,10 @@ import styles from "../../reports/ReportStyles";
 
 type Props = {
   regimen: Regimen,
-  updateReminderConfig: (string, ReminderConfigObject) => void
+  updateReminderConfig: (string, ReminderConfigObject) => void,
+
+  numStates: number,
+  currentStateIndex: number
 }
 
 type State = {
@@ -154,9 +157,15 @@ class SetupRemindersView extends Component<Props, State> {
     let configs = regimen.reminderConfigs;
 
     return (
-      <View style={customStyles.view}>
+      <Fragment>
         <Title>Setup Reminders</Title>
-        <Grid>
+        <DotPageIndicator 
+          totalDots={this.props.numStates}
+          activeDotIndex={this.props.currentStateIndex}
+          dotColor='grey'
+          activeDotColor='black'  
+        />
+        <Grid style={customStyles.view}>
           <Row>
             <Col>
               <AppText style={customStyles.subheaderText}>
@@ -176,7 +185,7 @@ class SetupRemindersView extends Component<Props, State> {
           onCancel={this.onTimePickerDismissed}
           onConfirm={this.handleTimePicked}
         />
-      </View>
+      </Fragment>
     )
   }
 

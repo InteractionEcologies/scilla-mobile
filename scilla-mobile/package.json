@@ -9,7 +9,7 @@
     "eject": "expo eject",
     "test:all": "npx jest --watchAll --runInBand",
     "test:debug": "npx jest --inspect-brk --runInBand",
-    "test": "npx jest -o --runInBand",
+    "test": "npx jest -o --runInBand --detectOpenHandles",
     "flow": "npx flow",
     "git:conflict": "git diff --name-only --diff-filter=U"
   },

@@ -3,7 +3,7 @@ import React from "react";
 import { StyleSheet, ScrollView  } from 'react-native';
 import { Content, View } from "native-base";
 import { Title } from "../../components";
-import AppState from "../../app/AppState";
+import AppStore from "../../app/AppStore";
 import { MeasurementTypes } from "../../libs/scijs"; 
 import type {
   MeasurementType,
@@ -25,10 +25,10 @@ import { MeasurementSelectionBtn } from "./views/MeasurementSelectionBtn";
 // import { Svg } from "expo";
 import { ScatterPlot } from "./views/ScatterPlot";
 import { DotPlot } from "./views/DotPlot";
-import { fakeDailyEvals } from "../../datafixtures/fakeDailyEvals";  
+import { fakeDailyEvals } from "../../libs/scijs/stub/fakeDailyEvals";  
 // const { Circle, Rect, G } = Svg; 
 
-const appState: AppState = new AppState();
+const appStore: AppStore = new AppStore();
 
 type State = {
   trackedMeasurementTypes: MeasurementType[],
@@ -60,7 +60,7 @@ export default class AnalysisMainScreen extends React.Component<any, State> {
 
   async initializeState() {
     try { 
-      let regimen = await appState.getLatestRegimen();
+      let regimen = await appStore.getLatestRegimen();
       this.dailyEvalDataFrame = await this.createDailyEvalDataFrame(regimen);
       this.dailyEvalDataFrame.summarize();
 
@@ -85,7 +85,7 @@ export default class AnalysisMainScreen extends React.Component<any, State> {
   async getDailyEvals(regimen: Regimen) {
     // let startDate = regimen.startDate;
     // let today = moment().format(DateFormatISO8601);
-    // return await appState.getDailyEvalsByDateRange(
+    // return await appStore.getDailyEvalsByDateRange(
     //   startDate,
     //   today
     // )

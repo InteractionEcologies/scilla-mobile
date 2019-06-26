@@ -3,9 +3,10 @@ import React from "react";
 import * as firebase from "firebase";
 
 import { ScreenNames } from "../../constants/Screens";
+
+import AppStore from "../../app/AppStore";
 import AppService from "../../app/AppService";
-const appService = new AppService();
-import AppState from "../../app/AppState";
+
 
 import { View, Text, StyleSheet, ActivityIndicator, 
   StatusBar, AsyncStorage, Image
@@ -16,20 +17,22 @@ import { AppText, Title } from "../../components";
 import { Styles as AppStyles } from "../../constants/Styles";
 import Colors from "../../constants/Colors";
 
+const appService = new AppService();
+
 export default class AuthLoadingScreen extends React.Component<any, any> {
   
   componentDidMount() {
     appService.auth.onAuthStateChanged(async (user) => {
       if(user) {
-        await this._initializeAppState();
+        await this._initializeAppStore();
       }
       this.props.navigation.navigate(user ? ScreenNames.Main: ScreenNames.Login);
     })
   }
 
-  _initializeAppState = async () => {
-    let appState = new AppState();
-    return appState.initialize();
+  _initializeAppStore = async () => {
+    let appStore = new AppStore();
+    return appStore.initialize();
   }
 
   render() {

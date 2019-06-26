@@ -31,10 +31,10 @@ import CompletionView from "./views/CompletionView";
 
 import { AppText } from "../../components";
 import AppService from "../../app/AppService";
-import AppState from "../../app/AppState";
+import AppStore from "../../app/AppStore";
 
 const appService = new AppService();
-const appState = new AppState();
+const appStore = new AppStore();
 
 
 const NUM_INDICATOR_STATES = 9;
@@ -217,7 +217,7 @@ class RegimenCreationScreens extends React.Component<any, States>
     console.log("finalize regimen");
     this.regimen.make();
     
-    appState.insertRegimen(this.regimen);
+    appStore.insertRegimen(this.regimen);
 
   }
 

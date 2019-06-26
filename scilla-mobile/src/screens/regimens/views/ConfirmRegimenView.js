@@ -5,7 +5,8 @@ import type { Regimen } from "../../../libs/scijs";
 
 import {
   AppText,
-  Title
+  Title,
+  DotPageIndicator
 } from "../../../components"
 import { Grid, Row, Col, View, Button } from "native-base";
 import { StyleSheet } from "react-native";
@@ -18,7 +19,9 @@ type Props = {
   // at the beginning while there is no regimen. Thus, all the views
   // should handle situation when there is no regimen. 
   regimen: Regimen,
-  onConfirmed: () => Promise<void>
+  onConfirmed: () => Promise<void>,
+  numStates: number, 
+  currentStateIndex: number
 }
 
 const customStyles = StyleSheet.create({
@@ -48,6 +51,12 @@ class ConfirmRegimenView extends Component<Props, any> {
     return (
       <View>
         <Title>Your Regimen</Title>
+        <DotPageIndicator 
+          totalDots={this.props.numStates}
+          activeDotIndex={this.props.currentStateIndex}
+          dotColor='grey'
+          activeDotColor='black'  
+        />
         <Grid>
           <Row>
             <Col><AppText style={customStyles.labelText}>Medicine</AppText></Col>

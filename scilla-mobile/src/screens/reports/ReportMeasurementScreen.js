@@ -17,10 +17,10 @@ import type {
 import AppService from "../../app/AppService";
 import styles from "./ReportStyles"; 
 import { ScreenNames } from "../../constants/Screens";
-import AppState from "../../app/AppState";
+import AppStore from "../../app/AppStore";
 import XDate from "xdate";
 
-const appState = new AppState();
+const appStore = new AppStore();
 const appService = new AppService();
 
 type State = {
@@ -70,7 +70,7 @@ export default class ReportMeasurmentScreen extends React.Component<any, State> 
         uid: uid,
         value: value
     }
-    appState.insertMeasurement(this.newReport);
+    appStore.insertMeasurement(this.newReport);
   }
 
   _goToReportSelectionScreen = () =>{

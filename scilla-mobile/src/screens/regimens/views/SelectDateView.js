@@ -4,7 +4,8 @@ import { CalendarList } from "../../../components/Calendar";
 
 import {
   AppText,
-  Title
+  Title,
+  DotPageIndicator
 } from "../../../components"
 import { View } from "native-base";
 import RegimenViewModel from "../../../viewModels/RegimenViewModel";
@@ -13,7 +14,9 @@ import type { DateTypeISO8601 } from "../../../libs/scijs";
 
 type Props = {
   regimen: Regimen,
-  onDateSelected: (date: DateTypeISO8601) => void
+  onDateSelected: (date: DateTypeISO8601) => void,
+  numStates: number,
+  currentStateIndex: number
 }
 
 class SelectDateView extends Component<any, any> {
@@ -35,6 +38,12 @@ class SelectDateView extends Component<any, any> {
     return (
       <View style={{height: 400}}>
         <Title>Select Regimen Start Date</Title>
+        <DotPageIndicator 
+          totalDots={this.props.numStates}
+          activeDotIndex={this.props.currentStateIndex}
+          dotColor='grey'
+          activeDotColor='black'  
+        />
         <CalendarList 
           style={{height: 100}}
           pastScrollRange={0}

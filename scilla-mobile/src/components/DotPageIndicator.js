@@ -1,7 +1,6 @@
 // @flow
 import React from "react";
 import { View, StyleSheet } from "react-native";
-import Colors from "../constants/Colors";
 
 class Dot extends React.Component<any, any> {
   render(){

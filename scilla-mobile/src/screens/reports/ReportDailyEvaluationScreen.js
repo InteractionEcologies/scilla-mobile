@@ -4,7 +4,7 @@ import { Container, Content, Text, View, Icon, Button, Card, CardItem, Right, To
 import { ScrollView } from "react-native";
 import { AppText, Title, DotPageIndicator } from "../../components";
 import AppService from "../../app/AppService";
-import AppState from "../../app/AppState";
+import AppStore from "../../app/AppStore";
 import MoodScaleView from './views/MoodScaleView';
 import SleepScaleView from './views/SleepScaleView';
 import BaclofenScaleView from './views/BaclofenScaleView';
@@ -35,7 +35,7 @@ import {
 } from "./constants";
 import { Regimen } from "../../libs/scijs/models/regimen";
 
-const appState = new AppState();
+const appStore = new AppStore();
 const appService = new AppService();
 
 type State = {
@@ -97,7 +97,7 @@ export default class ReportDailyEvaluationScreen extends React.Component<any, St
 
   async initializeState() {
     try {
-      let dailyEvalReportObj = await appState.getDailyEvalByDate(this.state.selectedDate);
+      let dailyEvalReportObj = await appStore.getDailyEvalByDate(this.state.selectedDate);
       this.setState({
         measurementsByType: dailyEvalReportObj.measurementsByType,
         dailyEvalReportObjId: dailyEvalReportObj.id
@@ -112,7 +112,7 @@ export default class ReportDailyEvaluationScreen extends React.Component<any, St
 
   async _createInitialMeasurementsByType(){
     try {
-        let regimen = await appState.getLatestRegimen();  
+        let regimen = await appStore.getLatestRegimen();  
         console.log('test')
 
         this.setState({
@@ -137,8 +137,8 @@ export default class ReportDailyEvaluationScreen extends React.Component<any, St
 
   async getInSituMeasurements(){
     try {
-      //let allMeasurements = await appState.getMeasurementsByDate(this.state.selectedDate);
-      let allMeasurements = await appState.getMeasurementsByDate('2018-11-26');
+      //let allMeasurements = await appStore.getMeasurementsByDate(this.state.selectedDate);
+      let allMeasurements = await appStore.getMeasurementsByDate('2018-11-26');
       console.log(allMeasurements)     
       this.setState({
         inSituMeasurements: allMeasurements
@@ -224,7 +224,7 @@ export default class ReportDailyEvaluationScreen extends React.Component<any, St
         regimenPhase: phase,
         measurementsByType: meaurementsByType
     }
-    appState.updateDailyEval(this.newDailyEvalReport)
+    appStore.updateDailyEval(this.newDailyEvalReport)
   }
 
   _showToast = () =>{

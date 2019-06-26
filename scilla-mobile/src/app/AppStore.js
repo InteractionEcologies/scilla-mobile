@@ -1,7 +1,7 @@
 // @flow
 import { Regimen, RegimenFactory } from "../libs/scijs/models/regimen";
 import AppService from "./AppService";
-import { IAppState } from "./IAppState";
+import { IAppStore } from "./IAppStore";
 import { 
   RegimenStatusOptions,
   DateFormatISO8601,
@@ -19,7 +19,7 @@ import type {
 import _ from "lodash";
 import moment from "moment";
 
-/* AppState Singleton 
+/* AppStore Singleton 
  * This is a layer that abstract cloud persistence storage and 
  * local cache to support offline mode. It also allow
  * composition of multiple datasource calls into one method. 
@@ -34,18 +34,18 @@ import moment from "moment";
  * See here for detail: 
  * - https://firebase.google.com/docs/firestore/manage-data/enable-offline
  */
-export default class AppState implements IAppState { 
+export default class AppStore implements IAppStore { 
 
-  static instance: AppState
+  static instance: AppStore
   appService = AppService.instance;
   
   latestRegimen: ?Regimen;
 
   constructor() {
-    if(!AppState.instance) {
-      AppState.instance = this;
+    if(!AppStore.instance) {
+      AppStore.instance = this;
     } 
-    return AppState.instance;
+    return AppStore.instance;
   }
 
   initialize(date: ?DateTypeISO8601 = null): Promise<void> {

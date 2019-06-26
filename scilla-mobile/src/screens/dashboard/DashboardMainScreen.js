@@ -2,7 +2,7 @@
 import React from "react";
 import { View, StyleSheet, ScrollView } from "react-native";
 import { Container, Content } from "native-base"; 
-import AppState from "../../app/AppState";
+import AppStore from "../../app/AppStore";
 import {
   DateFormatTimeOfDay, 
   DateFormatISO8601,
@@ -19,7 +19,7 @@ import { ComplianceReportHelper } from "../../models/ComplianceReportHelper";
 import { OneWeekCalendar } from "../../components";
 import XDate from "xdate";
 
-const appState: AppState = new AppState();
+const appStore: AppStore = new AppStore();
 
 type State = {
   treatmentMap: {[treatmentId: string]: Treatment}, // key: id of treatment
@@ -63,9 +63,9 @@ export default class DashboardMainScreen extends React.Component<any, State> {
 
   async updateDate(date: string) {
     try {
-      let regimen = await appState.getLatestRegimen();
+      let regimen = await appStore.getLatestRegimen();
       let treatments = regimen.getTreatmentsByDate(date);
-      let complianceReports = await appState.getOrInitComplianceReportsForDate(date);
+      let complianceReports = await appStore.getOrInitComplianceReportsForDate(date);
 
       let treatmentMap = {};
       treatments.forEach( (treatment) => {
@@ -146,7 +146,7 @@ export default class DashboardMainScreen extends React.Component<any, State> {
         }
       }
     }), () => {
-      appState.updateComplianceReport(this.state.complianceReportMap[treatmentId]);
+      appStore.updateComplianceReport(this.state.complianceReportMap[treatmentId]);
     })
   }
 
