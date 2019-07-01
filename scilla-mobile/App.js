@@ -27,6 +27,7 @@ export default class App extends React.Component<any, any> {
     super(props);
 
     // this.appInitializer = new AppInitializer();
+    this.appInitializer.onAppStart();
   }
 
   componentDidMount() {

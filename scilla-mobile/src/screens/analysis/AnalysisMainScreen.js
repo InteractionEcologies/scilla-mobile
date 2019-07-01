@@ -17,7 +17,8 @@ import {
   MeasurementTypes,
   BaclofenUtils,
   NotExistError,
-  fakeDailyEvals
+  fakeDailyEvals,
+  IRegimenPhase
 } from "../../libs/scijs"; 
 
 import { AnalysisUtils } from "../../models/analysis/utils";
@@ -107,25 +108,28 @@ export default class AnalysisMainScreen extends React.Component<any, State> {
   }
 
   getDosage(regimen: IRegimen, dailyEval: DailyEvaluationObject): number {
-    try {
-      let regimenPhase = this.getRegimenPhaseOfDailyEval(regimen, dailyEval);
+    let regimenPhase = this.getRegimenPhaseOfDailyEval(regimen, dailyEval);
+    if(regimenPhase) {
       return BaclofenUtils.getDosageByRegimenPhase(regimenPhase);
-    } catch (e) {
-      if(e.name === NotExistError.name) {
-        return parseInt(dailyEval.measurementsByType[MeasurementTypes.baclofenAmount], 10) || -1;
-      }
+    } else {
+      return parseInt(dailyEval.measurementsByType[MeasurementTypes.baclofenAmount], 10) || -1;
     }
-    return -1;
   }
 
-  getRegimenPhaseOfDailyEval(regimen: IRegimen, dailyEval: DailyEvaluationObject) {
+  getRegimenPhaseOfDailyEval(
+    regimen: IRegimen, 
+    dailyEval: DailyEvaluationObject): ?IRegimenPhase
+  {
     let regimenId = dailyEval.regimenId; 
     let phase = dailyEval.regimenPhase; 
+
     let regimenPhase = regimen.getRegimenPhaseByDate(moment(dailyEval.date));
+
+    if(regimenPhase == null) { return null }
     if(regimen.id === regimenId && regimenPhase.phase === phase) {
       return regimenPhase
     } else {
-      throw new NotExistError("This daily evaluation does not match the latest regimen.");
+      return null;
     }
   }
 

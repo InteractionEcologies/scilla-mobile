@@ -205,15 +205,15 @@ export default class ReportDailyEvaluationScreen extends React.Component<any, St
     this._showToast();
   }
 
-  _createDailyEvalReport = (meaurementsByType:{[key: MeasurementType]:MeasurementValue})=>{
+  _createDailyEvalReport = (meaurementsByType: {[key: MeasurementType]:MeasurementValue}) => {
+    if(this.regimen == null) return;
+
     let user = appService.auth.currentUser;
     let uid = user.uid;
     let regimenId = this.regimen.id || null;
-    let phase;
-    if(this.regimen && this.regimen.getRegimenPhaseByDate(moment(this.state.selectedDate))) {
-      let regimenPhase = this.regimen.getRegimenPhaseByDate(moment(this.state.selectedDate));
-      phase = regimenPhase.phase
-    }
+    let regimenPhase = this.regimen.getRegimenPhaseByDate(moment(this.state.selectedDate));
+
+    if(regimenPhase == null) return;
 
     this.newDailyEvalReport = {
         id: this.state.dailyEvalReportObjId || appService.generatePushID(), 
@@ -221,10 +221,10 @@ export default class ReportDailyEvaluationScreen extends React.Component<any, St
         date: this.state.selectedDate, 
         createdAtTimestamp: moment().unix(),
         regimenId: regimenId, 
-        regimenPhase: phase,
+        regimenPhase: regimenPhase.phase,
         measurementsByType: meaurementsByType
     }
-    appStore.updateDailyEval(this.newDailyEvalReport)
+    appStore.updateDailyEval(this.newDailyEvalReport);
   }
 
   _showToast = () =>{

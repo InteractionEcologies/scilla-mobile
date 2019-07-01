@@ -61,6 +61,7 @@ We develop this mobile application with an ejected version of Expo. Expo can be 
 * Run all unittests with autowatch `npm run test:all`
 * Run unittest once `npm run test`
 * Run unittest in debug mode (allow the `debugger` keyword): `npm run test:debug`
+  * Go to `chrome://inspect` in Chrome. 
 * Run unittest with specific module `npm run test -- [module name]`
   * E.g., `npm run test -- FirebaseDS --watch`
   * To show `console.log` under this mode, we cannot use watch (not sure why). Thus, just run `npm run test -- Firebase` for example. 

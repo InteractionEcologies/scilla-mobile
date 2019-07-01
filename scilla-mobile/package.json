@@ -8,7 +8,7 @@
     "start:localhost": "expo start --localhost",
     "eject": "expo eject",
     "test:all": "npx jest --watchAll --runInBand",
-    "test:debug": "npx jest --inspect-brk --runInBand",
+    "test:debug": "npx node --inspect-brk ./node_modules/.bin/jest --runInBand",
     "test": "npx jest -o --runInBand --detectOpenHandles",
     "flow": "npx flow",
     "git:conflict": "git diff --name-only --diff-filter=U"

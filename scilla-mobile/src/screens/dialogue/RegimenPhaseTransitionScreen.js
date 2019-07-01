@@ -54,12 +54,17 @@ export default class RegimenPhaseTransitionScreen extends Component<any, State> 
   }
 
   render() {
-    if(this.state.phaseChangeType === RegimenPhaseChangeRequestTypes.willGoToNextPhase) {
-      return this._renderChangeToNextPhase();
-    } else if (this.state.phaseChangeType === RegimenPhaseChangeRequestTypes.isInNextPhase) {
-      return this._renderConfirmNewPhase();
-    } else {
-      return (<View></View>)
+    let { phaseChangeType } = this.state;
+
+    switch(phaseChangeType) {
+      case RegimenPhaseChangeRequestTypes.willStart:
+          return this._renderConfirmNewPhase();
+      case RegimenPhaseChangeRequestTypes.willGoToNextPhase:
+        return this._renderChangeToNextPhase();
+      case RegimenPhaseChangeRequestTypes.willComplete:
+        return (<View/>)
+      default:
+        return (<View/>)
     }
   }
 
