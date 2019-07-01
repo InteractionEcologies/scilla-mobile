@@ -6,7 +6,7 @@ import { Form, View, Row, Grid, Col, Input, Item, Label, Button } from "native-b
 import { Platform, StyleSheet } from "react-native";
 import DateTimePicker from "react-native-modal-datetime-picker";
 
-import { Regimen, ReminderTypeOptions, ReminderTimeConstraintOptions,
+import { IRegimen, ReminderTypeOptions, ReminderTimeConstraintOptions,
   Utils, AlarmTime
 } from "../../../libs/scijs";
 import type { ReminderConfigObject } from "../../../libs/scijs";
@@ -16,7 +16,7 @@ import { Ionicons } from '@expo/vector-icons';
 import styles from "../../reports/ReportStyles";
 
 type Props = {
-  regimen: Regimen,
+  regimen: IRegimen,
   updateReminderConfig: (string, ReminderConfigObject) => void,
 
   numStates: number,

@@ -1,7 +1,7 @@
 // @flow
 import React, { Component, Fragment } from "react";
 import { 
-  Regimen,
+  IRegimen,
 } from "../../../libs/scijs";
 import type {
   MeasurementType
@@ -14,7 +14,7 @@ import RegimenViewModel from "../../../viewModels/RegimenViewModel";
 import _ from "lodash";
 
 type Props = {
-  regimen: Regimen,
+  regimen: IRegimen,
   numStates: number,
   currentStateIndex: number
 }

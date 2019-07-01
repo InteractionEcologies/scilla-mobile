@@ -17,6 +17,6 @@ export class AppText extends React.Component<any, any> {
 
 export class AppHeaderText extends React.Component<any, any> {
   render() {
-    return <Text {...this.props} style={[this.props.style, { fontFamily: Fonts.SpaceMonoBold }]} />;
+    return <Text {...this.props} style={[this.props.style, { fontFamily: Fonts.OpenSans }]} />;
   }
 }

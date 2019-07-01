@@ -11,7 +11,7 @@ module.exports = function (api) {
         ]
       },
       production: {
-        "plugins": ["transform-remove-console"]
+        // "plugins": ["transform-remove-console"]
       }
     }
   };

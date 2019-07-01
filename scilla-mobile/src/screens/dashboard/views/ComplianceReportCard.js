@@ -2,7 +2,7 @@
 import React from 'react';
 import { View, StyleSheet } from "react-native";
 import { Button } from "native-base";
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { AppText, Title, RoundedCard, RoundedCardItem } from "../../../components";
 import type { ComplianceReportObject, DateTypeTimeOfDay } from '../../../libs/scijs';
 import { ComplianceStatusOptions, DateFormatTimeOfDay } from "../../../libs/scijs";
@@ -112,20 +112,21 @@ export default class ComplianceReportCard extends React.Component<Props, any> {
       </Button>
     )
   }
-
+ 
+  // TODO: Need to fix this. 
   _renderSnoozeBtn() {
-    let iconName = "ios-alarm-outline";
+    let iconName = "alarm-off";
 
     if (this.props.report.expectedTreatmentTime !== this.props.treatment.time) {
-      iconName = "ios-alarm"; // An icon that looks like an `outline` version of timer. 
+      iconName = "alarm-on"; // An icon that looks like an `outline` version of timer. 
       
     } else {
-      iconName = "ios-alarm-outline";
+      iconName = "alarm-off";
     }
 
     return (
       <Button transparent style={styles.button} onPress={this.snooze} key="snooze">
-        <Ionicons name={iconName} style={styles.icon}/>
+        <MaterialIcons name={iconName} style={styles.icon}/>
         <AppText>Snooze</AppText>
       </Button>
     )

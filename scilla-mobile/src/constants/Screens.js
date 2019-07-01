@@ -1,9 +1,18 @@
 // @flow
 export const ScreenNames = {
+  MainOrAuthSwitchNavigator: "MainOrAuthSwitchNavigator",
+
+  // Modals
+  RegimenPhaseTransition: 'RegimenPhaseTransition',
+
+  Main: "Main", // A switch navigator that switch between Auth and MainTabNaviagor
+  
   // Authentication
-  Main: "Main",
   Login: "Login",
   SignUp: "SignUp",
+
+  // This allows a modal to be shown, it is the parent of 
+  // MainTabNavigator
 
   // Regimen 
   RegimenMain: "RegimenMain",

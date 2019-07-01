@@ -2,7 +2,7 @@
 import React, { Component } from "react";
 import { Action, withStateMachine } from "react-automata";
 
-import type { DateTypeISO8601, Regimen, RegimenObject,
+import type { DateTypeISO8601, IRegimen, RegimenObject,
   ReminderConfigObject
 } from "../../libs/scijs";
 
@@ -27,6 +27,8 @@ import SetupRemindersView from "./views/SetupRemindersView";
 import SelectMeasurementsView from "./views/SelectMeasurementsView";
 import PrecautionView from "./views/PrecautionView";
 import CompletionView from "./views/CompletionView";
+
+import moment from "moment";
 
 // This is a singleton. 
 const appService = AppService.instance;
@@ -134,7 +136,7 @@ const customStyles = StyleSheet.create({
 });
 
 type State = {
-  regimen: ?Regimen,
+  regimen: ?IRegimen,
   errorMsg: string,
 
   // In certain views such as regimen redeem, 
@@ -212,7 +214,6 @@ class RegimenRedeemScreen extends Component<any, State> {
   }
 
 
-
   loadFakeRegimen = (): RegimenObject => {
     return fakeRegimenObject;
   }
@@ -283,7 +284,7 @@ class RegimenRedeemScreen extends Component<any, State> {
   setRegimenStartDate = (startDate: DateTypeISO8601) => {
     const { regimen } = this.state;
     if (regimen) {
-      regimen.setStartDate(startDate);
+      regimen.setStartDate(moment(startDate));
       regimen.make();
       this.setState({regimen: regimen});  
     }
@@ -304,7 +305,7 @@ class RegimenRedeemScreen extends Component<any, State> {
       errorMsg, isNextBtnDisplayed, isBackBtnDisplayed 
     } = this.state;
     let { regimen } = this.state;
-    regimen = ((regimen: any): Regimen);
+    regimen = ((regimen: any): IRegimen);
 
     return (
       <Content>

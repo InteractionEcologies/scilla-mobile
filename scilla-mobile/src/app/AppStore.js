@@ -1,5 +1,5 @@
 // @flow
-import { Regimen, RegimenFactory } from "../libs/scijs/models/regimen";
+import { IRegimen, RegimenFactory } from "../libs/scijs";
 import AppService from "./AppService";
 import { IAppStore } from "./IAppStore";
 import { 
@@ -39,7 +39,8 @@ export default class AppStore implements IAppStore {
   static instance: AppStore
   appService = AppService.instance;
   
-  latestRegimen: ?Regimen;
+  latestRegimen: ?IRegimen;
+  lastCheckPhaseUpdateTime = moment().subtract(1, 'day');
 
   constructor() {
     if(!AppStore.instance) {
@@ -48,9 +49,8 @@ export default class AppStore implements IAppStore {
     return AppStore.instance;
   }
 
-  initialize(date: ?DateTypeISO8601 = null): Promise<void> {
-    let today = date ? date: moment().format(DateFormatISO8601);
-
+  initialize(today: moment = moment()): Promise<void> {
+    
     return Promise.all([
       this.getUserProfile(),
       this.getLatestRegimen()
@@ -86,11 +86,28 @@ export default class AppStore implements IAppStore {
     return this.appService.ds.upsertUserProfile(profile);
   }
 
-  insertRegimen(regimen: Regimen): Promise<Regimen> {
+  shouldCheckRegimenPhaseUpdate(): boolean {
+    if (this.lastCheckPhaseUpdateTime.isBefore(moment(), 'day')) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  hasActiveRegimen(): boolean {
+   if(this.uid
+    && this.latestRegimen) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  insertRegimen(regimen: IRegimen): Promise<IRegimen> {
     return this.appService.ds.upsertRegimen(regimen.toObj());
   }
 
-  getRegimens(): Promise<Regimen[]> {
+  getRegimens(): Promise<IRegimen[]> {
     return this.appService.ds.getRegimens(this.uid)
       .then( (objs) => {
         return _.map(objs, (obj) => {
@@ -99,14 +116,14 @@ export default class AppStore implements IAppStore {
       })
   }
 
-  getLatestRegimen(): Promise<Regimen> {
+  getLatestRegimen(): Promise<IRegimen> {
     if(this.latestRegimen) {
       return Promise.resolve(this.latestRegimen)
     } else {
       return this.appService.ds.getLatestRegimen(this.uid)
         .then( (obj) => {
           this._cacheLatestRegimenFromObj(obj);
-          return ((this.latestRegimen:any):Regimen);
+          return ((this.latestRegimen:any):IRegimen);
         })
         .catch( (error) => {
           throw new NotExistError("Regimen does not exist")
@@ -114,7 +131,7 @@ export default class AppStore implements IAppStore {
     }
   }
 
-  updateRegimen(id: string, regimen: Regimen): Promise<void> {
+  updateRegimen(regimen: IRegimen): Promise<void> {
     let cachedRegimenId = _.get(this, 'latestRegimen.id', null);
     let cacheUpdateRequired = regimen.id === cachedRegimenId;
     let regimenObj = regimen.toObj();
@@ -126,7 +143,7 @@ export default class AppStore implements IAppStore {
       })
   }
 
-  _cacheLatestRegimen(regimen: Regimen) {
+  _cacheLatestRegimen(regimen: IRegimen) {
     let regimenObj = regimen.toObj();
     this._cacheLatestRegimenFromObj(regimenObj);
   }
@@ -149,7 +166,7 @@ export default class AppStore implements IAppStore {
   }
 
   getOrInitComplianceReportsForDate(
-    date: DateTypeISO8601
+    date: moment
   ): Promise<ComplianceReportObject[]> {
     let currentRegimen;
     let existingReports: ComplianceReportObject[];
@@ -159,7 +176,7 @@ export default class AppStore implements IAppStore {
       .then( (regimen) => {
         currentRegimen = regimen;
         return this.appService.ds
-          .getComplianceReportsByRegimenAndDate(this.uid, regimen.id, date);
+          .getComplianceReportsByRegimenAndDate(this.uid, regimen.id, date.format(DateFormatISO8601));
       })
       .then( (reports) => {
         existingReports = reports;
@@ -186,8 +203,11 @@ export default class AppStore implements IAppStore {
     return this.appService.ds.getComplianceReport(id);
   }
 
-  getComplianceReportsByDate(date: DateTypeISO8601): Promise<ComplianceReportObject[]> {
-    return this.appService.ds.getComplianceReportsByDate(this.uid, date);
+  getComplianceReportsByDate(date: moment): Promise<ComplianceReportObject[]> {
+    return this.appService.ds.getComplianceReportsByDate(
+      this.uid, 
+      date.format(DateFormatISO8601)
+    );
   }
 
   getComplianceReportsByRegimenPhase(
@@ -212,16 +232,20 @@ export default class AppStore implements IAppStore {
       .getMeasurement(id);
   }
 
-  getMeasurementsByDate(date: DateTypeISO8601): Promise<MeasurementObject[]> {
+  getMeasurementsByDate(date: moment): Promise<MeasurementObject[]> {
     return this.appService.ds
-      .getMeasurementsByDate(this.uid, date);
+      .getMeasurementsByDate(this.uid, date.format(DateFormatISO8601));
   }
 
   getMeasurementsByDateRange(
-    startDate: DateTypeISO8601, endDate: DateTypeISO8601
+    startDate: moment, endDate: moment
   ): Promise<MeasurementObject[]> {
     return this.appService.ds
-      .getMeasurementsByDateRange(this.uid, startDate, endDate);
+      .getMeasurementsByDateRange(
+        this.uid, 
+        startDate.format(DateFormatISO8601), 
+        endDate.format(DateFormatISO8601)
+      );
   }
   
   updateMeasurement(obj: MeasurementObject): Promise<void> {
@@ -242,16 +266,20 @@ export default class AppStore implements IAppStore {
   /**
    * @throws {Error} daily eval for this date does not exist. 
    */
-  getDailyEvalByDate(date: DateTypeISO8601): Promise<DailyEvaluationObject> {
+  getDailyEvalByDate(date: moment): Promise<DailyEvaluationObject> {
     return this.appService.ds
-      .getDailyEvalByDate(this.uid, date);
+      .getDailyEvalByDate(this.uid, date.format(DateFormatISO8601));
   }
 
   getDailyEvalsByDateRange(
-    startDate: DateTypeISO8601, endDate: DateTypeISO8601
+    startDate: moment, endDate: moment
   ): Promise<DailyEvaluationObject[]> {
     return this.appService.ds
-      .getDailyEvalsByDateRange(this.uid, startDate, endDate);
+      .getDailyEvalsByDateRange(
+        this.uid, 
+        startDate.format(DateFormatISO8601),
+        endDate.format(DateFormatISO8601)
+      );
   }
 
   updateDailyEval(obj: DailyEvaluationObject): Promise<void> {
@@ -260,4 +288,3 @@ export default class AppStore implements IAppStore {
   }
 
 }
-

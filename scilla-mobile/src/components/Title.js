@@ -19,7 +19,7 @@ export class Title extends React.Component<any, any> {
 const styles = StyleSheet.create({
   title: {
     textAlign: 'center',
-    fontFamily: Fonts.SpaceMonoBold,
+    fontFamily: Fonts.OpenSans,
     fontSize: 16,
     fontWeight: 'bold'
   }

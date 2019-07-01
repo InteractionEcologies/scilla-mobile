@@ -34,6 +34,7 @@
     "lodash.get": "^4.4.2",
     "lodash.isequal": "^4.5.0",
     "moment": "^2.22.2",
+    "moment-timezone": "^0.5.25",
     "native-base": "^2.12.1",
     "prop-types": "^15.6.2",
     "react": "^16.5.0",
@@ -42,6 +43,7 @@
     "react-native-cli": "^2.0.1",
     "react-native-easy-grid": "^0.2.0",
     "react-native-firebase": "^4.3.8",
+    "react-native-modal": "^11.1.0",
     "react-native-modal-datetime-picker": "^7.4.2",
     "react-native-step-indicator": "0.0.9",
     "react-navigation": "^3.0.9",
@@ -81,6 +83,7 @@
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-plugin-module-resolver": "^3.2.0",
+    "babel-plugin-transform-remove-console": "^6.9.4",
     "babel-preset-expo": "^5.2.0",
     "enzyme": "^3.4.1",
     "eslint": "^5.16.0",

@@ -9,11 +9,11 @@ import {
 } from "../../../components"
 import { View } from "native-base";
 import RegimenViewModel from "../../../viewModels/RegimenViewModel";
-import { Regimen } from "../../../libs/scijs";
+import { IRegimen } from "../../../libs/scijs";
 import type { DateTypeISO8601 } from "../../../libs/scijs";
 
 type Props = {
-  regimen: Regimen,
+  regimen: IRegimen,
   onDateSelected: (date: DateTypeISO8601) => void,
   numStates: number,
   currentStateIndex: number

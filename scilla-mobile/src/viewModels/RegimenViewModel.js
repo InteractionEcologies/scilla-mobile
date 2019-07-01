@@ -1,15 +1,15 @@
 // @flow
 import moment from "moment";
-import { Regimen, DateFormatISO8601 } from "../libs/scijs";
+import { IRegimen, DateFormatISO8601 } from "../libs/scijs";
 import Colors from "../constants/Colors";
 import _ from "lodash";
 
 const SCOPE = "RegimenViewModel";
 
 class RegimenViewModel {
-  regimen: Regimen
+  regimen: IRegimen
 
-  constructor(regimen: Regimen) {
+  constructor(regimen: IRegimen) {
     this.regimen = regimen;
   }
 

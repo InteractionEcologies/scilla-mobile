@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from "react";
 
-import type { Regimen } from "../../../libs/scijs";
+import type { IRegimen } from "../../../libs/scijs";
 
 import {
   AppText,
@@ -18,7 +18,7 @@ type Props = {
   // All of the views inside my react-automata will be rendered 
   // at the beginning while there is no regimen. Thus, all the views
   // should handle situation when there is no regimen. 
-  regimen: Regimen,
+  regimen: IRegimen,
   onConfirmed: () => Promise<void>,
   numStates: number, 
   currentStateIndex: number

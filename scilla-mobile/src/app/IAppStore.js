@@ -1,5 +1,6 @@
 // @flow
-import { Regimen } from "../libs/scijs/models/regimen";
+import moment from "moment";
+import { IRegimen } from "../libs/scijs/models/regimen";
 import type
 { MeasurementObject, 
   DailyEvaluationObject,
@@ -16,17 +17,20 @@ export interface IAppStore {
   getUserProfile(): Promise<UserProfileObject>;
   updateUserProfile(profile: UserProfileObject): Promise<void>;
   
+  shouldCheckRegimenPhaseUpdate(): boolean;
+
   // Regimen
-  insertRegimen(regimen: Regimen): Promise<Regimen>;
-  getRegimens(): Promise<Regimen[]>;
-  getLatestRegimen(): Promise<Regimen>;
-  updateRegimen(id: string, regimen: Regimen): Promise<void>;
+  hasActiveRegimen(): boolean;
+  insertRegimen(regimen: IRegimen): Promise<IRegimen>;
+  getRegimens(): Promise<IRegimen[]>;
+  getLatestRegimen(): Promise<IRegimen>;
+  updateRegimen(regimen: IRegimen): Promise<void>;
   deactivateRegimen(id: string): Promise<void>;
 
   // Compliance Reports
-  getOrInitComplianceReportsForDate(date: DateTypeISO8601): Promise<ComplianceReportObject[]>;
+  getOrInitComplianceReportsForDate(date: moment): Promise<ComplianceReportObject[]>;
   getComplianceReport(id: string): Promise<ComplianceReportObject>;
-  getComplianceReportsByDate(date: DateTypeISO8601): Promise<ComplianceReportObject[]>;
+  getComplianceReportsByDate(date: moment): Promise<ComplianceReportObject[]>;
   getComplianceReportsByRegimenPhase(regimenId: string, phase: number): Promise<ComplianceReportObject[]>;
   updateComplianceReport(obj: ComplianceReportObject): Promise<void>;
   
@@ -35,15 +39,15 @@ export interface IAppStore {
   // a wrapper class.
   insertMeasurement(obj: MeasurementObject): Promise<void>;
   getMeasurement(id: string): Promise<MeasurementObject>;
-  getMeasurementsByDate(date: DateTypeISO8601): Promise<MeasurementObject[]>;
-  getMeasurementsByDateRange(startDate: DateTypeISO8601, endDate: DateTypeISO8601): Promise<MeasurementObject[]>;
+  getMeasurementsByDate(date: moment): Promise<MeasurementObject[]>;
+  getMeasurementsByDateRange(startDate: moment, endDate: moment): Promise<MeasurementObject[]>;
   updateMeasurement(obj: MeasurementObject): Promise<void>;
   
   // Daily Evaluation Reports
   insertDailyEval(obj: DailyEvaluationObject): Promise<void>;
   getDailyEval(id: string): Promise<DailyEvaluationObject>;
-  getDailyEvalByDate(date: DateTypeISO8601): Promise<DailyEvaluationObject>;
-  getDailyEvalsByDateRange(startDate: DateTypeISO8601, endDate: DateTypeISO8601): Promise<DailyEvaluationObject[]>;
+  getDailyEvalByDate(date: moment): Promise<DailyEvaluationObject>;
+  getDailyEvalsByDateRange(startDate: moment, endDate: moment): Promise<DailyEvaluationObject[]>;
   updateDailyEval(obj: DailyEvaluationObject): Promise<void>;
 
 

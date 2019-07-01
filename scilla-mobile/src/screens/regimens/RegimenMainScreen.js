@@ -9,7 +9,7 @@ import {
 import { ScreenNames } from "../../constants/Screens";
 import { AppText } from "../../components"
 import { fakeRegimenObject } from "../../libs/scijs/stub/fakeRegimen";
-import { RegimenFactory, Regimen } from "../../libs/scijs/models/regimen";
+import { RegimenFactory, IRegimen } from "../../libs/scijs/models/regimen";
 import type { 
   RegimenPhaseObject
 } from "../../libs/scijs";
@@ -25,7 +25,7 @@ import { Calendar } from "../../components/Calendar";
 import Colors from "../../constants/Colors";
 
 type State = {
-  regimen: ?Regimen,
+  regimen: ?IRegimen,
   currentRegimenPhaseObject: ?RegimenPhaseObject
 }
 
@@ -88,7 +88,7 @@ export default class RegimenMainScreen extends React.Component<any, State> {
 
   async initializeState() {
     if(!this._isMounted) return;
-    let regimen: ?Regimen = null
+    let regimen: ?IRegimen = null
     try {
       regimen = await appStore.getLatestRegimen();
     } catch (e) {
@@ -101,7 +101,7 @@ export default class RegimenMainScreen extends React.Component<any, State> {
     if(regimen) {
       try {
         // Find today's regimen phase. 
-        let today = moment().local().format(DateFormatISO8601);
+        let today = moment().local();
         
         let regimenPhaseObject = regimen.getRegimenPhaseObjByDate(today);
         this.setState({
@@ -160,11 +160,11 @@ export default class RegimenMainScreen extends React.Component<any, State> {
           }
           curDateM.add(1, 'day')
         }
-        markedDates[startDate] = {
+        markedDates[startDate.format(DateFormatISO8601)] = {
           startingDay: true, 
           color: color
         }
-        markedDates[endDate] = {
+        markedDates[endDate.format(DateFormatISO8601)] = {
           endingDay: true,
           color: color
         }

@@ -51,6 +51,7 @@ export default class DashboardMainScreen extends React.Component<any, State> {
 
   componentDidMount() {
     this.updateDate(this.state.current);
+    appStore.initialize();
   } 
 
   componentWillFocus = (payload: any) => {
@@ -63,9 +64,10 @@ export default class DashboardMainScreen extends React.Component<any, State> {
 
   async updateDate(date: string) {
     try {
+      let dateMoment = moment(date);
       let regimen = await appStore.getLatestRegimen();
-      let treatments = regimen.getTreatmentsByDate(date);
-      let complianceReports = await appStore.getOrInitComplianceReportsForDate(date);
+      let treatments = regimen.getTreatmentsByDate(dateMoment);
+      let complianceReports = await appStore.getOrInitComplianceReportsForDate(dateMoment);
 
       let treatmentMap = {};
       treatments.forEach( (treatment) => {

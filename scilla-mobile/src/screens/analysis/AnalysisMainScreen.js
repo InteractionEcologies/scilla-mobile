@@ -1,32 +1,35 @@
 // @flow
+import _ from "lodash";
+import moment from "moment";
+
 import React from "react";
 import { StyleSheet, ScrollView  } from 'react-native';
 import { Content, View } from "native-base";
 import { Title } from "../../components";
 import AppStore from "../../app/AppStore";
-import { MeasurementTypes } from "../../libs/scijs"; 
+
 import type {
   MeasurementType,
-  DailyEvaluationObject
+  DailyEvaluationObject,
+  IRegimen
 } from "../../libs/scijs"
-import { Regimen } from "../../libs/scijs/models/regimen";
-import _ from "lodash";
-import { BaclofenUtils } from "../../libs/scijs/models/regimen/utils";
-import { AnalysisUtils } from "../../models/analysis/utils";
-import type { 
-  DailyEvalDataPoint 
-} from "../../models/analysis";
-import { NotExistError } from "../../libs/scijs";
-import { DailyEvalDataFrame } from "../../models/analysis/";
 import { 
-  PlottableMeasurementTypes
-} from "./constants";
+  MeasurementTypes,
+  BaclofenUtils,
+  NotExistError,
+  fakeDailyEvals
+} from "../../libs/scijs"; 
+
+import { AnalysisUtils } from "../../models/analysis/utils";
+import type { DailyEvalDataPoint } from "../../models/analysis";
+import { DailyEvalDataFrame } from "../../models/analysis/";
+import { PlottableMeasurementTypes} from "./constants";
 import { MeasurementSelectionBtn } from "./views/MeasurementSelectionBtn";
 // import { Svg } from "expo";
 import { ScatterPlot } from "./views/ScatterPlot";
 import { DotPlot } from "./views/DotPlot";
-import { fakeDailyEvals } from "../../libs/scijs/stub/fakeDailyEvals";  
 // const { Circle, Rect, G } = Svg; 
+
 
 const appStore: AppStore = new AppStore();
 
@@ -74,7 +77,7 @@ export default class AnalysisMainScreen extends React.Component<any, State> {
     }
   }
 
-  async createDailyEvalDataFrame(regimen: Regimen) {
+  async createDailyEvalDataFrame(regimen: IRegimen) {
     let dailyEvals = await this.getDailyEvals(regimen);
     let dataPoints = await this.convertDailyEvalsToDataPoints(regimen, dailyEvals);
     let dataframe = new DailyEvalDataFrame();
@@ -82,7 +85,7 @@ export default class AnalysisMainScreen extends React.Component<any, State> {
     return dataframe;
   }
 
-  async getDailyEvals(regimen: Regimen) {
+  async getDailyEvals(regimen: IRegimen) {
     // let startDate = regimen.startDate;
     // let today = moment().format(DateFormatISO8601);
     // return await appStore.getDailyEvalsByDateRange(
@@ -92,7 +95,7 @@ export default class AnalysisMainScreen extends React.Component<any, State> {
     return fakeDailyEvals
   }
 
-  async convertDailyEvalsToDataPoints(regimen: Regimen, dailyEvals: DailyEvaluationObject[]) {
+  async convertDailyEvalsToDataPoints(regimen: IRegimen, dailyEvals: DailyEvaluationObject[]) {
     let allPoints: DailyEvalDataPoint[] = [];
 
     dailyEvals.forEach( (dailyEval) => {
@@ -103,7 +106,7 @@ export default class AnalysisMainScreen extends React.Component<any, State> {
     return allPoints;
   }
 
-  getDosage(regimen: Regimen, dailyEval: DailyEvaluationObject): number {
+  getDosage(regimen: IRegimen, dailyEval: DailyEvaluationObject): number {
     try {
       let regimenPhase = this.getRegimenPhaseOfDailyEval(regimen, dailyEval);
       return BaclofenUtils.getDosageByRegimenPhase(regimenPhase);
@@ -115,10 +118,10 @@ export default class AnalysisMainScreen extends React.Component<any, State> {
     return -1;
   }
 
-  getRegimenPhaseOfDailyEval(regimen: Regimen, dailyEval: DailyEvaluationObject) {
+  getRegimenPhaseOfDailyEval(regimen: IRegimen, dailyEval: DailyEvaluationObject) {
     let regimenId = dailyEval.regimenId; 
     let phase = dailyEval.regimenPhase; 
-    let regimenPhase = regimen.getRegimenPhaseByDate(dailyEval.date);
+    let regimenPhase = regimen.getRegimenPhaseByDate(moment(dailyEval.date));
     if(regimen.id === regimenId && regimenPhase.phase === phase) {
       return regimenPhase
     } else {

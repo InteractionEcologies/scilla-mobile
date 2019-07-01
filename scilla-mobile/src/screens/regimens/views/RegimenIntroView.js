@@ -7,10 +7,10 @@ import {
   DotPageIndicator
 } from "../../../components"
 import { View } from "native-base";
-import { Regimen } from "../../../libs/scijs"
+import { IRegimen } from "../../../libs/scijs"
 
 type Props = {
-  regimen: Regimen,
+  regimen: IRegimen,
   numStates: number,
   currentStateIndex: number
 }

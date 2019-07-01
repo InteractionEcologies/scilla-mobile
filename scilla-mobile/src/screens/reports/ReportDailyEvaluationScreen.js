@@ -33,7 +33,7 @@ import {
   RequiredMeasurementTypesInDailyEval, 
   DailyEvalQuestionPriorityMap
 } from "./constants";
-import { Regimen } from "../../libs/scijs/models/regimen";
+import { IRegimen } from "../../libs/scijs/models/regimen";
 
 const appStore = new AppStore();
 const appService = new AppService();
@@ -66,7 +66,7 @@ export default class ReportDailyEvaluationScreen extends React.Component<any, St
   }
 
   dailyEvalViews = [];
-  regimen: Regimen;
+  regimen: IRegimen;
   newDailyEvalReport = null;
   
   componentWillFocusSubscription: any;
@@ -210,8 +210,8 @@ export default class ReportDailyEvaluationScreen extends React.Component<any, St
     let uid = user.uid;
     let regimenId = this.regimen.id || null;
     let phase;
-    if(this.regimen && this.regimen.getRegimenPhaseByDate(this.state.selectedDate)) {
-      let regimenPhase = this.regimen.getRegimenPhaseByDate(this.state.selectedDate);
+    if(this.regimen && this.regimen.getRegimenPhaseByDate(moment(this.state.selectedDate))) {
+      let regimenPhase = this.regimen.getRegimenPhaseByDate(moment(this.state.selectedDate));
       phase = regimenPhase.phase
     }
 

@@ -1,21 +1,23 @@
 // @flow
+import moment from "moment";
+import _ from "lodash";
+import XDate from "xdate";
+
 import React from "react";
 import { Container, Content, View, Button, Card, CardItem } from "native-base";
 import { ScrollView } from "react-native";
 import { AppText, Title } from "../../components";
-import moment from "moment";
-import AppStore from "../../app/AppStore";
-import { DateFormatISO8601 } from "../../libs/scijs"; 
-import styles from "./ReportStyles"; 
-import { ScreenNames } from "../../constants/Screens";
-import _ from "lodash";
-import { OneWeekCalendar } from "../../components";
-import XDate from "xdate";
-import { Regimen } from "../../libs/scijs/models/regimen";
-import type
- {
+
+import type {
   MeasurementType
 } from "../../libs/scijs"
+
+import { DateFormatISO8601, IRegimen } from "../../libs/scijs"; 
+
+import AppStore from "../../app/AppStore";
+import styles from "./ReportStyles"; 
+import { ScreenNames } from "../../constants/Screens";
+import { OneWeekCalendar } from "../../components";
 
 const appStore = new AppStore();
 const DAILY_EVALUATION_MEASUREMENT_TYPE = "Daily Evaluation"
@@ -36,7 +38,7 @@ export default class ReportSelectionScreen extends React.Component<any, State> {
   }
 
   componentWillFocusSubscription: any;
-  regimen: Regimen;
+  regimen: IRegimen;
 
   constructor(props: any) {
     super(props);

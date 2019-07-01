@@ -71,6 +71,15 @@ We develop this mobile application with an ejected version of Expo. Expo can be 
 * Flow warnings and errors should show in the IDE (VSCode), under Problems. 
 * You can also run `npx flow`. 
 
+## Publishing/Deployment
+* Overview: 
+  * The iOS and Android app uses a different URL to load the code in development and production. 
+  * Under development setting, the code is load from a server running locally (started with `npm run start` or `expo start`)
+  * Under production setting, the code uses the URL specifies in `app.json` to fetch the published code on Expo. This allows over the air update. 
+* `npx expo publish`
+  * This will publish the JS asset to the Expo server. 
+* Then, for iOS, build the project with `Release` settings. Or just Archive and publish it. 
+
 ## Debugging
 ### iOS
 * Show the debugging menu on iPhone

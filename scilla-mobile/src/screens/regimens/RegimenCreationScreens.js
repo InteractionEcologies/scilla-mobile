@@ -13,7 +13,7 @@ import {
   RegimenTypes, 
   DateFormatISO8601
 } from "../../libs/scijs";
-import { Regimen, RegimenFactory, IRegimenPhase } from "../../libs/scijs/models/regimen";
+import { IRegimen, RegimenFactory, IRegimenPhase } from "../../libs/scijs/models/regimen";
 
 import { ScreenNames } from "../../constants/Screens";
 import styles from "./RegimenStyles"; 
@@ -173,7 +173,7 @@ class RegimenCreationScreens extends React.Component<any, States>
     warningMessage: null
   }
 
-  regimen: Regimen = RegimenFactory.createRegimen(RegimenTypes.incBaclofen)
+  regimen: IRegimen = RegimenFactory.createRegimen(RegimenTypes.incBaclofen)
 
   componentDidMount() {
 
@@ -203,12 +203,11 @@ class RegimenCreationScreens extends React.Component<any, States>
   }
 
   generateTemporarySchedule = () => {
-    let today: string = moment().format(DateFormatISO8601);
-    this.regimen.setStartDate(today);
+    this.regimen.setStartDate(moment());
     this.regimen.make();
  
     this.setState({
-      startDate: this.regimen.startDate,
+      startDate: this.regimen.startDate.format(DateFormatISO8601),
       regimenPhases: this.regimen.getRegimenPhases()
     });
   }
