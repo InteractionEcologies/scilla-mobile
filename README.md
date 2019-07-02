@@ -25,7 +25,7 @@ A mobile app to help patients with Spinal Cord Injury or Disease (SCI/D) learn t
 
 ## Development Environments
 * **Visual Studio Code** 
-* **React Native** (v0.55.4)
+* **React Native** (v0.57)
 * **node** (v8.11.4 LTS)
 * **Expo** (v32.0.0)
 * **Flow** 
@@ -36,7 +36,7 @@ A mobile app to help patients with Spinal Cord Injury or Disease (SCI/D) learn t
   * Follow [expo setup guide](https://expo.io/learn)
   * Install node.js
   * If you need to maintain multiple node versions, use [n](https://github.com/tj/n)
-  * npm install expo-cli --global
+  * `npm install expo-cli -g`
 * Install dependencies
   * Use terminal, navigate to `scilla-mobile/scilla-mobile/`
   * Run `npm install`

@@ -81,6 +81,17 @@ We develop this mobile application with an ejected version of Expo. Expo can be 
   * This will publish the JS asset to the Expo server. 
 * Then, for iOS, build the project with `Release` settings. Or just Archive and publish it. 
 
+### Publish Android release built on TestFairy
+* I edited the `build.gradle`file to include signing for the release built. 
+  * As suggested in this [React Native doc](https://facebook.github.io/react-native/docs/signed-apk-android)
+* To build the app, use Android Studio, use `prodMinSdkProdKernelRelease` as the build variant. 
+* Click `build`. DO NOT USE `Generate Signed Bindles/SDK`. I don't know why but it does correctly sign my release built. 
+* Once built, the `apk` should be located at `/android/app/build/outputs/apk/prodMinSdkProdKernel/release` with a name `app-prodMinSdk-prodKernel-release.apk`. 
+* Sign in to TestFairy, upload this apk. 
+* On the Android end, click on the email received from TestFairy, download the apk, and install. 
+* You will need to set your Android to allow unknown sources:
+  * Settings > Security & fingerprint > Unknown sources (turn this on)
+
 ## Debugging
 ### iOS
 * Show the debugging menu on iPhone
