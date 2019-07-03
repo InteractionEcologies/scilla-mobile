@@ -5,13 +5,13 @@ const primaryColor = "#42a5f5";
 const primaryDarkColor = "#0077c2";
 const primaryLightColor = "#80d6ff";
 
-const accentColor = "#303f9f";
-const accentDarkColor = "#001970";
-const accentLightColor = "#666ad1";
+const accentColor = "#ec407a";
+const accentDarkColor = "#b4004e";
+const accentLightColor = "#ff77a9";
 
 const backgroundColor = "#E0E0E0";
 const surfaceColor = "#ffffff";
-const errorColor = "#d81b60";
+const errorColor = "#b4004e";
 
 const primaryTextColor = "#000000";
 const accentTextColor = "#ffffff";

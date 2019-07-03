@@ -8,9 +8,12 @@ import { ThreePillTableHeader, ThreePillTableRow } from "./ThreePillTable";
 
 type Props = {
   regimenPhases: IRegimenPhase[],
+  showDates?: boolean,
+  highlightedPhaseOrder?: ?number,
   style?: any
 }
 
+const SCOPE = "RegimenSchedule:"
 export class RegimenSchedule extends React.Component<Props, any> {
   componentDidMount() {
     console.log("RegimenSchedule")  
@@ -43,8 +46,17 @@ export class RegimenSchedule extends React.Component<Props, any> {
           : " ";
       }
       
+      const startDateStr = regimenPhase.startDate.format("M/D");
+      const endDateStr = regimenPhase.endDate.format("M/D");
+      const periodStr = `${startDateStr} - ${endDateStr}`;
+      
+      let isHighlighted = regimenPhase.phase === this.props.highlightedPhaseOrder;
+      console.log(SCOPE, "highlighted regimen", this.props.highlightedPhaseOrder);
+      console.log(SCOPE, "isHighlighted", isHighlighted);
       rows.push(<ThreePillTableRow key={phaseNumber}
         rowIndex={phaseNumber}
+        rowDesc={this.props.showDates ? periodStr : null}
+        highlighted={isHighlighted}
         values={valuesForPillTableRow}
       />)
     }

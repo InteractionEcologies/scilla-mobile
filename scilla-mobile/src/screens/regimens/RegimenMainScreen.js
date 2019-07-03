@@ -7,7 +7,7 @@ import {
 } from "native-base";
 
 import { ScreenNames } from "../../constants/Screens";
-import { AppText } from "../../components"
+import { AppText, RegimenSchedule } from "../../components"
 import { fakeRegimenObject } from "../../libs/scijs/stub/fakeRegimen";
 import { RegimenFactory, IRegimen } from "../../libs/scijs/models/regimen";
 import type { 
@@ -53,12 +53,6 @@ export default class RegimenMainScreen extends React.Component<any, State> {
   }
   
   componentWillFocusSubscription: any;
-  phaseColors = 
-    [ Colors.primaryLightColor,
-      Colors.primaryColor, 
-      Colors.primaryDarkColor,
-      Colors.accentLightColor
-    ]
 
   constructor(props: any) {
     super(props);
@@ -69,11 +63,7 @@ export default class RegimenMainScreen extends React.Component<any, State> {
   }
 
   componentDidMount() {
-    // DEBUG
-    // Stub the data.
-    // this.addFakeData();
     this._isMounted = true;
-
     this.initializeState();
   }
 
@@ -86,7 +76,6 @@ export default class RegimenMainScreen extends React.Component<any, State> {
     this.componentWillFocusSubscription.remove();
     this._isMounted = false;
   }
-
 
   addFakeData() {
     let regimenObject = fakeRegimenObject;
@@ -108,32 +97,27 @@ export default class RegimenMainScreen extends React.Component<any, State> {
       } 
     }
 
-    if(regimen) {
-      try {
-        // Find today's regimen phase. 
-        let today = appClock.now().local();
-        
-        let regimenPhaseObject = regimen.getRegimenPhaseObjByDate(today);
+    if(regimen == null) return;
+
+    let activePhase = regimen.getActiveRegimenPhase();
+    if(activePhase)  {
+      this.setState({
+        regimen: regimen,
+        currentRegimenPhaseObject: activePhase.toObj()
+      });  
+      appInitializer.updateRegimenPhaseAndRequestPermission();
+    } else if (regimen.completed) {
+      // Completed 
+    } else {
+      let upcomingPhase = regimen.getRegimenPhaseByOrder(0);
+      if(upcomingPhase) {
         this.setState({
           regimen: regimen,
-          currentRegimenPhaseObject: regimenPhaseObject
-        });  
-        appInitializer.updateRegimenPhaseAndRequestPermission();
-      
-      } catch (e) {
-        if(e.name === "NotExistError") {
-          // A regimen exist but the phase is not started yet. 
-          // Showing the first regimen phase. 
-          // Assume there is at least one regimen phase for now.
-          let regimenPhaseObject = regimen.getRegimenPhaseObjs()[0];
-          this.setState({
-            regimen: regimen,
-            currentRegimenPhaseObject: regimenPhaseObject
-          });
-        }
+          currentRegimenPhaseObject: upcomingPhase.toObj()
+        });
       }
-    }
-
+    }      
+  
     this.setState({isCheckingLatestRegimen: false})
   }
 
@@ -208,7 +192,7 @@ export default class RegimenMainScreen extends React.Component<any, State> {
                 <Spinner color={Colors.primaryColor}/>
               } 
               {!isCheckingLatestRegimen &&
-                this.renderRegimen()
+                this.renderCreateOrShowRegimenInfoView()
               }
             </View>
           </Content>
@@ -217,9 +201,9 @@ export default class RegimenMainScreen extends React.Component<any, State> {
     )
   }
 
-  renderRegimen() {
+  renderCreateOrShowRegimenInfoView() {
     if(this.state.regimen) {
-      return this._renderActiveRegimen();
+      return this._renderRegimenInfoView();
     } else {
       // Currently we don't allow users to create their own 
       // regimens. All the regimens are created by the research team, 
@@ -231,47 +215,44 @@ export default class RegimenMainScreen extends React.Component<any, State> {
   }
 
   // Render the current or upcoming regimen phase and the whole regimen. 
-  _renderActiveRegimen() {
+  _renderRegimenInfoView() {
     const { regimen, currentRegimenPhaseObject } = this.state;
     if (!regimen) return;
 
     let regimenHasStarted = true;
-    let startDate: string = _.get(currentRegimenPhaseObject, "startDate", null);
-    let endDate: string = _.get(currentRegimenPhaseObject, "endDate", null);
-
-    if(startDate) {
-      startDate = moment(startDate).format(DateFormatUXFriendly);
-    }
-    if(endDate) {
-      endDate = moment(endDate).format(DateFormatUXFriendly);
-    }
 
     let today = appClock.now();
-    if(today.isBefore(moment(regimen.startDate))) {
+    if(today.isBefore(regimen.startDate)) {
       regimenHasStarted = false;
     }
 
-    let markedDates = this.getMarkedDays();
-      
+    // let markedDates = this.getMarkedDays();
+    console.log(SCOPE, currentRegimenPhaseObject);
+    
+    let highlightedPhaseOrder = null
+    if(currentRegimenPhaseObject) {
+      highlightedPhaseOrder = currentRegimenPhaseObject.phase;
+    }
     return (
       <View style={{width: '100%'}}>
         <Card style={styles.currentRegimenPhaseCard}>
           <CardItem header bordered>
             {regimenHasStarted &&
-              <AppText>Current Regimen Phase</AppText>
-            }
-            {!regimenHasStarted &&
-              <AppText>Upcoming First Regimen Phase</AppText>
+              <AppText>Current Regimen</AppText>
             }
           </CardItem>
           <CardItem>
             <Body>
-              <AppText>{startDate} - {endDate}</AppText>
+              <RegimenSchedule
+                regimenPhases={regimen.regimenPhases}
+                showDates={true}
+                highlightedPhaseOrder={highlightedPhaseOrder}
+              />
             </Body>
           </CardItem>
         </Card>
 
-        <Card>
+        {/* <Card>
           <CardItem header bordered>
             <AppText>Regimen Schedule</AppText>
           </CardItem>
@@ -282,7 +263,7 @@ export default class RegimenMainScreen extends React.Component<any, State> {
               markingType="period"
             />
           </CardItem>
-        </Card>
+        </Card> */}
 
       </View>
     )

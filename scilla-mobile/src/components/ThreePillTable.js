@@ -2,6 +2,7 @@
 import React, { Component, Fragment } from "react";
 import { View, StyleSheet } from "react-native";
 import { AppText, AppHeaderText } from "./StyledText";
+import Colors from "../constants/Colors";
 
 export class ThreePillTableHeader extends React.Component<any, any> {
   render() {
@@ -18,8 +19,15 @@ export class ThreePillTableHeader extends React.Component<any, any> {
   }
 }
 
+type Props = {
+  values: any,
+  rowIndex?: number,
+  rowDesc?: ?string, // a description of the row, shown under the index. 
+  highlighted?: ?boolean,
+  [key: string]: any
+}
 
-export class ThreePillTableRow extends React.Component<any, any> {
+export class ThreePillTableRow extends React.Component<Props, any> {
   _renderPillRegions = () => {
     let pills = [];
 
@@ -28,6 +36,11 @@ export class ThreePillTableRow extends React.Component<any, any> {
       if(text === "" || text === " ") {
         pills.push(
           <PillRegion key={i} empty>
+            <AppText style={styles.pillText}>{text}</AppText>
+          </PillRegion>)
+      } else if (this.props.highlighted) {
+        pills.push(
+          <PillRegion key={i} color={Colors.accentColor}>
             <AppText style={styles.pillText}>{text}</AppText>
           </PillRegion>)
       } else {
@@ -40,25 +53,19 @@ export class ThreePillTableRow extends React.Component<any, any> {
     return pills;
   }
 
-
-  _renderPhaseNumber = () => {
-    if(this.props.rowIndex != null) {
-      return (
-        <View style={styles.phaseTextRegion}>
-          <AppText>{this.props.rowIndex+1}</AppText>
-        </View>
-      )
-    }
-  }
-
   render() {
-    const { rowIndex } = this.props;
+    const { rowIndex, rowDesc, highlighted } = this.props;
     const hasRowIndex = rowIndex != null;
+
+    console.log("row", highlighted);
     return (
       <View style={[styles.phaseRow, this.props.style]}>
         {hasRowIndex &&
           <View style={styles.phaseTextRegion}>
             <AppText>{rowIndex+1}</AppText>
+            {!!rowDesc &&
+            <AppText style={{fontSize: 12}}>{rowDesc}</AppText>
+            }
           </View>
         }
     
@@ -77,11 +84,31 @@ export class ThreePillTableRow extends React.Component<any, any> {
   }
 }
 
-class PillRegion extends React.Component<any, any> {
+type PillRegionProps = {
+  color?: ?any,
+  empty?: boolean,
+
+  [key: string]: any
+}
+class PillRegion extends React.Component<PillRegionProps, any> {
 
   render() {
+    const defaultStyle = this.props.empty 
+      ? styles.emptyPillRegion 
+      : styles.pillRegion;
+    
+
+    let combinedStyle = [defaultStyle];
+    if(this.props.color) {
+      combinedStyle.push({
+        backgroundColor: this.props.color
+      })
+    }
+
+    console.log(this.props.color);
+    // console.log(combinedStyle);
     return (
-      <View style={this.props.empty ? styles.emptyPillRegion : styles.pillRegion}>
+      <View style={combinedStyle}>
         {this.props.children}
       </View>
     );
@@ -109,6 +136,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    marginRight: 10
     // backgroundColor: 'blue',
   },
   pillGroupAndLineRegion: {
