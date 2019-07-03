@@ -27,6 +27,9 @@ export class AppServiceImplWithFirebaseNative implements IAppService {
 
   initialize(config: AppServiceConfig = {}) {
     this.auth = new FirebaseNativeAuth();
+    firebase.firestore().settings({
+      persistence: true
+    });
     this.ds = new FirebaseDS(firebase.firestore());
   }
 }

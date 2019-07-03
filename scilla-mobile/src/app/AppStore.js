@@ -119,40 +119,49 @@ export default class AppStore implements IAppStore {
   }
 
   getLatestRegimen(): Promise<IRegimen> {
-    if(this.latestRegimen) {
-      return Promise.resolve(this.latestRegimen)
-    } else {
-      return this.appService.ds.getLatestRegimen(this.uid)
-        .then( (obj) => {
-          this._cacheLatestRegimenFromObj(obj);
-          return ((this.latestRegimen:any):IRegimen);
-        })
-        .catch( (error) => {
-          throw new NotExistError("Regimen does not exist")
-        })
-    }
+    // if(this.latestRegimen) {
+    //   return Promise.resolve(this.latestRegimen)
+    // } else {
+    //   return this.appService.ds.getLatestRegimen(this.uid)
+    //     .then( (obj) => {
+    //       this._cacheLatestRegimenFromObj(obj);
+    //       return ((this.latestRegimen:any):IRegimen);
+    //     })
+    //     .catch( (error) => {
+    //       throw new NotExistError("Regimen does not exist")
+    //     })
+    // }
+
+    return this.appService.ds.getLatestRegimen(this.uid)
+      .then((regimenObj) => {
+        return RegimenFactory.createRegimenFromObj(regimenObj);
+      })
+      .catch( (error) => {
+        throw new NotExistError("Regimen does not exist");
+      })
+    ;
   }
 
   updateRegimen(regimen: IRegimen): Promise<void> {
-    let cachedRegimenId = _.get(this, 'latestRegimen.id', null);
-    let cacheUpdateRequired = regimen.id === cachedRegimenId;
+    // let cachedRegimenId = _.get(this, 'latestRegimen.id', null);
+    // let cacheUpdateRequired = regimen.id === cachedRegimenId;
     let regimenObj = regimen.toObj();
     return this.appService.ds.upsertRegimen(regimenObj)
       .then( () => {
-        if(cacheUpdateRequired) {
-          this._cacheLatestRegimenFromObj(regimenObj)
-        }
+        // if(cacheUpdateRequired) {
+        //   this._cacheLatestRegimenFromObj(regimenObj)
+        // }
       })
   }
 
-  _cacheLatestRegimen(regimen: IRegimen) {
-    let regimenObj = regimen.toObj();
-    this._cacheLatestRegimenFromObj(regimenObj);
-  }
+  // _cacheLatestRegimen(regimen: IRegimen) {
+  //   let regimenObj = regimen.toObj();
+  //   this._cacheLatestRegimenFromObj(regimenObj);
+  // }
 
-  _cacheLatestRegimenFromObj(regimenObj: RegimenObject) {
-    this.latestRegimen = RegimenFactory.createRegimenFromObj(regimenObj);
-  }
+  // _cacheLatestRegimenFromObj(regimenObj: RegimenObject) {
+  //   this.latestRegimen = RegimenFactory.createRegimenFromObj(regimenObj);
+  // }
 
   deactivateRegimen(id: string): Promise<void> {
     let cachedRegimenId = _.get(this, 'latestRegimen.id', null);

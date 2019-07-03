@@ -1,5 +1,5 @@
 // @flow
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import { View, StyleSheet } from "react-native";
 import { AppText, AppHeaderText } from "./StyledText";
 
@@ -40,16 +40,9 @@ export class ThreePillTableRow extends React.Component<any, any> {
     return pills;
   }
 
-  _renderBackgroundLine = () => {
-    return (
-      <View style={styles.lineOverlayRegion}>
-        <View style={styles.line}></View>
-      </View>
-    )
-  }
 
   _renderPhaseNumber = () => {
-    if(this.props.rowIndex) {
+    if(this.props.rowIndex != null) {
       return (
         <View style={styles.phaseTextRegion}>
           <AppText>{this.props.rowIndex+1}</AppText>
@@ -59,13 +52,24 @@ export class ThreePillTableRow extends React.Component<any, any> {
   }
 
   render() {
+    const { rowIndex } = this.props;
+    const hasRowIndex = rowIndex != null;
     return (
       <View style={[styles.phaseRow, this.props.style]}>
-        {this._renderPhaseNumber()}
+        {hasRowIndex &&
+          <View style={styles.phaseTextRegion}>
+            <AppText>{rowIndex+1}</AppText>
+          </View>
+        }
     
-        <View style={styles.pillGroupRegion}>
-          {this._renderBackgroundLine()}
-          {this._renderPillRegions()}
+        <View style={styles.pillGroupAndLineRegion}>
+          <View style={styles.lineOverlayRegion}>
+            <View style={styles.line}></View>
+          </View>
+
+          <View style={styles.pillGroupRegion}>
+            {this._renderPillRegions()}
+          </View>
         </View>
 
       </View>
@@ -91,26 +95,44 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
     width: '100%',
     marginBottom: 8,
+    // backgroundColor: 'red'
   },
+
+  // For phase treatment info
   phaseRow: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
     marginBottom: 8,
   },
+  // Phase number
   phaseTextRegion: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    // width: 20,
-    // height: 30,
     // backgroundColor: 'blue',
   },
-  pillGroupRegion: {
-    flex: 8,
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
+  pillGroupAndLineRegion: {
+    flex: 3,
+    flexDirection: 'row', // Not sure why but column does not work
+    justifyContent: 'space-between',
     alignItems: 'center',
     // backgroundColor: 'yellow'
+  },
+  lineOverlayRegion: {
+    // flexbox does not support overlap, so this is a hack 
+    // to make a line appear behind the dosage/pill information. 
+    position: 'absolute',
+    width: '100%',
+    paddingRight: '15%',
+    paddingLeft: '15%'
+  },
+  pillGroupRegion: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    // width: 250,
+    height: 30
   },
   pillRegion: {
     justifyContent: 'center',
@@ -130,20 +152,18 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: 12,
+    flex: 1,
+    textAlign: 'center'
   },
   pillText: {
     color: 'white',
     fontSize: 14
   },
-  lineOverlayRegion: {
-    position: 'absolute',
-    alignSelf: 'center',
-    justifyContent: 'center', 
-    alignItems: 'center'
-  },
+
   line: {
     backgroundColor: 'grey',
-    width: 200,
+    flex: 1,
+    width: '100%',
     height: 2
   }
 });

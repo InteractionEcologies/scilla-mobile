@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from "react";
-import { View, Button } from "native-base";
+import { View, Button, Toast } from "native-base";
 import { StyleSheet } from "react-native";
 import Modal from "react-native-modal";
 
@@ -9,16 +9,18 @@ import { Title, AppText } from "../../components";
 import RegimenPhaseTransitionBriefing from "../../components/RegimenPhaseTransitionBriefing";
 
 import type { RegimenPhaseChangeRequestType, IRegimenPhase } from "../../libs/scijs";
-import { RegimenPhaseChangeRequestTypes, IRegimen, RegimenPhasePermissionOptions } from "../../libs/scijs";
+import { RegimenPhaseChangeRequestTypes, IRegimen, RegimenPhasePermissionOptions, DateFormatISO8601 } from "../../libs/scijs";
 
 import NavigationService from "../../navigation/NavigationService";
 import AppStore from "../../app/AppStore";
 
 import moment from "moment";
 import AppService from "../../app/AppService";
+import AppClock from "../../app/AppClock";
 
 const appStore = AppStore.instance;
 const appService = AppService.instance;
+const appClock = AppClock.instance;
 
 type State = {
   phaseChangeType: ?RegimenPhaseChangeRequestType,
@@ -30,10 +32,12 @@ const initialState = {
   regimen: null
 }
 
+const SCOPE = "RegimenPhaseTransitionScreen"
+
 export default class RegimenPhaseTransitionScreen extends Component<any, State> {
 
   // componentWillFocusSubscription: any;
-
+  
   constructor(props: any) {
     super(props);
 
@@ -48,7 +52,8 @@ export default class RegimenPhaseTransitionScreen extends Component<any, State> 
     // Need to get transition type
     try {
       let regimen: IRegimen = await appStore.getLatestRegimen();
-      let type = regimen.getPhaseChangeRequestType();
+      let type = regimen.getPhaseChangeRequestType(appClock.now());
+      console.log(SCOPE, "phase change type", type);
       this.setState({regimen: regimen, phaseChangeType: type});
     } catch (e) {
       console.log(e);
@@ -74,7 +79,7 @@ export default class RegimenPhaseTransitionScreen extends Component<any, State> 
       case RegimenPhaseChangeRequestTypes.willStart:
           return this._renderConfirmNewPhase();
       case RegimenPhaseChangeRequestTypes.willGoToNextPhase:
-        return this._renderChangeToNextPhase();
+        return this._renderConfirmNewPhase();
       case RegimenPhaseChangeRequestTypes.willComplete:
         return (<View/>)
       default:
@@ -82,37 +87,40 @@ export default class RegimenPhaseTransitionScreen extends Component<any, State> 
     }
   }
 
-  onPressedDoNotChange = () => {
-
-  }
-
-  onPressedAccept = () => {
+  didPressExtend = async () => {
     const { regimen } = this.state;
-    if(!regimen) { return; }
+    if(!regimen) return;
+
+    regimen.extendActivePhase(appClock.now());
+    appStore.updateRegimen(regimen);
 
     let phase = regimen.getActiveRegimenPhase();
-
-    // FIXME: This is a tech-debt ... the regimen instance and database object are
-    // two different things. We need to save it whenever we make a change. 
-    // Ideally this should be just one thing. 
     if(phase) {
-      phase.permission = RegimenPhasePermissionOptions.willTry;
-      appService.ds.upsertRegimen(regimen.toObj());  
+      Toast.show({
+        text: `This phase is extended to ${phase.endDate.format(DateFormatISO8601)}`,
+        buttonText: 'OK'
+      })
     }
-
+    
     this.dismiss();
   }
 
   /**
-   * For situation before an expected new phase. 
+   * Two situations: 
+   *  - Grant permission before the phase starts. 
+   *  - Grant permission after the phase starts. 
+   *  - Grant permission to phase n, during phase n+k's period. 
+   *    - Should update phase n's end date to today+7 days. 
    */
-  _renderChangeToNextPhase() {
+  didPressAccept = () => {
     const { regimen } = this.state;
-    return (
-      <View>
-        <AntDesign name="exclamationcircle" size={80}/>
-      </View>
-    )
+    if(!regimen) { return; }
+
+    regimen.grantPermissionToNextPhase();
+    regimen.updatePhase(appClock.now());
+    appService.ds.upsertRegimen(regimen.toObj());    
+
+    this.dismiss();
   }
 
   /**
@@ -122,8 +130,19 @@ export default class RegimenPhaseTransitionScreen extends Component<any, State> 
     const { regimen } = this.state;
     if(!regimen) { return <View/>}
 
-    let lastTryPhase = regimen.getLastPermittedRegimenPhase();
     let phase = regimen.getActiveRegimenPhase();
+    let nextPhase;
+    if(phase) {
+      nextPhase = regimen.getRegimenPhaseByOrder(phase.phase+1);
+    } else {
+      nextPhase = regimen.getRegimenPhaseByOrder(0);
+    }
+
+    let title = "Try out next dosage level?"
+    if(phase == null) {
+      title = "Start your regimen?"
+    } 
+      
     return (
       <View style={{flex: 1}}>
         <Modal
@@ -131,26 +150,29 @@ export default class RegimenPhaseTransitionScreen extends Component<any, State> 
         >
           <View style={{justifyContent: "center", alignItems: "center", backgroundColor: 'white'}}>
             <AntDesign name="exclamationcircle" size={80} style={{marginTop: 20}}/>
-            <AppText>Try out next dosage level?</AppText>
+            <Title>{title}</Title>
             <RegimenPhaseTransitionBriefing 
-              prevPhase={lastTryPhase}
-              nextPhase={phase}
+              prevPhase={phase}
+              nextPhase={nextPhase}
             />
             <View style={styles.buttonsView}>
-              <Button 
-                full
-                bordered style={styles.button}
-                onPress={this.onPressedDoNotChange}
-              >
-                <AppText>Extend current phase</AppText>
-              </Button>
               <Button
                 full 
-                style={[styles.button]}
-                onPress={this.onPressedAccept}
+                style={[styles.button, {marginBottom: 10}]}
+                onPress={this.didPressAccept}
               >
                 <AppText>Accept</AppText>
               </Button>
+              {!!phase &&
+                <Button 
+                full
+                bordered style={styles.button}
+                onPress={this.didPressExtend}
+              >
+                <AppText numberOfLines={2}>Extend current phase</AppText>
+              </Button>
+              }
+              
             </View>
           </View>
         </Modal>

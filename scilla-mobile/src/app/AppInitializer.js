@@ -23,9 +23,10 @@ export default class AppInitializer {
   constructor() {
     if(!AppInitializer.instance) {
       AppInitializer.instance = this;
+      this.setup();
+      // return AppInitializer.instance;
     }
 
-    this.setup();
     return AppInitializer.instance;
   }
 
@@ -37,7 +38,7 @@ export default class AppInitializer {
     this.appService.initialize();
 
     // 
-    this.appClock.setCurrentDatetime(moment("2019-07-08"));
+    this.appClock.setCurrentDatetime(moment("2019-07-20"));
   }
 
   /**
@@ -45,17 +46,32 @@ export default class AppInitializer {
    */
   onAppStart = async () => {
     console.log(SCOPE, "onAppStart");
-    await this._updateRegimenPhaseIfNeeded();
-    await this._showPhaseTransitionDialogueIfNeeded();
+  }
+
+  /**
+   * Will be called once Dashboard screen is loaded. 
+   */
+  onMainScreenLoaded = async () => {
+    console.log(SCOPE, "onMainScreenLoaded")
+    await this.updateRegimenPhaseAndRequestPermission();
+  
   }
 
   onEnterForeground = async () => {
     console.log(SCOPE, "enter foreground");
-    await this._updateRegimenPhaseIfNeeded();
-    await this._showPhaseTransitionDialogueIfNeeded();
+    await this.updateRegimenPhaseAndRequestPermission();
   }
 
   // Tasks 
+  updateRegimenPhaseAndRequestPermission = async () => {
+    try {
+      await this._updateRegimenPhaseIfNeeded();
+      await this._showPhaseTransitionDialogueIfNeeded();
+    } catch(e) {
+      // ignore;
+      console.log(e);
+    }
+  }
   _showPhaseTransitionDialogueIfNeeded = async () => {
     let now = this.appClock.now();
     let regimen: IRegimen = await this.appStore.getLatestRegimen();

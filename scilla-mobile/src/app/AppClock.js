@@ -21,9 +21,7 @@ export default class AppClock {
   }
 
   now(): moment {
-    console.log("now", this.offsetMs);
     let now = moment().add(this.offsetMs, "milliseconds");
-    console.log(now)
     return now;
   }
 }

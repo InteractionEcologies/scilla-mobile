@@ -1,5 +1,5 @@
 // @flow
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import { View, StyleSheet } from "react-native";
 import { AppText, AppHeaderText } from "./StyledText";
 import { ThreePillTableHeader, ThreePillTableRow } from "./ThreePillTable";
@@ -36,11 +36,15 @@ export default class RegimenPhaseTransitionBriefing extends Component<Props, any
           columns={["Morning", "Afternoon", "Evening"]}
           style={styles.header}
         />
-        <ThreePillTableRow 
-          values={prevTreatmentValues}
-          style={styles.row}
-        />
-        <AntDesign name="caretdown" size={30}/>
+        {!!prevPhase &&
+          <Fragment>
+            <ThreePillTableRow 
+              values={prevTreatmentValues}
+              style={styles.row}
+            />
+            <AntDesign name="caretdown" size={30}/>
+          </Fragment>
+        }
         <ThreePillTableRow 
           values={nextTreatmentValues}
           style={styles.row}
@@ -61,7 +65,7 @@ const styles = StyleSheet.create({
     marginTop: 20
   },
   row: {
-
+    // backgroundColor: 'red'
   },
   buttonsView: {
     flex: 1,

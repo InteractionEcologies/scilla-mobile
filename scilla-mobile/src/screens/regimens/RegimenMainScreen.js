@@ -3,7 +3,7 @@ import React from "react";
 import { View, StyleSheet, ScrollView } from "react-native";
 import {
   Container, Content, Button,
-  Card, CardItem, Body
+  Card, CardItem, Body, Spinner
 } from "native-base";
 
 import { ScreenNames } from "../../constants/Screens";
@@ -22,28 +22,34 @@ import moment from "moment";
 import { Styles as AppStyles } from "../../constants/Styles";
 import AppStore from "../../app/AppStore";
 import AppClock from "../../app/AppClock";
+import AppInitializer from "../../app/AppInitializer";
 import { Calendar } from "../../components/Calendar";
 import Colors from "../../constants/Colors";
 
 type State = {
   regimen: ?IRegimen,
-  currentRegimenPhaseObject: ?RegimenPhaseObject
+  currentRegimenPhaseObject: ?RegimenPhaseObject,
+  isCheckingLatestRegimen: boolean
 }
 
 const appStore = new AppStore();
 const appClock = new AppClock();
+const appInitializer = new AppInitializer();
 
 const SCOPE = "RegimenMainScreen";
 
 export default class RegimenMainScreen extends React.Component<any, State> {
   _isMounted = false
+  
+
   static navigationOptions: any = {
     title: "Regimen"
   };
 
   state = {
     regimen: null,
-    currentRegimenPhaseObject: null
+    currentRegimenPhaseObject: null,
+    isCheckingLatestRegimen: true
   }
   
   componentWillFocusSubscription: any;
@@ -90,7 +96,9 @@ export default class RegimenMainScreen extends React.Component<any, State> {
 
   async initializeState() {
     if(!this._isMounted) return;
-    let regimen: ?IRegimen = null
+    this.setState({isCheckingLatestRegimen: true});
+    let regimen: ?IRegimen = null;
+
     try {
       regimen = await appStore.getLatestRegimen();
     } catch (e) {
@@ -110,6 +118,7 @@ export default class RegimenMainScreen extends React.Component<any, State> {
           regimen: regimen,
           currentRegimenPhaseObject: regimenPhaseObject
         });  
+        appInitializer.updateRegimenPhaseAndRequestPermission();
       
       } catch (e) {
         if(e.name === "NotExistError") {
@@ -125,13 +134,11 @@ export default class RegimenMainScreen extends React.Component<any, State> {
       }
     }
 
+    this.setState({isCheckingLatestRegimen: false})
   }
 
 
   getMarkedDays() {
-
-    console.log(SCOPE, "getMarkedDays");
-
     const { regimen, currentRegimenPhaseObject } = this.state;
 
     let markedDates = {};
@@ -191,12 +198,18 @@ export default class RegimenMainScreen extends React.Component<any, State> {
   }
 
   render() {
+    const { isCheckingLatestRegimen } = this.state;
     return (
       <Container>
         <ScrollView>
           <Content contentContainerStyle={AppStyles.content}>
             <View style={AppStyles.contentBody}>
-              {this.renderRegimen()}
+              {isCheckingLatestRegimen &&
+                <Spinner color={Colors.primaryColor}/>
+              } 
+              {!isCheckingLatestRegimen &&
+                this.renderRegimen()
+              }
             </View>
           </Content>
         </ScrollView>

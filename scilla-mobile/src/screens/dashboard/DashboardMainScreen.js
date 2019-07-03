@@ -19,9 +19,11 @@ import { ComplianceReportHelper } from "../../models/ComplianceReportHelper";
 import { OneWeekCalendar } from "../../components";
 import XDate from "xdate";
 import AppClock from "../../app/AppClock";
+import AppInitializer from "../../app/AppInitializer";
 
 const appStore: AppStore = new AppStore();
 const appClock = new AppClock();
+const appInitializer = new AppInitializer();
 
 type State = {
   treatmentMap: {[treatmentId: string]: Treatment}, // key: id of treatment
@@ -52,6 +54,7 @@ export default class DashboardMainScreen extends React.Component<any, State> {
   }
 
   componentDidMount() {
+    appInitializer.onMainScreenLoaded();
     this.updateDate(this.state.current);
     appStore.initialize();
   } 
