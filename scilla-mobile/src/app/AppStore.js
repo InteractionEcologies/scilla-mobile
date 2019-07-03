@@ -18,7 +18,9 @@ import type {
 } from "../libs/scijs";
 import _ from "lodash";
 import moment from "moment";
+import AppClock from "./AppClock";
 
+const appClock = new AppClock();
 /* AppStore Singleton 
  * This is a layer that abstract cloud persistence storage and 
  * local cache to support offline mode. It also allow
@@ -40,7 +42,7 @@ export default class AppStore implements IAppStore {
   appService = AppService.instance;
   
   latestRegimen: ?IRegimen;
-  lastCheckPhaseUpdateTime = moment().subtract(1, 'day');
+  lastCheckPhaseUpdateTime = appClock.now().subtract(1, 'day');
 
   constructor() {
     if(!AppStore.instance) {
@@ -49,7 +51,7 @@ export default class AppStore implements IAppStore {
     return AppStore.instance;
   }
 
-  initialize(today: moment = moment()): Promise<void> {
+  initialize(today: moment = appClock.now()): Promise<void> {
     
     return Promise.all([
       this.getUserProfile(),

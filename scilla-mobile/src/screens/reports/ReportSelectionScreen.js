@@ -15,11 +15,13 @@ import type {
 import { DateFormatISO8601, IRegimen } from "../../libs/scijs"; 
 
 import AppStore from "../../app/AppStore";
+import AppClock from "../../app/AppClock";
 import styles from "./ReportStyles"; 
 import { ScreenNames } from "../../constants/Screens";
 import { OneWeekCalendar } from "../../components";
 
 const appStore = new AppStore();
+const appClock = new AppClock();
 const DAILY_EVALUATION_MEASUREMENT_TYPE = "Daily Evaluation"
 
 type State = {
@@ -33,7 +35,7 @@ export default class ReportSelectionScreen extends React.Component<any, State> {
   };
 
   state = {
-    selectedDate: moment().format(DateFormatISO8601),
+    selectedDate: appClock.now().format(DateFormatISO8601),
     trackedMeasurementTypes: ['Mood', 'Daily Evaluation']
   }
 

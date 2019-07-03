@@ -156,6 +156,7 @@ class Calendar extends Component {
   renderDay(day, id) {
     const minDate = parseDate(this.props.minDate);
     const maxDate = parseDate(this.props.maxDate);
+    // const today = 
     let state = '';
     if (this.props.disabledByDefault) {
       state = 'disabled';
@@ -163,7 +164,7 @@ class Calendar extends Component {
       state = 'disabled';
     } else if (!dateutils.sameMonth(day, this.state.currentMonth)) {
       state = 'disabled';
-    } else if (dateutils.sameDate(day, XDate())) {
+    } else if (dateutils.sameDate(day, XDate(this.props.current))) {
       state = 'today';
     }
     let dayComp;

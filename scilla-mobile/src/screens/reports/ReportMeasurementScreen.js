@@ -18,10 +18,13 @@ import AppService from "../../app/AppService";
 import styles from "./ReportStyles"; 
 import { ScreenNames } from "../../constants/Screens";
 import AppStore from "../../app/AppStore";
+import AppClock from "../../app/AppClock";
+
 import XDate from "xdate";
 
 const appStore = new AppStore();
 const appService = new AppService();
+const appClock = new AppClock();
 
 type State = {
   currentDate: string, 
@@ -35,7 +38,7 @@ export default class ReportMeasurmentScreen extends React.Component<any, State> 
   };
 
   state = {
-    currentDate: moment().format(DateFormatISO8601),
+    currentDate: appClock.now().format(DateFormatISO8601),
     trackedMeasurementType: this.props.navigation.getParam('trackedMeasurementType', null),
     selectedScaleValue: 0,
   }
@@ -66,7 +69,7 @@ export default class ReportMeasurmentScreen extends React.Component<any, State> 
     this.newReport = {
         id: appService.generatePushID(),
         type: type,
-        timestamp: moment().unix(),
+        timestamp: appClock.now().unix(),
         uid: uid,
         value: value
     }

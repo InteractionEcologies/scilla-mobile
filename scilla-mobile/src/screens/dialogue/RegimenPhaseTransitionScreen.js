@@ -32,21 +32,35 @@ const initialState = {
 
 export default class RegimenPhaseTransitionScreen extends Component<any, State> {
 
+  // componentWillFocusSubscription: any;
+
   constructor(props: any) {
     super(props);
 
     this.state = initialState;
+    // this.componentWillFocusSubscription = this.props.navigation.addListener(
+    //   'willFocus',
+    //   this.componentWillFocus
+    // )
   }
 
   async componentDidMount() {
     // Need to get transition type
     try {
       let regimen: IRegimen = await appStore.getLatestRegimen();
-      let type = regimen.getPhaseChangeRequestType(moment());
+      let type = regimen.getPhaseChangeRequestType();
       this.setState({regimen: regimen, phaseChangeType: type});
     } catch (e) {
       console.log(e);
     }
+  }
+
+  // componentWillFocus = async (payload: any) => {
+  //   this.updateDate(this.state.current);
+  // }
+
+  _loadRegimen = async () => {
+
   }
 
   dismiss = () => {
@@ -89,6 +103,9 @@ export default class RegimenPhaseTransitionScreen extends Component<any, State> 
     this.dismiss();
   }
 
+  /**
+   * For situation before an expected new phase. 
+   */
   _renderChangeToNextPhase() {
     const { regimen } = this.state;
     return (
@@ -98,6 +115,9 @@ export default class RegimenPhaseTransitionScreen extends Component<any, State> 
     )
   }
 
+  /**
+   * Render view for situation after a new phase is expected to start. 
+   */
   _renderConfirmNewPhase() {
     const { regimen } = this.state;
     if(!regimen) { return <View/>}
@@ -108,25 +128,25 @@ export default class RegimenPhaseTransitionScreen extends Component<any, State> 
       <View style={{flex: 1}}>
         <Modal
           isVisible={true}
-          swipeDirection={["up", "down"]}
-          onSwipeComplete={this.dismiss}
         >
           <View style={{justifyContent: "center", alignItems: "center", backgroundColor: 'white'}}>
             <AntDesign name="exclamationcircle" size={80} style={{marginTop: 20}}/>
-            <AppText>A new regimen phase has started.</AppText>
+            <AppText>Try out next dosage level?</AppText>
             <RegimenPhaseTransitionBriefing 
               prevPhase={lastTryPhase}
               nextPhase={phase}
             />
             <View style={styles.buttonsView}>
               <Button 
+                full
                 bordered style={styles.button}
                 onPress={this.onPressedDoNotChange}
               >
-                <AppText>Do Not Change</AppText>
+                <AppText>Extend current phase</AppText>
               </Button>
-              <Button 
-                style={[styles.button, {width: 120}]}
+              <Button
+                full 
+                style={[styles.button]}
                 onPress={this.onPressedAccept}
               >
                 <AppText>Accept</AppText>
@@ -144,8 +164,8 @@ const styles = StyleSheet.create({
   buttonsView: {
     // flex: 1,
     width: '90%',
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: "column",
+    justifyContent: "flex-start",
     alignItems: "center",
     marginTop: 20,
     marginBottom: 20

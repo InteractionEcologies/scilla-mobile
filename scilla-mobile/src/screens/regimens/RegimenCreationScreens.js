@@ -32,9 +32,11 @@ import CompletionView from "./views/CompletionView";
 import { AppText } from "../../components";
 import AppService from "../../app/AppService";
 import AppStore from "../../app/AppStore";
+import AppClock from "../../app/AppClock";
 
 const appService = new AppService();
 const appStore = new AppStore();
+const appClock = new AppClock();
 
 
 const NUM_INDICATOR_STATES = 9;
@@ -203,7 +205,7 @@ class RegimenCreationScreens extends React.Component<any, States>
   }
 
   generateTemporarySchedule = () => {
-    this.regimen.setStartDate(moment());
+    this.regimen.setStartDate(appClock.now());
     this.regimen.make();
  
     this.setState({

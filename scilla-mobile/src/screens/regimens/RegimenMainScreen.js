@@ -21,6 +21,7 @@ import _ from "lodash";
 import moment from "moment";
 import { Styles as AppStyles } from "../../constants/Styles";
 import AppStore from "../../app/AppStore";
+import AppClock from "../../app/AppClock";
 import { Calendar } from "../../components/Calendar";
 import Colors from "../../constants/Colors";
 
@@ -30,6 +31,7 @@ type State = {
 }
 
 const appStore = new AppStore();
+const appClock = new AppClock();
 
 const SCOPE = "RegimenMainScreen";
 
@@ -101,7 +103,7 @@ export default class RegimenMainScreen extends React.Component<any, State> {
     if(regimen) {
       try {
         // Find today's regimen phase. 
-        let today = moment().local();
+        let today = appClock.now().local();
         
         let regimenPhaseObject = regimen.getRegimenPhaseObjByDate(today);
         this.setState({
@@ -231,7 +233,7 @@ export default class RegimenMainScreen extends React.Component<any, State> {
       endDate = moment(endDate).format(DateFormatUXFriendly);
     }
 
-    let today = moment();
+    let today = appClock.now();
     if(today.isBefore(moment(regimen.startDate))) {
       regimenHasStarted = false;
     }
@@ -262,6 +264,7 @@ export default class RegimenMainScreen extends React.Component<any, State> {
           </CardItem>
           <CardItem>
             <Calendar style={{width: '100%'}}
+              current={appClock.now().format(DateFormatISO8601)}
               markedDates={markedDates}
               markingType="period"
             />

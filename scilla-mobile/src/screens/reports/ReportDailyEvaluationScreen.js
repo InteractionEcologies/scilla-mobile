@@ -5,6 +5,7 @@ import { ScrollView } from "react-native";
 import { AppText, Title, DotPageIndicator } from "../../components";
 import AppService from "../../app/AppService";
 import AppStore from "../../app/AppStore";
+import AppClock from "../../app/AppClock";
 import MoodScaleView from './views/MoodScaleView';
 import SleepScaleView from './views/SleepScaleView';
 import BaclofenScaleView from './views/BaclofenScaleView';
@@ -37,6 +38,7 @@ import { IRegimen } from "../../libs/scijs/models/regimen";
 
 const appStore = new AppStore();
 const appService = new AppService();
+const appClock = new AppClock();
 
 type State = {
   measurementsByType: {
@@ -219,7 +221,7 @@ export default class ReportDailyEvaluationScreen extends React.Component<any, St
         id: this.state.dailyEvalReportObjId || appService.generatePushID(), 
         uid: uid,
         date: this.state.selectedDate, 
-        createdAtTimestamp: moment().unix(),
+        createdAtTimestamp: appClock.now().unix(),
         regimenId: regimenId, 
         regimenPhase: regimenPhase.phase,
         measurementsByType: meaurementsByType

@@ -18,8 +18,10 @@ import moment from "moment";
 import { ComplianceReportHelper } from "../../models/ComplianceReportHelper";
 import { OneWeekCalendar } from "../../components";
 import XDate from "xdate";
+import AppClock from "../../app/AppClock";
 
 const appStore: AppStore = new AppStore();
+const appClock = new AppClock();
 
 type State = {
   treatmentMap: {[treatmentId: string]: Treatment}, // key: id of treatment
@@ -34,7 +36,7 @@ export default class DashboardMainScreen extends React.Component<any, State> {
   state = {
     treatmentMap: {},
     complianceReportMap: {},
-    current: moment().format(DateFormatISO8601)
+    current: appClock.now().format(DateFormatISO8601)
   }
   componentWillFocusSubscription: any;
   
@@ -42,7 +44,7 @@ export default class DashboardMainScreen extends React.Component<any, State> {
     super(props);
     // this.state.treatmentMap = new Map<string, Treatment>();
     // this.state.complianceReportMap = new Map<string, ComplianceReportObject>();
-    this.state.current = moment().format(DateFormatISO8601);
+    this.state.current = appClock.now().format(DateFormatISO8601);
     this.componentWillFocusSubscription = this.props.navigation.addListener(
       'willFocus',
       this.componentWillFocus
@@ -120,7 +122,7 @@ export default class DashboardMainScreen extends React.Component<any, State> {
   }
 
   _updateComplianceCardStatus(treatmentId: string, newStatus: ComplianceStatus) {
-    let now = moment().unix();
+    let now = appClock.now().unix();
     this._updateComplianceCard(treatmentId, {
       status: newStatus,
       lastUpdatedAtTimestamp: now
@@ -129,7 +131,7 @@ export default class DashboardMainScreen extends React.Component<any, State> {
 
   _updateComplianceCardTime(treatmentId: string, time: number) {
     let timeOfDay = moment.unix(time).format(DateFormatTimeOfDay);
-    let now = moment().unix();
+    let now = appClock.now().unix();
     this._updateComplianceCard(treatmentId, {
       expectedTreatmentTime: timeOfDay,
       lastUpdatedAtTimestamp: now

@@ -4,6 +4,15 @@ A mobile app to help patients with Spinal Cord Injury or Disease (SCI/D) learn t
 ## Introduction
 We develop this mobile application with an ejected version of Expo. Expo can be think of a layer on top of React Native, it provides Javascript and native SDK to access native functionalities that available in React Native. One can develop Expo without ejecting -- if they only rely on the functionalities provided by Expo. If developing in this way, developers do not need to create their own iOS and Android builds. However, in our case, we want to access the full functionalities of firebase native SDK and we dependent on a native charting library (victory-native). To use these, we do need to eject from Expo, and use the vanilla React Native. We can still access Expo functionalities via ExpoKit, however we will need to create our iOS and Android builds, as the default Expo build does not come with the native libraries we want to use. 
 
+## Warning 
+* This repo currently contains several key files for easy development. To make this repo public, we must remove these files AND clean them from commit history. 
+* These files include: 
+  * Android signing keystore: `scilla-mobile/android/app/scilla-mobile.keystore`
+  * PWD for Android signing keystore: `scilla-mobile/android/gradle/gradle.properties`
+  * Firebase keys:
+    * Android: `/android/app/google-services.json`
+    * iOS: `/ios/scilla-mobile/GoogleService-info.plist`
+
 ## Repo structures
 * `scilla-mobile`: the main source file for the mobile app. 
 * Besides `scilla-mobile/`, this repo contains two other submodules. 
@@ -87,6 +96,7 @@ We develop this mobile application with an ejected version of Expo. Expo can be 
 * To build the app, use Android Studio, use `prodMinSdkProdKernelRelease` as the build variant. 
 * Click `build`. DO NOT USE `Generate Signed Bindles/SDK`. I don't know why but it does correctly sign my release built. 
 * Once built, the `apk` should be located at `/android/app/build/outputs/apk/prodMinSdkProdKernel/release` with a name `app-prodMinSdk-prodKernel-release.apk`. 
+  * Note that the release built uses a keystore located in `/android/app/`
 * Sign in to TestFairy, upload this apk. 
 * On the Android end, click on the email received from TestFairy, download the apk, and install. 
 * You will need to set your Android to allow unknown sources:

@@ -7,5 +7,3 @@ export let FirebaseConfig = {
   storageBucket: "inteco-scilla.appspot.com",
   messagingSenderId: "609249543436"
 };
-
-// export FirebaseConfig; 
