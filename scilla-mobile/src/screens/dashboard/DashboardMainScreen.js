@@ -1,6 +1,6 @@
 // @flow
 import React from "react";
-import { View, StyleSheet, ScrollView } from "react-native";
+import { View, StyleSheet, ScrollView, Spinner } from "react-native";
 import { Container, Content } from "native-base"; 
 import AppStore from "../../services/AppStore";
 import {
@@ -28,25 +28,35 @@ const appInitializer = new AppInitializer();
 type State = {
   treatmentMap: {[treatmentId: string]: Treatment}, // key: id of treatment
   complianceReportMap: {[treatmentId: string]: ComplianceReportObject}, // key: id of treatment
-  current: DateTypeISO8601
+  selectedDateStr: DateTypeISO8601,
+  todayDateStr: DateTypeISO8601,
+  
+  // control whether to show treatments/compliance reports
+  // if it is a future date, should show a disabled version of treatments. 
+  showTreatments: boolean,
+  isLoading: boolean
+}
+
+const initialState: State = {
+  treatmentMap: {},
+  complianceReportMap: {},
+  selectedDateStr: appClock.now().format(DateFormatISO8601),
+  todayDateStr: appClock.now().format(DateFormatISO8601),
+  showTreatments: false,
+  isLoading: false
 }
 export default class DashboardMainScreen extends React.Component<any, State> {
   static navigationOptions: any = {
     title: "Today"
   }
   
-  state = {
-    treatmentMap: {},
-    complianceReportMap: {},
-    current: appClock.now().format(DateFormatISO8601)
-  }
   componentWillFocusSubscription: any;
   
   constructor(props: any) {
     super(props);
     // this.state.treatmentMap = new Map<string, Treatment>();
     // this.state.complianceReportMap = new Map<string, ComplianceReportObject>();
-    this.state.current = appClock.now().format(DateFormatISO8601);
+    this.state = initialState;
     this.componentWillFocusSubscription = this.props.navigation.addListener(
       'willFocus',
       this.componentWillFocus
@@ -55,31 +65,46 @@ export default class DashboardMainScreen extends React.Component<any, State> {
 
   componentDidMount() {
     appInitializer.onMainScreenLoaded();
-    this.updateDate(this.state.current);
+    this.updateTreatmentsByDate(this.state.selectedDateStr);
     appStore.initialize();
   } 
 
   componentWillFocus = (payload: any) => {
-    this.updateDate(this.state.current);
+    let today = appClock.now();
+    this.setState({todayDateStr: today.format(DateFormatISO8601)});
+    this.updateTreatmentsByDate(this.state.selectedDateStr);
+    
   }
 
   componentWillUnmount() {
     this.componentWillFocusSubscription.remove();
   }
 
-  async updateDate(date: string) {
+  async updateTreatmentsByDate(date: string) {
     try {
-      let dateMoment = moment(date);
+      let selectedDate = moment(date);
+      let today = appClock.now();
       let regimen = await appStore.getLatestRegimen();
-      let treatments = regimen.getTreatmentsByDate(dateMoment);
-      let complianceReports = await appStore.getOrInitComplianceReportsForDate(dateMoment);
 
+      // Prepare treatments information
+      let treatments = regimen.getTreatmentsByDate(selectedDate);
       let treatmentMap = {};
       treatments.forEach( (treatment) => {
         treatmentMap[treatment.id] = treatment;
       })
 
+      // Prepare compliance reports
+      // If a future date is selected, we won't create any compliance reports
+      // for this date, as the report may still change. 
+      // FIXME: But even compliance reports for today can change. Increase dosage or
+      // decrease dosage will change the report for today
       let complianceReportMap = {}
+      let complianceReports = [];
+      if(selectedDate.isSameOrBefore(today)) {
+        complianceReports = await appStore.getOrInitComplianceReportsForDate(selectedDate);
+      } else {
+      }
+      
       complianceReports.forEach((report) =>  {
         complianceReportMap[report.treatmentId] = report;
       })
@@ -97,9 +122,9 @@ export default class DashboardMainScreen extends React.Component<any, State> {
 
   onDayPressed = (day: XDate) => {
     this.setState({
-      current: day.dateString
+      selectedDateStr: day.dateString
     }, () => {
-      this.updateDate(this.state.current);
+      this.updateTreatmentsByDate(this.state.selectedDateStr);
     })
   }
 
@@ -158,9 +183,9 @@ export default class DashboardMainScreen extends React.Component<any, State> {
   }
 
   render() {
-    let { current } = this.state;
+    let { selectedDateStr } = this.state;
     let markedDates = {
-      [current]: {
+      [selectedDateStr]: {
         selected: true
       }
     }
@@ -169,7 +194,7 @@ export default class DashboardMainScreen extends React.Component<any, State> {
       <Container style={styles.container}>
         <View style={styles.header}>
           <OneWeekCalendar style={styles.calendarView}
-            current={this.state.current}
+            current={this.state.selectedDateStr}
             onDayPress={this.onDayPressed}
             markedDates={markedDates}
           />

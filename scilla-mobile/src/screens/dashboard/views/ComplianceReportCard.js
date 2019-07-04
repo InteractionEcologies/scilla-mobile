@@ -12,7 +12,8 @@ import Colors from "../../../constants/Colors";
 
 type Props = {
   treatment: Treatment, 
-  report: ComplianceReportObject,
+  report?: ?ComplianceReportObject,
+  disabled: boolean,
   onTreatmentSnoozed: (treatmentId: string) => void,
   onTreatmentComplied: (treatmentId: string) => void,
   onTreatmentSkipped: (treatmentId: string) => void
@@ -36,32 +37,37 @@ export default class ComplianceReportCard extends React.Component<Props, any> {
   }
 
   render() {
-      return (
-        <RoundedCard>
-          <RoundedCardItem first style={styles.cardItem} bordered>
-              {this.renderTreatmentTime()}
-          </RoundedCardItem>
-          <RoundedCardItem style={styles.cardItem}>
-              <AppText>
-                {this.props.treatment.getDescription()}
-              </AppText>  
-          </RoundedCardItem>
+    const { disabled } = this.props;
+    return (
+      <RoundedCard>
+        <RoundedCardItem first style={styles.cardItem} bordered>
+            {this.renderTreatmentTime()}
+        </RoundedCardItem>
+        <RoundedCardItem style={styles.cardItem}>
+            <AppText>
+              {this.props.treatment.getDescription()}
+            </AppText>  
+        </RoundedCardItem>
+        {!disabled &&
           <RoundedCardItem last style={styles.cardItem}>
             {this.renderActionButtons()}
           </RoundedCardItem>
-        </RoundedCard>
-      )
+        }
+      </RoundedCard>
+    )
   }
 
   renderTreatmentTime() {
     let additionalStyle = {};
-    let time: DateTypeTimeOfDay = this.props.report.expectedTreatmentTime 
-              ? this.props.report.expectedTreatmentTime
-              : this.props.treatment.time;
+    let time: DateTypeTimeOfDay = this.props.treatment.time;
+    // let time: DateTypeTimeOfDay = this.props.treatment.time 
+    //           ? this.props.report.expectedTreatmentTime
+    //           : this.props.treatment.time;
 
-    if(this.props.report.expectedTreatmentTime !== this.props.treatment.time) {
-      additionalStyle = styles.snoozedTimeTitle;
-    }
+    // Disable snooze function for now. 
+    // if(this.props.report.expectedTreatmentTime !== this.props.treatment.time) {
+    //   additionalStyle = styles.snoozedTimeTitle;
+    // }
     console.log("Treatment time", time);
     let friendlyTime = moment(time, DateFormatTimeOfDay).format("h:mm A");
     return (<Title style={additionalStyle}>{friendlyTime}</Title>);
@@ -72,7 +78,7 @@ export default class ComplianceReportCard extends React.Component<Props, any> {
       <View style={styles.buttonRow}>
         {this._renderSkipBtn()}
         {this._renderComplyBtn()}
-        {this._renderSnoozeBtn()}
+        {/* {this._renderSnoozeBtn()} */}
       </View>
     )
   }
@@ -80,8 +86,9 @@ export default class ComplianceReportCard extends React.Component<Props, any> {
   _renderSkipBtn() {
     let iconName = "ios-close-circle-outline";
     let btnText = "Skip";
-
-    if (this.props.report.status === ComplianceStatusOptions.skip) {
+    const { report } = this.props;
+    if(report == null) return; 
+    if (report.status === ComplianceStatusOptions.skip) {
       iconName = "ios-close-circle";
       btnText = "Skipped"
     }
@@ -98,9 +105,11 @@ export default class ComplianceReportCard extends React.Component<Props, any> {
   }
 
   _renderComplyBtn() {
+    const { report } = this.props;
+    if(report == null) return;
     let iconName = "ios-checkmark-circle-outline";
     let btnText = "Take";
-    if (this.props.report.status === ComplianceStatusOptions.took) {
+    if (report.status === ComplianceStatusOptions.took) {
       iconName = "ios-checkmark-circle";
       btnText = "Took";
     }
@@ -115,9 +124,11 @@ export default class ComplianceReportCard extends React.Component<Props, any> {
  
   // TODO: Need to fix this. 
   _renderSnoozeBtn() {
+    const { report } = this.props;
+    if(report == null) return;
     let iconName = "alarm-off";
 
-    if (this.props.report.expectedTreatmentTime !== this.props.treatment.time) {
+    if (report.expectedTreatmentTime !== this.props.treatment.time) {
       iconName = "alarm-on"; // An icon that looks like an `outline` version of timer. 
       
     } else {
