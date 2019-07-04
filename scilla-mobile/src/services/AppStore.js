@@ -18,7 +18,7 @@ import type {
 } from "../libs/scijs";
 import _ from "lodash";
 import moment from "moment";
-import AppClock from "./AppClock";
+import AppClock from "./AppClock"
 
 const appClock = new AppClock();
 /* AppStore Singleton 

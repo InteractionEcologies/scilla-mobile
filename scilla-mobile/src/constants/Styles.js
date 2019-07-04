@@ -5,13 +5,16 @@ export const Styles = {
   content: {
     flex: 1, 
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    width: '100%'
   },
   contentBody: {
     flex: 1, 
     justifyContent: 'flex-start',
     alignItems: 'center',
-    width: '95%',
-    marginTop: 10
+    width: '100%',
+    paddingTop: 10,
+    paddingRight: 10, 
+    paddingLeft: 10
   }
 }

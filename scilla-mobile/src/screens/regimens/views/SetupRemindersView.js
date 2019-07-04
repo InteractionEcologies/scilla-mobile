@@ -17,10 +17,10 @@ import styles from "../../reports/ReportStyles";
 
 type Props = {
   regimen: IRegimen,
-  updateReminderConfig: (string, ReminderConfigObject) => void,
+  updateReminderConfig: (id: string, config: ReminderConfigObject) => void,
 
-  numStates: number,
-  currentStateIndex: number
+  numStates?: ?number,
+  currentStateIndex?: ?number
 }
 
 type State = {
@@ -151,7 +151,7 @@ class SetupRemindersView extends Component<Props, State> {
   
   render() {
     console.log(SCOPE, "render");
-    const { regimen } = this.props;
+    const { regimen, numStates, currentStateIndex } = this.props;
     const { isTimePickerVisible, timePickerTime } = this.state;
 
     let configs = regimen.reminderConfigs;
@@ -159,12 +159,14 @@ class SetupRemindersView extends Component<Props, State> {
     return (
       <Fragment>
         <Title>Setup Reminders</Title>
-        <DotPageIndicator 
-          totalDots={this.props.numStates}
-          activeDotIndex={this.props.currentStateIndex}
-          dotColor='grey'
-          activeDotColor='black'  
-        />
+        { (numStates && currentStateIndex) &&
+          <DotPageIndicator 
+            totalDots={numStates}
+            activeDotIndex={currentStateIndex}
+            dotColor='grey'
+            activeDotColor='black'  
+          />              
+        }
         <Grid style={customStyles.view}>
           <Row>
             <Col>
@@ -213,9 +215,9 @@ class SetupRemindersView extends Component<Props, State> {
       let timeStr = time.format("h:mm a");
 
       return (
-          <Fragment>
+          <Fragment key={config.id}>
             { forTreatment &&
-            <Row key={config.id} style={{marginTop: 20}}>
+            <Row style={{marginTop: 20}}>
               <Col size={2}>
                 <AppText style={customStyles.labelText}>{timeConstraintStr}</AppText>
               </Col>

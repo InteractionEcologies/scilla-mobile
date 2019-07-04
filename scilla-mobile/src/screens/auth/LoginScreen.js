@@ -9,7 +9,7 @@ import { AppText, Title } from "../../components";
 import { ScreenNames } from "../../constants/Screens";
 import Colors from "../../constants/Colors";
 import { Styles as AppStyles } from "../../constants/Styles";
-import AppService from "../../app/AppService";
+import AppService from "../../services/AppService";
 const appService = new AppService();
 
 export default class LoginScreen extends React.Component<any, any> {

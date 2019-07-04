@@ -7,8 +7,8 @@ import type { DateTypeISO8601, IRegimen, RegimenObject,
 } from "../../libs/scijs";
 
 import { RegimenFactory, RegimenStatusOptions } from "../../libs/scijs";
-import AppStore from "../../app/AppStore";
-import AppService from "../../app/AppService";
+import AppStore from "../../services/AppStore";
+import AppService from "../../services/AppService";
 
 import styles from "./RegimenStyles";
 import Colors from "../../constants/Colors";
@@ -272,7 +272,7 @@ class RegimenRedeemScreen extends Component<any, State> {
       regimen.setUserId(userProfile.uid);
       regimen.setStatus(RegimenStatusOptions.active);
       if (regimen) {
-        appService.ds.upsertRegimen(regimen.toObj());
+        await appService.ds.upsertRegimen(regimen.toObj());
       }  
     }
   }

@@ -6,11 +6,14 @@ import { ScreenNames } from "../constants/Screens";
 import NavigationService from "../navigation/NavigationService";
 import { IRegimen } from "../libs/scijs";
 import AppClock from "./AppClock";
+import AppNotificationManager from "./AppNotificationManager";
 
 const SCOPE = "AppInitializer";
 
-// Handle init tasks and foreground/background transitions. More like an 
-// AppDelegate. 
+/** Handle init tasks and foreground/background transitions. 
+ *  Provide callbacks at important places of the app, such as
+ *  when the main screen is loaded, when the main regimen screen is loaded. 
+ */
 export default class AppInitializer {
 
   static instance: AppInitializer
@@ -19,6 +22,7 @@ export default class AppInitializer {
   appStore = new AppStore();
   appService = new AppService(); // this will init ds and auth services. 
   appClock = new AppClock();
+  appNotiManager = new AppNotificationManager();
 
   constructor() {
     if(!AppInitializer.instance) {
@@ -38,7 +42,7 @@ export default class AppInitializer {
     this.appService.initialize();
 
     // 
-    this.appClock.setCurrentDatetime(moment("2019-07-28"));
+    this.appClock.setCurrentDatetime(moment("2019-07-25"));
   }
 
   /**
@@ -53,6 +57,29 @@ export default class AppInitializer {
    */
   onMainScreenLoaded = async () => {
     console.log(SCOPE, "onMainScreenLoaded")
+    try {
+      await this.appNotiManager.requestPermission();
+    } catch (e) {
+      console.log(e);
+    }
+
+    // testing
+    let status = await this.appNotiManager.getPermission();
+    if(status === "granted") {
+      // await this.appNotiManager.sendImmediately();
+      // await this.appNotiManager.sendWithDelaySec(5);
+      // let configs = [{
+      //   id: '0', 
+      //   reminderSlotId: '0',
+      //   type: 'treatment',
+      //   time: '10:39', 
+      //   timeConstraint: 'morning',
+      //   order: 0, 
+      //   treatmentDetailOption: 'baclofen',
+      //   enabled: true
+      // }]
+      // await this.appNotiManager.setNotificationsByReminderConfigs(configs);
+    }
     await this.updateRegimenPhaseAndRequestPermission();
   
   }
@@ -61,6 +88,17 @@ export default class AppInitializer {
     console.log(SCOPE, "enter foreground");
     await this.updateRegimenPhaseAndRequestPermission();
   }
+
+  /**
+   * Called whenever the regimen main screen is loaded. 
+   * This is used when a new regimen is redeemed, we should 
+   * immediately 
+   */
+  onRegimenMainScreenLoaded = async () => {
+    console.log(SCOPE, "onRegimenMainScreenLoaded");
+    await this.updateRegimenPhaseAndRequestPermission();
+  }
+
 
   // Tasks 
   updateRegimenPhaseAndRequestPermission = async () => {
@@ -94,6 +132,10 @@ export default class AppInitializer {
       let regimen: IRegimen = await this.appStore.getLatestRegimen();
       if(regimen.updatePhase(now)) {
         this.appStore.updateRegimen(regimen);
+        
+        let reminderConfigs = regimen.getActiveReminderConfigs();
+        console.log(SCOPE, "update reminder conigs", reminderConfigs);
+        this.appNotiManager.setNotificationsByReminderConfigs(reminderConfigs);
       }  
     } catch (e) {
       console.log(e);

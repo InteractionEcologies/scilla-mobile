@@ -11,7 +11,8 @@ import { AppText, RegimenSchedule } from "../../components"
 import { fakeRegimenObject } from "../../libs/scijs/stub/fakeRegimen";
 import { RegimenFactory, IRegimen } from "../../libs/scijs/models/regimen";
 import type { 
-  RegimenPhaseObject
+  RegimenPhaseObject,
+  ReminderConfigObject
 } from "../../libs/scijs";
 import {
   DateFormatUXFriendly,
@@ -20,21 +21,25 @@ import {
 import _ from "lodash";
 import moment from "moment";
 import { Styles as AppStyles } from "../../constants/Styles";
-import AppStore from "../../app/AppStore";
-import AppClock from "../../app/AppClock";
-import AppInitializer from "../../app/AppInitializer";
+import AppStore from "../../services/AppStore";
+import AppClock from "../../services/AppClock";
+import AppInitializer from "../../services/AppInitializer";
+import AppNotificationManager from "../../services/AppNotificationManager";
 import { Calendar } from "../../components/Calendar";
 import Colors from "../../constants/Colors";
+import ReminderSwitchersCard from "../../components/ReminderSwitchersCard";
 
 type State = {
   regimen: ?IRegimen,
   currentRegimenPhaseObject: ?RegimenPhaseObject,
+  reminderConfigs: ReminderConfigObject[],
   isCheckingLatestRegimen: boolean
 }
 
 const appStore = new AppStore();
 const appClock = new AppClock();
 const appInitializer = new AppInitializer();
+const appNotiManager = new AppNotificationManager();
 
 const SCOPE = "RegimenMainScreen";
 
@@ -49,6 +54,7 @@ export default class RegimenMainScreen extends React.Component<any, State> {
   state = {
     regimen: null,
     currentRegimenPhaseObject: null,
+    reminderConfigs: [],
     isCheckingLatestRegimen: true
   }
   
@@ -62,13 +68,19 @@ export default class RegimenMainScreen extends React.Component<any, State> {
     )
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this._isMounted = true;
-    this.initializeState();
+
+    await appInitializer.onRegimenMainScreenLoaded();
+
+    this.setState({isCheckingLatestRegimen: true});
+    await this.initializeState();
+    this.setState({isCheckingLatestRegimen: false});
   }
 
-  componentWillFocus = (payload: any) => {
-    // console.info("willFocus", payload);
+  componentWillFocus = async (payload: any) => {
+    console.info(SCOPE, "willFocus");
+    await appInitializer.onRegimenMainScreenLoaded();
     this.initializeState();
   }
 
@@ -85,7 +97,7 @@ export default class RegimenMainScreen extends React.Component<any, State> {
 
   async initializeState() {
     if(!this._isMounted) return;
-    this.setState({isCheckingLatestRegimen: true});
+    console.log(SCOPE, "initializeState")
     let regimen: ?IRegimen = null;
 
     try {
@@ -97,17 +109,23 @@ export default class RegimenMainScreen extends React.Component<any, State> {
       } 
     }
 
-    if(regimen == null) return;
+    if(regimen == null) {
+      // this.setState({isCheckingLatestRegimen: false})
+      return;
+    }
 
     let activePhase = regimen.getActiveRegimenPhase();
     if(activePhase)  {
       this.setState({
         regimen: regimen,
-        currentRegimenPhaseObject: activePhase.toObj()
+        currentRegimenPhaseObject: activePhase.toObj(),
+        reminderConfigs: _.cloneDeep(regimen.getActiveReminderConfigs())
       });  
-      appInitializer.updateRegimenPhaseAndRequestPermission();
+      this.forceUpdate();
+      
     } else if (regimen.completed) {
       // Completed 
+      console.debug("This regimen is completed.")
     } else {
       let upcomingPhase = regimen.getRegimenPhaseByOrder(0);
       if(upcomingPhase) {
@@ -118,7 +136,7 @@ export default class RegimenMainScreen extends React.Component<any, State> {
       }
     }      
   
-    this.setState({isCheckingLatestRegimen: false})
+    // this.setState({isCheckingLatestRegimen: false})
   }
 
 
@@ -168,6 +186,27 @@ export default class RegimenMainScreen extends React.Component<any, State> {
     return markedDates
   }
 
+  didPressEditRegimenBtn = () => {
+    this.props.navigation.navigate(ScreenNames.RegimenEdit);
+  }
+
+  didPressEditReminderBtn = () => {
+    this.props.navigation.navigate(ScreenNames.RegimenEditReminders);
+  }
+
+  toggleReminder = (reminderSlotId: string) => {
+    //
+    console.log() 
+    const { regimen } = this.state;
+    if (regimen == null) return;
+
+    regimen.toggleReminder(reminderSlotId);
+    appStore.updateRegimen(regimen);
+    let configs = regimen.getActiveReminderConfigs();
+    this.setState({reminderConfigs: configs})
+    appNotiManager.setNotificationsByReminderConfigs(configs);
+  }
+
   // MARK: - Navigation
   goToCreateRegimen = () => {
     this.props.navigation.navigate(ScreenNames.RegimenCreation);
@@ -184,9 +223,15 @@ export default class RegimenMainScreen extends React.Component<any, State> {
   render() {
     const { isCheckingLatestRegimen } = this.state;
     return (
-      <Container>
+      // <Container>
         <ScrollView>
+          {/* Must have this contentContainerStyle to center 
+            the content within the ScrollView.
+          */}
           <Content contentContainerStyle={AppStyles.content}>
+          {/* Must have contentBody to make sure the content area 
+            has a width that expands to the whole screen with proper margin. 
+          */}
             <View style={AppStyles.contentBody}>
               {isCheckingLatestRegimen &&
                 <Spinner color={Colors.primaryColor}/>
@@ -197,7 +242,7 @@ export default class RegimenMainScreen extends React.Component<any, State> {
             </View>
           </Content>
         </ScrollView>
-      </Container>
+      // </Container>
     )
   }
 
@@ -216,7 +261,11 @@ export default class RegimenMainScreen extends React.Component<any, State> {
 
   // Render the current or upcoming regimen phase and the whole regimen. 
   _renderRegimenInfoView() {
-    const { regimen, currentRegimenPhaseObject } = this.state;
+    const { 
+      regimen, 
+      currentRegimenPhaseObject, 
+      reminderConfigs 
+    } = this.state;
     if (!regimen) return;
 
     let regimenHasStarted = true;
@@ -227,7 +276,7 @@ export default class RegimenMainScreen extends React.Component<any, State> {
     }
 
     // let markedDates = this.getMarkedDays();
-    console.log(SCOPE, currentRegimenPhaseObject);
+    // console.log(SCOPE, currentRegimenPhaseObject);
     
     let highlightedPhaseOrder = null
     if(currentRegimenPhaseObject) {
@@ -238,8 +287,14 @@ export default class RegimenMainScreen extends React.Component<any, State> {
         <Card style={styles.currentRegimenPhaseCard}>
           <CardItem header bordered>
             {regimenHasStarted &&
-              <AppText>Current Regimen</AppText>
+              <AppText style={{flex: 5}}>Current Regimen Phase</AppText>
             }
+            {!regimenHasStarted &&
+              <AppText>Upcoming Regimen</AppText>
+            }
+            <Button small bordered style={{flex: 1}}
+              onPress={this.didPressEditRegimenBtn}
+            ><AppText>Edit</AppText></Button>
           </CardItem>
           <CardItem>
             <Body>
@@ -252,18 +307,20 @@ export default class RegimenMainScreen extends React.Component<any, State> {
           </CardItem>
         </Card>
 
-        {/* <Card>
+        <Card>
           <CardItem header bordered>
-            <AppText>Regimen Schedule</AppText>
+            <AppText style={{flex: 5}}>Reminder</AppText>
+            <Button small bordered style={{flex: 1}}
+              onPress={this.didPressEditReminderBtn}
+            ><AppText>Edit</AppText></Button>
           </CardItem>
           <CardItem>
-            <Calendar style={{width: '100%'}}
-              current={appClock.now().format(DateFormatISO8601)}
-              markedDates={markedDates}
-              markingType="period"
+            <ReminderSwitchersCard 
+              reminderConfigs={reminderConfigs}
+              didToggleReminder={this.toggleReminder}
             />
           </CardItem>
-        </Card> */}
+        </Card>
 
       </View>
     )

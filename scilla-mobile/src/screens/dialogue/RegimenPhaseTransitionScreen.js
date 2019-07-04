@@ -12,15 +12,17 @@ import type { RegimenPhaseChangeRequestType, IRegimenPhase } from "../../libs/sc
 import { RegimenPhaseChangeRequestTypes, IRegimen, RegimenPhasePermissionOptions, DateFormatISO8601 } from "../../libs/scijs";
 
 import NavigationService from "../../navigation/NavigationService";
-import AppStore from "../../app/AppStore";
+import AppStore from "../../services/AppStore";
 
 import moment from "moment";
-import AppService from "../../app/AppService";
-import AppClock from "../../app/AppClock";
+import AppService from "../../services/AppService";
+import AppClock from "../../services/AppClock";
+import AppNotificationManager from "../../services/AppNotificationManager";
 
 const appStore = AppStore.instance;
 const appService = AppService.instance;
 const appClock = AppClock.instance;
+const appNotiManager = AppNotificationManager.instance;
 
 type State = {
   phaseChangeType: ?RegimenPhaseChangeRequestType,
@@ -92,7 +94,7 @@ export default class RegimenPhaseTransitionScreen extends Component<any, State> 
     if(!regimen) return;
 
     regimen.extendActivePhase(appClock.now());
-    appStore.updateRegimen(regimen);
+    await appStore.updateRegimen(regimen);
 
     let phase = regimen.getActiveRegimenPhase();
     if(phase) {
@@ -112,13 +114,15 @@ export default class RegimenPhaseTransitionScreen extends Component<any, State> 
    *  - Grant permission to phase n, during phase n+k's period. 
    *    - Should update phase n's end date to today+7 days. 
    */
-  didPressAccept = () => {
+  didPressAccept = async () => {
     const { regimen } = this.state;
     if(!regimen) { return; }
 
     regimen.grantPermissionToNextPhase();
     regimen.updatePhase(appClock.now());
-    appService.ds.upsertRegimen(regimen.toObj());    
+    await appService.ds.upsertRegimen(regimen.toObj());    
+    let reminderConfigs = regimen.getActiveReminderConfigs();
+    await appNotiManager.setNotificationsByReminderConfigs(reminderConfigs);
 
     this.dismiss();
   }

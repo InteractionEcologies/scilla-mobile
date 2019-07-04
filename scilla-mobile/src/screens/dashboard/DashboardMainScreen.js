@@ -2,7 +2,7 @@
 import React from "react";
 import { View, StyleSheet, ScrollView } from "react-native";
 import { Container, Content } from "native-base"; 
-import AppStore from "../../app/AppStore";
+import AppStore from "../../services/AppStore";
 import {
   DateFormatTimeOfDay, 
   DateFormatISO8601,
@@ -18,8 +18,8 @@ import moment from "moment";
 import { ComplianceReportHelper } from "../../models/ComplianceReportHelper";
 import { OneWeekCalendar } from "../../components";
 import XDate from "xdate";
-import AppClock from "../../app/AppClock";
-import AppInitializer from "../../app/AppInitializer";
+import AppClock from "../../services/AppClock";
+import AppInitializer from "../../services/AppInitializer";
 
 const appStore: AppStore = new AppStore();
 const appClock = new AppClock();

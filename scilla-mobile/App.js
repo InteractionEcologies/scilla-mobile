@@ -11,7 +11,7 @@ import AppContainer from './src/navigation/AppNavigator';
 import Colors from "./src/constants/Colors";
 
 import moment from "moment";
-import AppInitializer from "./src/app/AppInitializer";
+import AppInitializer from "./src/services/AppInitializer";
 import NavigationService from "./src/navigation/NavigationService";
 
 const SCOPE = "App";

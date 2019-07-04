@@ -30,9 +30,9 @@ import ScheduleView from "./views/ScheduleView";
 import CompletionView from "./views/CompletionView";
 
 import { AppText } from "../../components";
-import AppService from "../../app/AppService";
-import AppStore from "../../app/AppStore";
-import AppClock from "../../app/AppClock";
+import AppService from "../../services/AppService";
+import AppStore from "../../services/AppStore";
+import AppClock from "../../services/AppClock";
 
 const appService = new AppService();
 const appStore = new AppStore();

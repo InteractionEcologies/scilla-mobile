@@ -14,8 +14,8 @@ import type {
 
 import { DateFormatISO8601, IRegimen } from "../../libs/scijs"; 
 
-import AppStore from "../../app/AppStore";
-import AppClock from "../../app/AppClock";
+import AppStore from "../../services/AppStore";
+import AppClock from "../../services/AppClock";
 import styles from "./ReportStyles"; 
 import { ScreenNames } from "../../constants/Screens";
 import { OneWeekCalendar } from "../../components";

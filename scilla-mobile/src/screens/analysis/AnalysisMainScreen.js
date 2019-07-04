@@ -6,7 +6,7 @@ import React from "react";
 import { StyleSheet, ScrollView  } from 'react-native';
 import { Content, View } from "native-base";
 import { Title } from "../../components";
-import AppStore from "../../app/AppStore";
+import AppStore from "../../services/AppStore";
 
 import type {
   MeasurementType,

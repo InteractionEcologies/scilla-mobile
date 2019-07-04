@@ -8,7 +8,7 @@ import { Container, Content, Text, Button, Form,
 } from "native-base";
 import { AppText, Title } from "../../components"
 // import Auth from "../../libs/Auth";
-import AppService from "../../app/AppService";
+import AppService from "../../services/AppService";
 const appService = new AppService();
 
 import { ScreenNames } from "../../constants/Screens";

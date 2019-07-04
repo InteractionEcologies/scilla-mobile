@@ -14,11 +14,11 @@ import type {
   MeasurementObject,
   MeasurementValue
 } from "../../libs/scijs";
-import AppService from "../../app/AppService";
+import AppService from "../../services/AppService";
 import styles from "./ReportStyles"; 
 import { ScreenNames } from "../../constants/Screens";
-import AppStore from "../../app/AppStore";
-import AppClock from "../../app/AppClock";
+import AppStore from "../../services/AppStore";
+import AppClock from "../../services/AppClock";
 
 import XDate from "xdate";
 

@@ -15,7 +15,7 @@ import { Styles as AppStyles } from "../constants/Styles";
 // import { ExpoConfigView } from '@expo/samples';
 // import Auth from "../libs/Auth";
 import firebase from "firebase";
-import AppService from "../app/AppService";
+import AppService from "../services/AppService";
 const appService = new AppService();
 
 export default class SettingsScreen extends React.Component<any, any> {

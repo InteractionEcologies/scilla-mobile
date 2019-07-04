@@ -57,7 +57,7 @@ export class ThreePillTableRow extends React.Component<Props, any> {
     const { rowIndex, rowDesc, highlighted } = this.props;
     const hasRowIndex = rowIndex != null;
 
-    console.log("row", highlighted);
+    //console.log("row", highlighted);
     return (
       <View style={[styles.phaseRow, this.props.style]}>
         {hasRowIndex &&
@@ -105,7 +105,7 @@ class PillRegion extends React.Component<PillRegionProps, any> {
       })
     }
 
-    console.log(this.props.color);
+    //console.log(this.props.color);
     // console.log(combinedStyle);
     return (
       <View style={combinedStyle}>

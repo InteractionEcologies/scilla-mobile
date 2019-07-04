@@ -4,8 +4,8 @@ import * as firebase from "firebase";
 
 import { ScreenNames } from "../../constants/Screens";
 
-import AppStore from "../../app/AppStore";
-import AppService from "../../app/AppService";
+import AppStore from "../../services/AppStore";
+import AppService from "../../services/AppService";
 
 
 import { View, Text, StyleSheet, ActivityIndicator, 

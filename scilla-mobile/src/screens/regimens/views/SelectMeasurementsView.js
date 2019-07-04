@@ -66,10 +66,11 @@ class SelectMeasurementsView extends Component<Props, any> {
     const viewModel = new RegimenViewModel(regimen);
 
     console.log(viewModel.measurements);
-
+    let index = 0;
     return _.map<any, any>(viewModel.measurements, (m: MeasurementView) => {
+      index += 1;
       return (
-        <Row>
+        <Row key={index}>
           <Button 
             full 
             iconLeft 

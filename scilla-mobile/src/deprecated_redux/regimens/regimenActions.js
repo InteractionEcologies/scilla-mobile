@@ -1,5 +1,5 @@
 // @flow
-import AppService from "../../app/AppService";
+import AppService from "../../services/AppService";
 const appService = new AppService();
 
 export const ADD_TRIAL = "ADD_TRIAL";
