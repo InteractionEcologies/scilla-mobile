@@ -2,9 +2,12 @@
 import moment from "moment";
 import _ from "lodash";
 import XDate from "xdate";
-
-import React from "react";
-import { Container, Content, View, Button, Card, CardItem } from "native-base";
+import { StyleSheet } from "react-native";
+import React, { Fragment } from "react";
+import { 
+  Container, Content, View, Button, Card, CardItem,
+  Spinner
+} from "native-base";
 import { ScrollView } from "react-native";
 import { AppText, Title } from "../../components";
 
@@ -12,13 +15,14 @@ import type {
   MeasurementType
 } from "../../libs/scijs"
 
-import { DateFormatISO8601, IRegimen } from "../../libs/scijs"; 
+import { DateFormatISO8601, IRegimen, MeasurementTypes } from "../../libs/scijs"; 
 
 import AppStore from "../../services/AppStore";
 import AppClock from "../../services/AppClock";
 import styles from "./ReportStyles"; 
 import { ScreenNames } from "../../constants/Screens";
 import { OneWeekCalendar } from "../../components";
+import Colors from "../../constants/Colors";
 
 const appStore = new AppStore();
 const appClock = new AppClock();
@@ -26,17 +30,19 @@ const DAILY_EVALUATION_MEASUREMENT_TYPE = "Daily Evaluation"
 
 type State = {
   selectedDate: string, 
-  trackedMeasurementTypes: MeasurementType[]
+  trackedMeasurementTypes: MeasurementType[],
+  isLoading: boolean
 }
 
 export default class ReportSelectionScreen extends React.Component<any, State> {
   static navigationOptions: any = {
-    title: 'Report'
+    title: 'Any-time Report'
   };
 
   state = {
     selectedDate: appClock.now().format(DateFormatISO8601),
-    trackedMeasurementTypes: ['Mood', 'Daily Evaluation']
+    trackedMeasurementTypes: [],
+    isLoading: false
   }
 
   componentWillFocusSubscription: any;
@@ -50,8 +56,10 @@ export default class ReportSelectionScreen extends React.Component<any, State> {
     )
   }
 
-  componentDidMount() {
-    this.initializeState();
+  async componentDidMount() {
+    this.setState({isLoading: true})
+    await this.initializeState();
+    this.setState({isLoading: false})
   }
 
   componentWillFocus = (payload: any) => {
@@ -64,20 +72,18 @@ export default class ReportSelectionScreen extends React.Component<any, State> {
   }
 
   async initializeState() {
-    try {
-      let regimen = await appStore.getLatestRegimen();
-      if(regimen) {
-        this.regimen = regimen;
-        this.setState({
-          trackedMeasurementTypes: [
-            ...regimen.getTrackedMeasurementTypes(),
-            DAILY_EVALUATION_MEASUREMENT_TYPE
-          ],
-        });
-      }
-    } catch (e) {
-      console.log(e.name);
+    
+    let regimen = await appStore.getLatestRegimen();
+    if(regimen) {
+      this.regimen = regimen;
+      this.setState({
+        trackedMeasurementTypes: [
+          ...regimen.getTrackedMeasurementTypes(),
+          MeasurementTypes.memo
+        ],
+      });
     }
+    
   }
 
   _goToMeasurementScreen = (type: string) => {
@@ -101,7 +107,7 @@ export default class ReportSelectionScreen extends React.Component<any, State> {
   }
 
   render(){
-    let { selectedDate } = this.state;
+    let { selectedDate, isLoading } = this.state;
     let markedDates = {
       [selectedDate]: {
         selected: true
@@ -109,35 +115,37 @@ export default class ReportSelectionScreen extends React.Component<any, State> {
     }
 
     return(
-      <Container style={styles.container}>
-        <View style={styles.header}>
+      <ScrollView contentContainerStyle={styles.content}>
+        {/* <View style={styles.header}>
             <OneWeekCalendar style={styles.calendarView}
               current={this.state.selectedDate}
               onDayPress={this.onDayPressed}
               markedDates={markedDates}
             />
-        </View>
-        <ScrollView>
-          <Content contentContainerStyle={styles.content}>
-              {this.renderReportCard()}
-          </Content>
-        </ScrollView>
-      </Container>
+        </View> */}
+        {!isLoading &&
+          this.renderReportCard()
+        }
+        {isLoading &&
+          <Spinner 
+            color={Colors.primaryColor}
+          />
+        }
+        
+      </ScrollView>
     );
   }
 
   renderReportCard = () => {
     if(this._regimenExist()) {
       return (
-        <Card style={styles.selectionCard}>
-          <CardItem style = {styles.cardItems} bordered>
-            <Title style={styles.titleText}>Report your experience</Title>   
-          </CardItem>
-          <CardItem style={styles.cardButtons} bordered>
+        // <Card style={styles.selectionCard}>
+          // <CardItem style={styles.cardButtons} bordered>
+          <Fragment>
             {this.renderInSituMeasurementTypeOptions()}    
-          </CardItem>
-          {this.renderDailyEvalCardItem()}
-        </Card>
+          </Fragment>
+          // </CardItem>
+        // </Card>
       )
     } else {
       return (
@@ -162,24 +170,28 @@ export default class ReportSelectionScreen extends React.Component<any, State> {
   }
 
   renderInSituMeasurementTypeOptions = () => {
-    let optionButtons = _.map<any, any>(
-      this.state.trackedMeasurementTypes,
+    let optionButtons = [];
+
+    let types = Array.from(this.state.trackedMeasurementTypes);
+    
+    _.forEach(
+      types,
       (type: string, i: number) => {
         console.log(type);
         if(type !== DAILY_EVALUATION_MEASUREMENT_TYPE) {
-          return (
+          optionButtons.push(
             <Button 
                 key={i}
                 style={styles.optionButton}
-                bordered={true}
-                block
+                full
                 onPress={() => this._goToMeasurementScreen(type) }
             >
               <AppText>{type}</AppText>
             </Button>
           );  
         }
-      })
+      }
+    )
     return optionButtons;
   }
 
@@ -200,3 +212,7 @@ export default class ReportSelectionScreen extends React.Component<any, State> {
     }
   }
 }
+
+const customStyles = StyleSheet.create({
+  
+})

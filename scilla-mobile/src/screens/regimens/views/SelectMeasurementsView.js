@@ -49,7 +49,7 @@ class SelectMeasurementsView extends Component<Props, any> {
 
     return (
       <Fragment>
-        <Title>Set side effects to monitor</Title>
+        <Title>Select side effects to monitor</Title>
         <DotPageIndicator 
           totalDots={this.props.numStates}
           activeDotIndex={this.props.currentStateIndex}

@@ -19,28 +19,34 @@ type Props = {
 export class ScaleSlider extends React.Component<Props, any> {
 
   render(){
+    const { 
+      type, selectedScaleValue, selectedScaleValueText,
+      minValue, maxValue, minText, maxText
+    } = this.props
     return(
-      <View style={styles.container}>
-        <View style={styles.scaleText}>
-          <AppText style={styles.scaleValue}>{this.props.selectedScaleValue}</AppText>
-          <AppText style={styles.scaleValueText}>{this.props.selectedScaleValueText}</AppText>
+      <View style={styles.main}>
+        <View style={styles.scaleTextView}>
+          <AppText style={styles.scaleValue}>{selectedScaleValue}</AppText>
+          {!!selectedScaleValueText &&
+            <AppText style={styles.scaleValueText}>{selectedScaleValueText}</AppText>
+          }
         </View>
         <Slider
           style={styles.slider}
           disabled={false}
           step={1}
-          minimumValue={this.props.minValue}
-          maximumValue={this.props.maxValue}
-          value={this.props.selectedScaleValue}
-          onValueChange={value=>this.props.updateSelectedScaleValue(this.props.type, value) }
+          minimumValue={minValue}
+          maximumValue={maxValue}
+          value={selectedScaleValue}
+          onValueChange={value=>this.props.updateSelectedScaleValue(type, value) }
         ></Slider>
-        <View style={styles.sliderScaleValue}>         
-          <AppText style={styles.sliderTextNum}>{this.props.minValue}</AppText>
-          <AppText style={styles.sliderTextNum}>{this.props.maxValue}</AppText>
+        <View style={styles.sliderScaleValueView}>         
+          <AppText style={[styles.sliderValue, {textAlign: 'left' }]}>{minValue}</AppText>
+          <AppText style={[styles.sliderValue, {textAlign: 'right'}]}>{maxValue}</AppText>
         </View>
-        <View style={styles.sliderScaleText}>              
-          <AppText style={styles.sliderText}>{this.props.minText}</AppText>
-          <AppText style={styles.sliderText}>{this.props.maxText}</AppText>
+        <View style={styles.sliderScaleTextView}>              
+          <AppText style={[styles.sliderText, {textAlign: 'left'}]}>{minText}</AppText>
+          <AppText style={[styles.sliderText, {textAlign: 'right'}]}>{maxText}</AppText>
         </View>
       </View>
       
@@ -50,47 +56,50 @@ export class ScaleSlider extends React.Component<Props, any> {
 }
 
 const styles = StyleSheet.create({
-  container:{
-    flex:1,
+  main:{
     justifyContent: 'center',
     alignItems: 'center',
   },
   slider: {
-    width: 270
+    width: '90%'
   },
-  scaleText:{
+  scaleTitleView:{
     justifyContent: 'center',
     alignItems: 'center',
-    height: 100,
-    marginBottom:20
+    // height: 30,
+    // height: 100,
+    // marginBottom: 20,
+    // backgroundColor: 'red'
   },
   scaleValue:{
     fontSize: 40,
-    marginBottom: 10
+    // backgroundColor: 'yellow'
   },
-  sliderScaleValue: {
-    width: 330,
+  scaleValueText: {
+    fontSize: 12,
+  },
+  sliderScaleValueView: {
+    width: '90%',
+    // height: 30,
+    flexDirection: "row", 
+    justifyContent: 'space-between'
+  },
+  sliderScaleTextView: {
+    width: '90%',
+    // height: 30,
     flexDirection: "row", 
     justifyContent: 'space-between',
-    left: 0, 
-    right: 0, 
-  },
-  sliderScaleText: {
-    width: 330,
-    flexDirection: "row", 
-    justifyContent: 'space-between',
-    left: 0, 
-    right: 0, 
     marginBottom: 10
   },
-  sliderTextNum: {
+  sliderValue: {
     width:70,
-    fontSize: 16,
+    fontSize: 20,
     textAlign: "center"
   },
   sliderText: {
-    width:70,
-    fontSize: 12,
+    flex: 1,
+    // width:70,
+    fontSize: 16,
     textAlign: "center"
   }
 })

@@ -5,7 +5,9 @@ import { AlarmTime } from "../libs/scijs";
 import AppClock from "./AppClock";
 
 type Notification = {
-  origin: string, 
+  
+  origin: string, // "selected" if the notification was tapped on by the user
+                  // "received" if the notification was received while the user was in the app. 
   data: Object, 
   remote: boolean,
 

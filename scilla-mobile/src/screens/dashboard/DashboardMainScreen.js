@@ -1,7 +1,7 @@
 // @flow
 import React from "react";
 import { View, StyleSheet, ScrollView, Spinner } from "react-native";
-import { Container, Content } from "native-base"; 
+import { Container, Content, Fab } from "native-base"; 
 import AppStore from "../../services/AppStore";
 import {
   DateFormatTimeOfDay, 
@@ -20,6 +20,9 @@ import { OneWeekCalendar } from "../../components";
 import XDate from "xdate";
 import AppClock from "../../services/AppClock";
 import AppInitializer from "../../services/AppInitializer";
+import { SimpleLineIcons } from "@expo/vector-icons";
+import Colors from "../../constants/Colors";
+import { ScreenNames } from "../../constants/Screens";
 
 const appStore: AppStore = new AppStore();
 const appClock = new AppClock();
@@ -45,6 +48,8 @@ const initialState: State = {
   showTreatments: false,
   isLoading: false
 }
+
+const SCOPE = "DashboardMainScreen";
 export default class DashboardMainScreen extends React.Component<any, State> {
   static navigationOptions: any = {
     title: "Today"
@@ -112,12 +117,18 @@ export default class DashboardMainScreen extends React.Component<any, State> {
       this.setState({
         treatmentMap: treatmentMap,
         complianceReportMap: complianceReportMap
-      })
+      });
+
     } catch (e) {
       if(e.name === "NotExistError") {
         console.log("Regimen does not exist.")
       }
     }
+  }
+
+  didPressReportBtn = () => {
+    console.log(SCOPE, "didPressReportBtn");
+    this.props.navigation.navigate(ScreenNames.ReportSelection);
   }
 
   onDayPressed = (day: XDate) => {
@@ -199,8 +210,10 @@ export default class DashboardMainScreen extends React.Component<any, State> {
             markedDates={markedDates}
           />
         </View>
-        <Content contentContainerStyle={styles.content}>
-          <ScrollView style={styles.mainView}>
+        
+
+        <ScrollView contentContainerStyle={styles.content}>
+          <View style={styles.mainView}>
             <TreatmentListView
               treatmentMap={this.state.treatmentMap}
               complianceReportMap={this.state.complianceReportMap}
@@ -208,8 +221,17 @@ export default class DashboardMainScreen extends React.Component<any, State> {
               onTreatmentCompiled={this.onTreatmentCompiled}
               onTreatmentSnoozed={this.onTreatmentSnoozed}
             />
-          </ScrollView>
-        </Content>
+          </View>
+          
+        </ScrollView>
+        <Fab
+          style={{backgroundColor: Colors.accentColor}}
+          onPress={this.didPressReportBtn}
+        >
+          <SimpleLineIcons 
+            name="pencil"
+          />
+        </Fab>  
       </Container>
     )
   }
@@ -222,7 +244,8 @@ const styles = StyleSheet.create({
   content: {
     flex: 1, 
     justifyContent: 'flex-start',
-    alignItems: 'center'
+    alignItems: 'center',
+    // backgroundColor: 'red'
   },
   header: {
     // flex: 1,
@@ -247,7 +270,9 @@ const styles = StyleSheet.create({
   },
   mainView: {
     flex: 1,
-    width: '90%'
-     
+    width: '100%',
+    paddingRight: 10, 
+    paddingLeft: 10,
+    // backgroundColor: 'yellow'
   }
 })

@@ -5,7 +5,10 @@ import Colors from "../../constants/Colors";
 const styles = StyleSheet.create({
     content: {
       flex: 1, 
-      justifyContent: 'center',
+      width: '100%',
+      paddingLeft: 10, 
+      paddingRight: 10,
+      justifyContent: 'flex-start',
       alignItems: 'center',
     },
     mainView: {
@@ -31,7 +34,7 @@ const styles = StyleSheet.create({
       marginBottom: 50,
     },
     optionButton:{
-      marginBottom: 10,
+      marginTop: 10,
       height:50,
     },
     nextBackBtnView: {
@@ -45,7 +48,8 @@ const styles = StyleSheet.create({
       marginBottom: 30
   },
     button: {
-      width: 100,  
+      // width: 100,  
+      flex: 1
     },
     header: {
     // flex: 1,
@@ -67,15 +71,16 @@ const styles = StyleSheet.create({
     // marginBottom: 50,
     width: '100%'
   },
-  selectionCard:{
-    width:340, 
+  card:{
+    width: '100%', 
     flex:1, 
     padding:5, 
     marginTop: 35
   },
   cardItems:{
     justifyContent:"center", 
-    flex:1
+    // flex:1
+    height: 250
   },
   cardButtons:{
     flexDirection: "column", 

@@ -6,25 +6,10 @@ import { createStackNavigator, createBottomTabNavigator } from 'react-navigation
 import TabBarIcon from '../components/TabBarIcon';
 import SettingsScreen from '../screens/SettingsScreen';
 
-import DashboardMainScreen from "../screens/dashboard/DashboardMainScreen";
 import RegimenStack from "./RegimenStackNavigator";
 import ReportStack from "./ReportStackNavigator";
 import AnalysisStack from "./AnalysisStackNavigator";
-
-const DashboardStack = createStackNavigator({
-  Main: DashboardMainScreen,
-});
-
-DashboardStack.navigationOptions = {
-  tabBarLabel: 'Today',
-  tabBarIcon: ({ focused }) => (
-    <TabBarIcon
-      focused={focused}
-      name={Platform.OS === 'ios' 
-            ? `ios-calendar` : 'md-calendar'}
-    />
-  ),
-};
+import DashboardStack from "./DashboardStackNavigator";
 
 const SettingsStack = createStackNavigator({
   Settings: SettingsScreen,

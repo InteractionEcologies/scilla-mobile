@@ -15,6 +15,7 @@ export const RequiredCheckboxMeasurementTypesInDailyEval = [
 
 // A question with lower number will be shown first in daily evaluation
 export const DailyEvalQuestionPriorityMap = {
+  [MeasurementTypes.muscleTightness]: 0,
   [MeasurementTypes.spasticitySeverity]: 1,
   [MeasurementTypes.sleepiness]: 2, 
   [MeasurementTypes.weakness]: 3,

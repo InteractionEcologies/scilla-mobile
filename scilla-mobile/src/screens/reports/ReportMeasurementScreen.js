@@ -1,5 +1,6 @@
 // @flow
 import React from "react";
+import { StyleSheet } from "react-native";
 import { Container, Content, View, Button, Toast, Card, CardItem} from "native-base";
 import { AppText, Title } from "../../components";
 import MoodScaleView from './views/MoodScaleView';
@@ -7,6 +8,7 @@ import SleepScaleView from './views/SleepScaleView';
 import BaclofenScaleView from './views/BaclofenScaleView';
 import SpasticityScaleView from './views/SpasticityScaleView';
 import TiredScaleView from './views/TiredScaleView';
+import GenericScaleView from "./views/GenericScaleView";
 import moment from "moment";
 import { MeasurementTypes, DateFormatISO8601 } from "../../libs/scijs"; 
 import type { 
@@ -15,30 +17,30 @@ import type {
   MeasurementValue
 } from "../../libs/scijs";
 import AppService from "../../services/AppService";
-import styles from "./ReportStyles"; 
 import { ScreenNames } from "../../constants/Screens";
 import AppStore from "../../services/AppStore";
 import AppClock from "../../services/AppClock";
 
 import XDate from "xdate";
+import MemoView from "./views/MemoView";
 
 const appStore = new AppStore();
 const appService = new AppService();
 const appClock = new AppClock();
 
 type State = {
-  currentDate: string, 
+  // currentDate: string, 
   trackedMeasurementType: MeasurementType,
   selectedScaleValue: MeasurementValue
 }
 
 export default class ReportMeasurmentScreen extends React.Component<any, State> {
   static navigationOptions: any = {
-    title: 'Report'
+    title: 'Any-time Report'
   };
 
   state = {
-    currentDate: appClock.now().format(DateFormatISO8601),
+    // currentDate: appClock.now().format(DateFormatISO8601),
     trackedMeasurementType: this.props.navigation.getParam('trackedMeasurementType', null),
     selectedScaleValue: 0,
   }
@@ -46,7 +48,6 @@ export default class ReportMeasurmentScreen extends React.Component<any, State> 
   newReport: ?MeasurementObject = null
 
   onMeasurementValueConfirmed = () => {
-    console.log("save measurement object");
     if(this.state.trackedMeasurementType){
       this._createMeasurementReport(this.state.trackedMeasurementType, this.state.selectedScaleValue);
     };
@@ -57,8 +58,8 @@ export default class ReportMeasurmentScreen extends React.Component<any, State> 
 
   _showToast = () =>{
     Toast.show({
-      text: 'Report saved!',
-      buttonText: 'Okay'
+      text: 'Report saved.',
+      buttonText: 'OK'
     })
   }
 
@@ -77,10 +78,11 @@ export default class ReportMeasurmentScreen extends React.Component<any, State> 
   }
 
   _goToReportSelectionScreen = () =>{
-    this.props.navigation.navigate(ScreenNames.ReportSelection)
+    // this.props.navigation.navigate(ScreenNames.ReportSelection)
+    this.props.navigation.popToTop();
   }
 
-  updateSelectedScaleValue = (type:string, value:number) =>{
+  updateSelectedScaleValue = (type: MeasurementType, value: MeasurementValue) =>{
     this.setState(
       {
         selectedScaleValue: value
@@ -88,100 +90,150 @@ export default class ReportMeasurmentScreen extends React.Component<any, State> 
     )
   }
 
-  onDayPressed = (day: XDate) => {
-    this.setState({
-      currentDate: day.dateString
-    })
-  }
+  // onDayPressed = (day: XDate) => {
+  //   this.setState({
+  //     currentDate: day.dateString
+  //   })
+  // }
 
 
   render(){
-    let { currentDate } = this.state;
+    // let { currentDate } = this.state;
     // let markedDates = {
     //   [currentDate]: {
     //     selected: true
     //   }
     // }
+    const dateStr = appClock.now().format("h:mm a")
 
     return(
-      <Container style={styles.container}>
+      // <Container style={styles.container}>
         <Content contentContainerStyle={styles.content}>
-        <Card style={styles.selectionCard}>
-          <CardItem style = {styles.cardDate} bordered>
-            <Title style={styles.titleText}>{currentDate}</Title>   
-          </CardItem>
-          <CardItem style = {styles.cardItems}>
-          {this.renderScale()}
-          </CardItem>
-        </Card>
-          <View style={styles.okBtnView}>
-            <Button
-              style={styles.button}
-              block
-              onPress={()=>this.onMeasurementValueConfirmed()} 
-            >
-              <AppText>OK</AppText>
-            </Button>
-          </View>
+          <Card style={styles.card}>
+            <CardItem style = {styles.cardItem} bordered>
+              <Title style={styles.title}>{dateStr}</Title>   
+            </CardItem>
+            <CardItem style = {styles.cardItem}>
+              {this.renderScale()}
+            </CardItem>
+            <CardItem style = {styles.cardItem}>
+              <Button
+                style={styles.button}
+                full
+                onPress={()=>this.onMeasurementValueConfirmed()} 
+              >
+                <AppText>OK</AppText>
+              </Button>
+            </CardItem>
+          </Card>
         </Content>
-      </Container>
+      // </Container>
     );
   }
 
   renderScale() {
+      const { 
+        trackedMeasurementType, 
+        selectedScaleValue, 
+      } = this.state;
       let view;
       let isDailyEvalView = false;
+      let minValueDesc = "Best possible";
+      let maxValueDesc = "Worst possible";
+      let useGenericView = true;
+
       switch(this.state.trackedMeasurementType) {
+        case MeasurementTypes.muscleTightness:
+          minValueDesc = "No muscle tightness";
+          maxValueDesc = "Worst possible tightness";
+          break;
         case MeasurementTypes.sleepQuality: 
-          view = <SleepScaleView
-            type = {this.state.trackedMeasurementType}
-            selectedScaleValue = {this.state.selectedScaleValue}
-            updateSelectedScaleValue = {this.updateSelectedScaleValue}
-            isDailyEvalView = {isDailyEvalView}
-          />;
+          minValueDesc="Best possible sleep quality";
+          maxValueDesc="Worst possible sleep quality";
           break;
         case MeasurementTypes.spasticitySeverity: 
-          view = <SpasticityScaleView
-            type = {this.state.trackedMeasurementType}
-            selectedScaleValue = {this.state.selectedScaleValue}
-            updateSelectedScaleValue = {this.updateSelectedScaleValue}
-            isDailyEvalView = {isDailyEvalView}
-          />
-          break;
-        case MeasurementTypes.baclofenAmount:
-          view = <BaclofenScaleView
-            type = {this.state.trackedMeasurementType}
-            selectedScaleValue = {this.state.selectedScaleValue}
-            updateSelectedScaleValue = {this.updateSelectedScaleValue}
-            isDailyEvalView = {isDailyEvalView}
-          />
+          minValueDesc = "No pain";
+          maxValueDesc = "Worst possible pain";
           break;
         case MeasurementTypes.tiredness:
-          view = <TiredScaleView
-            type = {this.state.trackedMeasurementType}
-            selectedScaleValue = {this.state.selectedScaleValue}
-            updateSelectedScaleValue = {this.updateSelectedScaleValue}
-            isDailyEvalView = {isDailyEvalView}
+          minValueDesc = "Very energetic";
+          maxValueDesc = "Worst possible tiredness";
+          break;
+        case MeasurementTypes.weakness:
+          minValueDesc = "No feeling of weakness";
+          maxValueDesc = "Worst possible weakness";
+          break;
+        case MeasurementTypes.sleepiness:
+          minValueDesc = "No feeling of sleepiness";
+          maxValueDesc = "Very sleepy";
+          break;
+        case MeasurementTypes.dizziness:
+          minValueDesc = "No feeling of dizziness";
+          maxValueDesc = "Worst possible dizziness";
+          break;
+        case MeasurementTypes.respiratoryMovement:
+          minValueDesc = "No respiratory problem";
+          maxValueDesc = "Worst possible respiratory problem";
+          break;
+        case MeasurementTypes.memo:
+          view = <MemoView 
+            type={trackedMeasurementType}
+            selectedScaleValue={selectedScaleValue}
+            updateSelectedScaleValue={this.updateSelectedScaleValue}
           />
+          useGenericView = false;
           break;
         case MeasurementTypes.mood:
-          view = <MoodScaleView
-            type = {this.state.trackedMeasurementType}
-            selectedScaleValue = {this.state.selectedScaleValue}
-            updateSelectedScaleValue = {this.updateSelectedScaleValue}
-            isDailyEvalView = {isDailyEvalView}
-          />
+          minValueDesc = "Very good mood";
+          maxValueDesc = "Very bad mood";
           break;
         default: 
-          view = <SleepScaleView
-            type = {this.state.trackedMeasurementType}
-            selectedScaleValue = {this.state.selectedScaleValue}
-            updateSelectedScaleValue = {this.updateSelectedScaleValue}
-            isDailyEvalView = {isDailyEvalView}
-          />;
           break;
       }
+
+      if(useGenericView) {
+        view = <GenericScaleView
+        type={trackedMeasurementType}
+        title={trackedMeasurementType}
+        minValue={0}
+        maxValue={5}
+        minValueDesc={minValueDesc}
+        maxValueDesc={maxValueDesc}
+        selectedScaleValue={selectedScaleValue}
+        updateSelectedScaleValue={this.updateSelectedScaleValue}
+        isDailyEval={false}
+      />
+      }
+      
       return view;
     }
 
 }
+
+const styles = StyleSheet.create({
+  content: {
+    flex: 1, 
+    width: '100%',
+    paddingLeft: 10, 
+    paddingRight: 10,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  },
+  card: {
+    // flex: 1,
+    width: '100%'
+
+  }, 
+  cardItem: {
+    width: '100%',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  },
+  title: {
+    flex: 1
+  }, 
+  button: {
+    flex: 1
+  }
+
+})

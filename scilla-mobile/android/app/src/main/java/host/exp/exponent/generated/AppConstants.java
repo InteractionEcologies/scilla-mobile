@@ -30,10 +30,13 @@ public class AppConstants {
         
         
         
+        
+        
+        
         // ADD EMBEDDED RESPONSES HERE
         // START EMBEDDED RESPONSES
         embeddedResponses.add(new Constants.EmbeddedResponse("https://exp.host/@chuanche/scilla-mobile", "assets://shell-app-manifest.json", "application/json"));
-        embeddedResponses.add(new Constants.EmbeddedResponse("https://d1wp6m56sqw74a.cloudfront.net/%40chuanche%2Fscilla-mobile%2F0.1.1%2Fab3e964571e63c37f5e3ec95ebfd2329-32.0.0-android.js", "assets://shell-app.bundle", "application/javascript"));
+        embeddedResponses.add(new Constants.EmbeddedResponse("https://d1wp6m56sqw74a.cloudfront.net/%40chuanche%2Fscilla-mobile%2F0.1.2%2F4b31eadf2a3ca1f0e0870d4eb16544ec-32.0.0-android.js", "assets://shell-app.bundle", "application/javascript"));
         // END EMBEDDED RESPONSES
     EMBEDDED_RESPONSES = embeddedResponses;
   }

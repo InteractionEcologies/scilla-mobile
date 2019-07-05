@@ -14,6 +14,9 @@ export const ScreenNames = {
   // This allows a modal to be shown, it is the parent of 
   // MainTabNavigator
 
+  // Dashboard
+  DashboardMain: "DashboardMain",
+
   // Regimen 
   RegimenMain: "RegimenMain",
   RegimenCreation: 'RegimenCreation',

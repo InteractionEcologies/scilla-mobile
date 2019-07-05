@@ -63,7 +63,7 @@ const customStyles = StyleSheet.create({
     height: 40, 
     width: 40
   }
-})
+});
 
 const SCOPE = "SetupRemindersView";
 
@@ -96,7 +96,6 @@ class SetupRemindersView extends Component<Props, State> {
       });
 
     }
-    
   }
 
   onTimePickerDismissed = () => {
@@ -150,7 +149,7 @@ class SetupRemindersView extends Component<Props, State> {
 
   
   render() {
-    console.log(SCOPE, "render");
+    // console.log(SCOPE, "render");
     const { regimen, numStates, currentStateIndex } = this.props;
     const { isTimePickerVisible, timePickerTime } = this.state;
 

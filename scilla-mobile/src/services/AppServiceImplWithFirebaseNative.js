@@ -4,7 +4,7 @@ import type { AppServiceConfig } from "./IAppService";
 import { FirebaseDS, IAuth, IDataSource,
   generatePushIDFunc
 } from "../libs/scijs";
-import {  FirebaseNativeAuth } from "../services/FirebaseNativeAuth";
+import {  FirebaseNativeAuth } from "./FirebaseNativeAuth";
 
 import firebase from "react-native-firebase";
 

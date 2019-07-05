@@ -42,7 +42,7 @@ export default class AppInitializer {
     this.appService.initialize();
 
     // 
-    this.appClock.setCurrentDatetime(moment("2019-07-25"));
+    // this.appClock.setCurrentDatetime(moment("2019-07-25"));
   }
 
   /**
