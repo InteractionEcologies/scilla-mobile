@@ -47,6 +47,7 @@ buck-out
 local.properties
 *.iml
 /scilla-mobile/android/**/build/
+/scilla-mobile/android/**/release/
 /scilla-mobile/android/**/local.properties
 /scilla-mobile/android/captures
 /scilla-mobile/android/expoview/libs/ReactAndroid-temp
