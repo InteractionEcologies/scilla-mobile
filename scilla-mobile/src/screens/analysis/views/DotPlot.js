@@ -47,7 +47,7 @@ export class DotPlot extends React.Component<Props, any> {
         >
           <G transform={"translate(5,40)"}>
             <VictoryLabel 
-            text={"Score"}
+            text={"Worst Possible Symptom"}
             dx={25}
             dy={25}
             />

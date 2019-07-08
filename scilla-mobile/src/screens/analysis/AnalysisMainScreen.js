@@ -29,10 +29,12 @@ import { MeasurementSelectionBtn } from "./views/MeasurementSelectionBtn";
 // import { Svg } from "expo";
 import { ScatterPlot } from "./views/ScatterPlot";
 import { DotPlot } from "./views/DotPlot";
+import AppClock from "../../services/AppClock";
 // const { Circle, Rect, G } = Svg; 
 
 
-const appStore: AppStore = new AppStore();
+const appStore: AppStore = AppStore.instance;
+const appClock: AppClock = AppClock.instance;
 
 type State = {
   trackedMeasurementTypes: MeasurementType[],
@@ -87,13 +89,13 @@ export default class AnalysisMainScreen extends React.Component<any, State> {
   }
 
   async getDailyEvals(regimen: IRegimen) {
-    // let startDate = regimen.startDate;
-    // let today = moment().format(DateFormatISO8601);
-    // return await appStore.getDailyEvalsByDateRange(
-    //   startDate,
-    //   today
-    // )
-    return fakeDailyEvals
+    let startDate = regimen.startDate;
+    let today = appClock.now();
+    return await appStore.getDailyEvalsByDateRange(
+      startDate,
+      today
+    )
+    // return fakeDailyEvals
   }
 
   async convertDailyEvalsToDataPoints(regimen: IRegimen, dailyEvals: DailyEvaluationObject[]) {
@@ -133,17 +135,6 @@ export default class AnalysisMainScreen extends React.Component<any, State> {
     }
   }
 
-  render() {
-    return (
-      <ScrollView>
-        <Content contentContainerStyle={styles.mainView}>
-          <Title style = {styles.title}>Symptom and side effects under different dosages</Title> 
-          {this.renderSelectionButtons()}
-          {this.renderChart()}
-        </Content>
-      </ScrollView>
-    )
-  }
 
   renderSelectionButtons = (): any => {
     let plottableTypes = []
@@ -224,6 +215,17 @@ export default class AnalysisMainScreen extends React.Component<any, State> {
         />
     }
   }
+
+
+  render() {
+    return (
+      <ScrollView contentContainerStyle={styles.mainView}>
+        <Title style = {styles.title}>Symptom Trend</Title> 
+        {this.renderSelectionButtons()}
+        {this.renderChart()}
+      </ScrollView>
+    )
+  }
 }
 
 const styles = StyleSheet.create({
@@ -242,7 +244,7 @@ const styles = StyleSheet.create({
     marginBottom: 50,
   },
   btn: {
-    height: 50,
+    // height: 50,
     marginRight: 6,
     marginBottom: 6,
     backgroundColor: null,

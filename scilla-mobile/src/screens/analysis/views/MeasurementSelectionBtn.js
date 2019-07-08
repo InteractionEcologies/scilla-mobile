@@ -21,6 +21,13 @@ type Props = {
 export class MeasurementSelectionBtn extends React.Component<Props, any> {
   render() {
     let additionalStyle = this._addAdditionalBtnStyle();
+
+    let textStyle;
+    if(this.props.selected) {
+      textStyle = {color: Colors.surfaceTextColor};
+    } else {
+      textStyle = {color: Colors.primaryTextColor}
+    }
     return (
       <Button 
         {...this.props} 
@@ -29,7 +36,7 @@ export class MeasurementSelectionBtn extends React.Component<Props, any> {
         style = {[this.props.style, additionalStyle]}
       >
         <AppText 
-          style = {this.props.selected ? null : {color: Colors.primaryTextColor}}>
+          style = {[textStyle, {fontSize: 14}]}>
             {this.props.measurementType}
         </AppText>
       </Button>

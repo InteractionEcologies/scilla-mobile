@@ -46,8 +46,8 @@ export class ScatterPlot extends React.Component<Props, any> {
         >
           <G transform={"translate(5,40)"}>
             <VictoryLabel 
-              text={"Avg Score"}
-              dx={20}
+              text={"Worst Possible Symptom"}
+              dx={25}
               dy={25}
             />
             {this.renderXAxis()}
