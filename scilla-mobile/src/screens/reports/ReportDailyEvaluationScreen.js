@@ -1,11 +1,23 @@
 // @flow
 import React from "react";
+
+import {
+  MeasurementTypes,
+  DateFormatISO8601,
+  NotExistError,
+  IRegimen
+} from "../../libs/scijs";
+import type {
+  MeasurementObject,
+  MeasurementType,
+  MeasurementValue
+} from "../../libs/scijs"
+
 import { Container, Content, Text, View, Icon, Button, Card, CardItem, Right, Toast } from "native-base";
-import { ScrollView } from "react-native";
+import { ScrollView, StyleSheet } from "react-native";
 import { AppText, Title, DotPageIndicator } from "../../components";
-import AppService from "../../services/AppService";
-import AppStore from "../../services/AppStore";
-import AppClock from "../../services/AppClock";
+// import styles from "./ReportStyles"; 
+
 import MoodScaleView from './views/MoodScaleView';
 import SleepScaleView from './views/SleepScaleView';
 import BaclofenScaleView from './views/BaclofenScaleView';
@@ -13,32 +25,28 @@ import SpasticityScaleView from './views/SpasticityScaleView';
 import TiredScaleView from './views/TiredScaleView';
 import ExerciseReportView from './views/ExerciseReportView';
 import MedicationReportView from './views/MedicationReportView';
+import GenericScaleView from "./views/GenericScaleView";
 import MemoView from './views/MemoView'
+import MeasurementScaleViewFactory from "./views/MeasurementScaleViewFactory";
+
 import { ScreenNames } from "../../constants/Screens";
+import AppService from "../../services/AppService";
+import AppStore from "../../services/AppStore";
+import AppClock from "../../services/AppClock";
+
 import moment from "moment";
-import {
-  MeasurementTypes,
-  DateFormatISO8601,
-  NotExistError
-} from "../../libs/scijs";
-import type {
-  MeasurementObject,
-  MeasurementType,
-  MeasurementValue
-} from "../../libs/scijs"
 import _ from "lodash";
-import styles from "./ReportStyles"; 
 import XDate from "xdate";
+
 import { 
   RequiredCheckboxMeasurementTypesInDailyEval, 
   RequiredMeasurementTypesInDailyEval, 
   DailyEvalQuestionPriorityMap
 } from "./constants";
-import { IRegimen } from "../../libs/scijs/models/regimen";
 
-const appStore = new AppStore();
-const appService = new AppService();
-const appClock = new AppClock();
+const appStore = AppStore.instance;
+const appService = AppService.instance;
+const appClock = AppClock.instance; 
 
 type State = {
   measurementsByType: {
@@ -50,13 +58,11 @@ type State = {
   dailyEvalReportObjId: ?string
 }
 
-
-
-
+const SCOPE = "ReportDailyEvaluationScreen";
 export default class ReportDailyEvaluationScreen extends React.Component<any, State> {
 
   static navigationOptions: any = {
-    title: 'Daily Evaluation'
+    title: 'Daily Report'
   };
 
   state = {
@@ -99,13 +105,16 @@ export default class ReportDailyEvaluationScreen extends React.Component<any, St
 
   async initializeState() {
     try {
-      let dailyEvalReportObj = await appStore.getDailyEvalByDate(this.state.selectedDate);
+      let date = moment(this.state.selectedDate);
+      let dailyEvalReportObj = await appStore.getDailyEvalByDate(date);
       this.setState({
         measurementsByType: dailyEvalReportObj.measurementsByType,
         dailyEvalReportObjId: dailyEvalReportObj.id
       }, ()=>{this._initDailyEvalViews()});
     } catch (e) {
       if(e.name === 'NotExistError'){
+        
+        // Look up required measurementTypes
         this._createInitialMeasurementsByType();
         console.log('cannot find daily eval')  
       }
@@ -114,8 +123,7 @@ export default class ReportDailyEvaluationScreen extends React.Component<any, St
 
   async _createInitialMeasurementsByType(){
     try {
-        let regimen = await appStore.getLatestRegimen();  
-        console.log('test')
+        let regimen = this.regimen;
 
         this.setState({
           measurementsByType: {
@@ -139,9 +147,9 @@ export default class ReportDailyEvaluationScreen extends React.Component<any, St
 
   async getInSituMeasurements(){
     try {
-      //let allMeasurements = await appStore.getMeasurementsByDate(this.state.selectedDate);
-      let allMeasurements = await appStore.getMeasurementsByDate('2018-11-26');
-      console.log(allMeasurements)     
+      let date = moment(this.state.selectedDate);
+      let allMeasurements = await appStore.getMeasurementsByDate(date);
+      // let allMeasurements = await appStore.getMeasurementsByDate('2018-11-26');
       this.setState({
         inSituMeasurements: allMeasurements
       })
@@ -156,7 +164,6 @@ export default class ReportDailyEvaluationScreen extends React.Component<any, St
     measurementTypesFromRegimen = this._sortMeasurementTypesByPriority(measurementTypesFromRegimen);
     this.dailyEvalViews = [...measurementTypesFromRegimen, 
                           ...RequiredMeasurementTypesInDailyEval];
-
   }
 
   _isOptionalMeasurementType = (type:string) =>{
@@ -212,12 +219,12 @@ export default class ReportDailyEvaluationScreen extends React.Component<any, St
 
     let user = appService.auth.currentUser;
     let uid = user.uid;
-    let regimenId = this.regimen.id || null;
+    let regimenId = this.regimen.id;
     let regimenPhase = this.regimen.getRegimenPhaseByDate(moment(this.state.selectedDate));
 
     if(regimenPhase == null) return;
 
-    this.newDailyEvalReport = {
+    let newDailyEvalReport = {
         id: this.state.dailyEvalReportObjId || appService.generatePushID(), 
         uid: uid,
         date: this.state.selectedDate, 
@@ -226,7 +233,9 @@ export default class ReportDailyEvaluationScreen extends React.Component<any, St
         regimenPhase: regimenPhase.phase,
         measurementsByType: meaurementsByType
     }
-    appStore.updateDailyEval(this.newDailyEvalReport);
+    appStore.updateDailyEval(newDailyEvalReport);
+    
+    this.newDailyEvalReport = newDailyEvalReport;
   }
 
   _showToast = () =>{
@@ -236,60 +245,10 @@ export default class ReportDailyEvaluationScreen extends React.Component<any, St
     })
   }
 
-  render(){
-    let { selectedDate } = this.state;
-    let markedDates = {
-      [selectedDate]: {
-        selected: true
-      }
-    }
-    let measurementType = this.dailyEvalViews[this.state.step];
-
-    return(
-        <Container style={styles.container}>
-          <ScrollView>
-            <Content contentContainerStyle={styles.content}>
-              <Card style={styles.dateCard}>
-                <CardItem style = {{justifyContent:"center"}}>
-                  <Title style={styles.titleText}>{this.state.selectedDate}</Title>   
-                </CardItem>
-              </Card>
-              <DotPageIndicator 
-                totalDots={this.dailyEvalViews.length}
-                activeDotIndex={this.state.step}
-                dotColor={'grey'}
-                activeDotColor={'black'}  
-              />
-              {this.renderScaleView(measurementType)}
-              {this.renderInSituReport(measurementType)}
-              <View style={styles.nextBackBtnView}>
-                <Button 
-                  iconLeft 
-                  bordered={true} 
-                  style={styles.button} 
-                  onPress={this.goToPrevious}>
-                  <Icon name="arrow-back"/>
-                  <AppText style={styles.textLeft}>Back</AppText>
-                </Button>
-                <Button 
-                  iconRight 
-                  style={styles.button} 
-                  onPress={this.goToNext} 
-                  >
-                  <AppText style={styles.textRight}>{this.setNextBtnText()}</AppText>
-                  <Icon name="arrow-forward"/>
-                </Button>
-              </View>
-            </Content>
-          </ScrollView>
-        </Container>     
-    );
-  }
-
   goToNext = () =>{
     if (this.state.step === this.dailyEvalViews.length-1){
-      this.props.navigation.navigate(ScreenNames.ReportSelection);
       this.onMeasurementValuesConfirmed();
+      this.props.navigation.navigate(ScreenNames.ReportMain);
     } else {
         this.setState({
         step: this.state.step+1
@@ -299,7 +258,7 @@ export default class ReportDailyEvaluationScreen extends React.Component<any, St
 
   goToPrevious = () =>{
     if (this.state.step === 0){
-      this.props.navigation.navigate(ScreenNames.ReportSelection)
+      this.props.navigation.navigate(ScreenNames.ReportMain)
       this.setState({
         step: 0
       })
@@ -319,13 +278,13 @@ export default class ReportDailyEvaluationScreen extends React.Component<any, St
   }
 
 
-  renderInSituReport = (measurementType:string) => {
+  renderInSituReportView = (measurementType:string) => {
     let inSituReport; 
     if (this._isOptionalMeasurementType(measurementType)){
       inSituReport = 
         <Card style={styles.inSituCard}>
           <CardItem header bordered>
-            <Text>Your {measurementType} Records:</Text>
+            <Title>Your {measurementType} Memos:</Title>
           </CardItem>
           {this._renderInSituMeasurements(measurementType)}
         </Card>
@@ -345,7 +304,7 @@ export default class ReportDailyEvaluationScreen extends React.Component<any, St
           return(
             <CardItem bordered key={i}>
               <AppText>{moment.unix(report.timestamp).format("h:mm A")}</AppText>
-              <Right><AppText>Score {report.value}</AppText></Right>
+              <Right><AppText>{measurementType} {report.value}</AppText></Right>
             </CardItem>
           );
         })
@@ -373,84 +332,169 @@ export default class ReportDailyEvaluationScreen extends React.Component<any, St
     RequiredCheckboxMeasurementTypesInDailyEval.forEach((type:string)=>{
       selectedValueForMedication[type] = this.state.measurementsByType[type]
     })
-  
-    switch(renderedMeasurementType) {
-        case MeasurementTypes.sleepQuality: 
-          view = <SleepScaleView
-            type = {measurementType}
-            selectedScaleValue = {selectedScaleValue}
-            updateSelectedScaleValue = {this.updateSelectedScaleValue}
-            isDailyEvalView = {isDailyEvalView}
-          />;
-          break;
-        case MeasurementTypes.spasticitySeverity: 
-          view = <SpasticityScaleView
-            type = {measurementType}
-            selectedScaleValue = {selectedScaleValue}
-            updateSelectedScaleValue = {this.updateSelectedScaleValue}
-            isDailyEvalView = {isDailyEvalView}
-          />
-          break;
-        case MeasurementTypes.baclofenAmount:
-          view = <BaclofenScaleView
-            type = {measurementType}
-            selectedScaleValue = {selectedScaleValue}
-            updateSelectedScaleValue = {this.updateSelectedScaleValue}
-            isDailyEvalView = {isDailyEvalView}
-          />
-          break;
-        case MeasurementTypes.tiredness:
-          view = <TiredScaleView
-            type = {measurementType}
-            selectedScaleValue = {selectedScaleValue}
-            updateSelectedScaleValue = {this.updateSelectedScaleValue}
-            isDailyEvalView = {isDailyEvalView}
-          />
-          break;
-        case MeasurementTypes.mood:
-          view = <MoodScaleView
-            type = {measurementType}
-            selectedScaleValue = {selectedScaleValue}
-            updateSelectedScaleValue = {this.updateSelectedScaleValue}
-            isDailyEvalView = {isDailyEvalView}
-          />
-          break;
-        case MeasurementTypes.exerciseTime:
-          view = <ExerciseReportView 
-            type = {measurementType}
-            selectedScaleValue = {selectedScaleValue}
-            updateSelectedScaleValue = {this.updateSelectedScaleValue}
-          />
-          break;
-        case MeasurementTypes.medication:
-          view = <MedicationReportView 
-            selectedValue = {selectedValueForMedication}
-            updateSelectedScaleValue = {this.updateSelectedScaleValue}
-          />
-          break;
-        case MeasurementTypes.memo:
-          view = <MemoView 
-            type = {measurementType}
-            selectedScaleValue = {selectedScaleValue}
-            updateSelectedScaleValue = {this.updateSelectedScaleValue}
-          />
-          break;
-        default: 
-          view = <SleepScaleView
-            type = {measurementType}
-            selectedScaleValue = {selectedScaleValue}
-            updateSelectedScaleValue = {this.updateSelectedScaleValue}
-            isDailyEvalView = {isDailyEvalView}
-          />;
-          break;
-      }
+    
+
+    view = MeasurementScaleViewFactory.createView(
+      renderedMeasurementType,
+      selectedScaleValue, 
+      this.updateSelectedScaleValue
+    )
+
+    // switch(renderedMeasurementType) {
+    //     case MeasurementTypes.sleepQuality: 
+
+    //       view = <SleepScaleView
+    //         type = {measurementType}
+    //         selectedScaleValue = {selectedScaleValue}
+    //         updateSelectedScaleValue = {this.updateSelectedScaleValue}
+    //         isDailyEvalView = {isDailyEvalView}
+    //       />;
+    //       break;
+    //     case MeasurementTypes.spasticitySeverity: 
+    //       view = <SpasticityScaleView
+    //         type = {measurementType}
+    //         selectedScaleValue = {selectedScaleValue}
+    //         updateSelectedScaleValue = {this.updateSelectedScaleValue}
+    //         isDailyEvalView = {isDailyEvalView}
+    //       />
+    //       break;
+    //     case MeasurementTypes.baclofenAmount:
+    //       view = <BaclofenScaleView
+    //         type = {measurementType}
+    //         selectedScaleValue = {selectedScaleValue}
+    //         updateSelectedScaleValue = {this.updateSelectedScaleValue}
+    //         isDailyEvalView = {isDailyEvalView}
+    //       />
+    //       break;
+    //     case MeasurementTypes.tiredness:
+    //       view = <TiredScaleView
+    //         type = {measurementType}
+    //         selectedScaleValue = {selectedScaleValue}
+    //         updateSelectedScaleValue = {this.updateSelectedScaleValue}
+    //         isDailyEvalView = {isDailyEvalView}
+    //       />
+    //       break;
+    //     case MeasurementTypes.mood:
+    //       view = <MoodScaleView
+    //         type = {measurementType}
+    //         selectedScaleValue = {selectedScaleValue}
+    //         updateSelectedScaleValue = {this.updateSelectedScaleValue}
+    //         isDailyEvalView = {isDailyEvalView}
+    //       />
+    //       break;
+    //     case MeasurementTypes.exerciseTime:
+    //       view = <ExerciseReportView 
+    //         type = {measurementType}
+    //         selectedScaleValue = {selectedScaleValue}
+    //         updateSelectedScaleValue = {this.updateSelectedScaleValue}
+    //       />
+    //       break;
+    //     case MeasurementTypes.medication:
+    //       view = <MedicationReportView 
+    //         selectedValue = {selectedValueForMedication}
+    //         updateSelectedScaleValue = {this.updateSelectedScaleValue}
+    //       />
+    //       break;
+    //     case MeasurementTypes.memo:
+    //       view = <MemoView 
+    //         type = {measurementType}
+    //         selectedScaleValue = {selectedScaleValue}
+    //         updateSelectedScaleValue = {this.updateSelectedScaleValue}
+    //       />
+    //       break;
+    //     default: 
+    //       view = <SleepScaleView
+    //         type = {measurementType}
+    //         selectedScaleValue = {selectedScaleValue}
+    //         updateSelectedScaleValue = {this.updateSelectedScaleValue}
+    //         isDailyEvalView = {isDailyEvalView}
+    //       />;
+    //       break;
+    //   }
       return(
-           <Card style={styles.dailyEvalCard}>
-            <CardItem style = {styles.cardItems}> 
-            {view}
-            </CardItem>
+           <Card style={styles.card}>
+             <CardItem header bordered>
+              <Title>Rate today's overall symptom</Title>
+             </CardItem>
+             <CardItem style={styles.cardItem}>
+              {view}
+             </CardItem>
           </Card>
       );
   }
 
+
+  render(){
+    let { selectedDate } = this.state;
+    let measurementType = this.dailyEvalViews[this.state.step];
+
+    const friendlyDateStr = moment(selectedDate).format("dddd, Do MMM")
+
+    return(
+      <ScrollView contentContainerStyle={styles.content}>
+          <Card style={styles.card}>
+            <Title style={styles.titleText}>{friendlyDateStr}</Title>   
+            <DotPageIndicator 
+              totalDots={this.dailyEvalViews.length}
+              activeDotIndex={this.state.step}
+              dotColor={'grey'}
+              activeDotColor={'black'}  
+            />
+          </Card>
+          {this.renderScaleView(measurementType)}
+          {this.renderInSituReportView(measurementType)}
+          <View style={styles.nextBackBtnView}>
+            <Button 
+              iconLeft 
+              bordered={true} 
+              style={styles.button} 
+              onPress={this.goToPrevious}>
+              <Icon name="arrow-back"/>
+              <AppText style={styles.btnTextLeft}>Back</AppText>
+            </Button>
+            <Button 
+              iconRight 
+              style={styles.button} 
+              onPress={this.goToNext} 
+              >
+              <AppText style={styles.btnTextRight}>{this.setNextBtnText()}</AppText>
+              <Icon name="arrow-forward"/>
+            </Button>
+          </View>
+      </ScrollView>
+    );
+  }
+
 }
+
+const styles = StyleSheet.create({
+  content: {
+    width: '100%', 
+    paddingRight: 10, 
+    paddingLeft: 10
+  },
+  card: {
+    // width: '100%',
+    // alignItems: 'center'
+  },
+  cardItem: {
+    width: '100%',
+  },  
+  nextBackBtnView: {
+    flexDirection: "row",
+    justifyContent: 'space-between',
+  },
+  titleText: {
+    fontSize: 20,
+  },  
+  button: {
+    // flex: 1
+    width: 130
+  },
+  btnTextLeft: {
+    textAlign: 'center'
+  },
+  btnTextRight: {
+    textAlign: 'center'
+  }
+});

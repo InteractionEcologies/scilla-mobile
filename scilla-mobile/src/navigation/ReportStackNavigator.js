@@ -4,25 +4,27 @@ import { createStackNavigator } from "react-navigation";
 import TabBarIcon from "../components/TabBarIcon";
 import { Platform } from "react-native";
 import { Root } from "native-base";
-import ReportSelectionScreen from "../screens/reports/ReportSelectionScreen";
+import ReportMainScreen from "../screens/reports/ReportMainScreen";
+// import ReportSelectionScreen from "../screens/reports/ReportSelectionScreen";
 import ReportMeasurementScreen from "../screens/reports/ReportMeasurementScreen";
 import ReportDailyEvaluationScreen from "../screens/reports/ReportDailyEvaluationScreen";
 import { ScreenNames } from "../constants/Screens";
 
 let ReportStack = createStackNavigator(
   {
-    [ScreenNames.ReportSelection]: ReportSelectionScreen,
+    [ScreenNames.ReportMain]: ReportMainScreen,
+    // [ScreenNames.ReportSelection]: ReportSelectionScreen,
     [ScreenNames.ReportMeasurement]: ReportMeasurementScreen,
     [ScreenNames.ReportDailyEvaluation]: ReportDailyEvaluationScreen
   },
   {
-    initialRouteName: ScreenNames.ReportSelection
+    initialRouteName: ScreenNames.ReportMain
   }
 
 )
 
 ReportStack.navigationOptions = {
-  tabBarLabel: "Report",
+  tabBarLabel: "Daily Report",
   tabBarIcon: ({ focused }) => (
     <TabBarIcon 
       focused={focused}

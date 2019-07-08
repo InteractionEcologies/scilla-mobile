@@ -16,7 +16,7 @@ export default class MemoView extends React.Component<Props,any> {
   render(){
     return(
       <View style={styles.main}>
-        <AppText style={styles.title}>Memo</AppText>
+        <AppText style={styles.title}>Additional Notes</AppText>
         <Textarea 
             rowSpan={6} 
             bordered 

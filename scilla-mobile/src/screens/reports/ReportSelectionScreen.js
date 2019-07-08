@@ -36,7 +36,7 @@ type State = {
 
 export default class ReportSelectionScreen extends React.Component<any, State> {
   static navigationOptions: any = {
-    title: 'Any-time Report'
+    title: 'Memo'
   };
 
   state = {

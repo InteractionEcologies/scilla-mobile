@@ -2,7 +2,7 @@
 import { MeasurementTypes } from "../../libs/scijs";
 
 export const RequiredMeasurementTypesInDailyEval = [
-  MeasurementTypes.exerciseTime,
+  // MeasurementTypes.exerciseTime,
   MeasurementTypes.memo
 ]
 

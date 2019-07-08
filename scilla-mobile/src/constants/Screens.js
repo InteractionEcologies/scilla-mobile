@@ -25,6 +25,7 @@ export const ScreenNames = {
   RegimenEditReminders: "RegimenEditReminders",
   
   // Reports
+  ReportMain: "ReportMain",
   ReportSelection: "ReportSelection",
   ReportMeasurement: "ReportMeasurement",
   ReportDailyEvaluation: "ReportDailyEvaluation", 
