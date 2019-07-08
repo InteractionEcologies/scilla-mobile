@@ -3,7 +3,7 @@ import React, { Component, Fragment } from "react";
 import { StyleSheet, Platform } from "react-native";
 
 import { View, Row, Grid, Col, Button } from "native-base";
-import { Ionicons } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import type { IRegimen, ReminderConfigObject } from "../libs/scijs";
 import { AlarmTime, Utils, ReminderTypeOptions } from "../libs/scijs"; 
 import { AppText } from "./StyledText";
@@ -176,23 +176,16 @@ export class EditRemindersView extends Component<Props, State> {
                   onPress={(e) => this.toggleReminder(config.id)}
                 >
                 {config.enabled &&
-                  <Ionicons 
+                  <MaterialCommunityIcons 
                   size={30}
-                  name={
-                    Platform.OS === "ios" 
-                    ? "ios-notifications-outline" 
-                    : "md-notifications-outline"
-                  }/>
+                  name="bell-outline"
+                  />
                 }
 
                 {!config.enabled &&
-                  <Ionicons 
+                  <MaterialCommunityIcons 
                   size={30}
-                  name={
-                    Platform.OS === "ios" 
-                    ? "ios-notifications-off" 
-                    : "md-notifications-off"
-                  }/>
+                  name="bell-off-outline"/>
                 }
                 </Button>
               </View>
@@ -217,23 +210,15 @@ export class EditRemindersView extends Component<Props, State> {
                 <Button transparent
                   onPress={(e) => this.toggleReminder(config.id)}>
                   {config.enabled &&
-                    <Ionicons 
+                    <MaterialCommunityIcons 
                     size={30}
-                    name={
-                      Platform.OS === "ios" 
-                      ? "ios-notifications-outline" 
-                      : "md-notifications-outline"
-                    }/>
+                    name="bell-outline"/>
                   }
 
                   {!config.enabled &&
-                    <Ionicons 
+                    <MaterialCommunityIcons 
                     size={30}
-                    name={
-                      Platform.OS === "ios" 
-                      ? "ios-notifications-off" 
-                      : "md-notifications-off"
-                    }/>
+                    name="bell-off-outline"/>
                   }
                   </Button>                    
                 </View>
@@ -260,7 +245,7 @@ const customStyles = StyleSheet.create({
   },
   headerRow: {
     // flex: 1, 
-    width: '100%',
+    // width: '100%',
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
@@ -282,6 +267,7 @@ const customStyles = StyleSheet.create({
   headerText: {
     textAlign: 'center',
     marginBottom: 10,
+    // backgroundColor: 'red'
   }, 
   labelText: {
     // alignItems: 'center', 

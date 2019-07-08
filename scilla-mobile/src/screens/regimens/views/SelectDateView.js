@@ -43,6 +43,7 @@ class SelectDateView extends Component<any, any> {
           activeDotIndex={this.props.currentStateIndex}
           dotColor='grey'
           activeDotColor='black'  
+
         />
         <CalendarList 
           style={{height: 100}}

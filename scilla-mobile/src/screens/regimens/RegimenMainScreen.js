@@ -287,7 +287,7 @@ export default class RegimenMainScreen extends React.Component<any, State> {
         <Card style={styles.currentRegimenPhaseCard}>
           <CardItem header bordered>
             {regimenHasStarted &&
-              <AppText style={{flex: 5}}>Current Regimen Phase</AppText>
+              <AppText style={{flex: 4}}>Current Regimen Phase</AppText>
             }
             {!regimenHasStarted &&
               <AppText>Upcoming Regimen</AppText>
@@ -309,7 +309,7 @@ export default class RegimenMainScreen extends React.Component<any, State> {
 
         <Card>
           <CardItem header bordered>
-            <AppText style={{flex: 5}}>Reminder</AppText>
+            <AppText style={{flex: 4}}>Reminder</AppText>
             <Button small bordered style={{flex: 1}}
               onPress={this.didPressEditReminderBtn}
             ><AppText>Edit</AppText></Button>

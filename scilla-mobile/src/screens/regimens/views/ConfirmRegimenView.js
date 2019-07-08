@@ -1,5 +1,5 @@
 // @flow
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 
 import type { IRegimen } from "../../../libs/scijs";
 
@@ -24,19 +24,6 @@ type Props = {
   currentStateIndex: number
 }
 
-const customStyles = StyleSheet.create({
-  view: {
-    width: '100%',
-    // backgroundColor: Colors.accentColor
-  },
-  labelText: {
-    textAlign: 'right',
-    paddingRight: 10,
-  },
-  button: {
-    marginTop: 10
-  }
-});
 
 class ConfirmRegimenView extends Component<Props, any> {
   
@@ -44,41 +31,43 @@ class ConfirmRegimenView extends Component<Props, any> {
     this.props.onConfirmed();
   }
 
-  _renderRegimenInfo = () => {
+  render = () => {
     let { regimen } = this.props;
     const param = regimen.regimenParam;
 
     return (
-      <View>
-        <Title>Your Regimen</Title>
-        <DotPageIndicator 
-          totalDots={this.props.numStates}
-          activeDotIndex={this.props.currentStateIndex}
-          dotColor='grey'
-          activeDotColor='black'  
-        />
-        <Grid>
-          <Row>
-            <Col><AppText style={customStyles.labelText}>Medicine</AppText></Col>
-            <Col><AppText>Baclofen</AppText></Col>
-          </Row>
-          <Row>
-            <Col><AppText style={customStyles.labelText}>Start dosage</AppText></Col>
-            <Col><AppText>{param.startDosageMg} mg</AppText></Col>
-          </Row>
-          <Row>
-            <Col><AppText style={customStyles.labelText}>Increment</AppText></Col>
-            <Col><AppText>{param.incrementMg} mg</AppText></Col>
-          </Row>
-          <Row>
-            <Col><AppText style={customStyles.labelText}>Phase Length</AppText></Col>
-            <Col><AppText>{param.phaseLengthDays} days</AppText></Col>
-          </Row>
-          <Row>
-            <Col><AppText style={customStyles.labelText}>Max dosage</AppText></Col>
-            <Col><AppText>{param.maxDosageMg} mg</AppText></Col>
-          </Row>
-        </Grid>
+      <View style={customStyles.view}>
+        
+          <Title>Your Regimen</Title>
+          <DotPageIndicator 
+            totalDots={this.props.numStates}
+            activeDotIndex={this.props.currentStateIndex}
+            dotColor='grey'
+            activeDotColor='black'  
+
+            style={{marginBottom: 10}}  
+          />
+
+        <View style={customStyles.row}>
+          <AppText style={customStyles.leftText}>Medicine</AppText>
+          <AppText style={customStyles.rightText}>Baclofen</AppText>
+        </View>
+        <View style={customStyles.row}>
+          <AppText style={customStyles.leftText}>Start dosage</AppText>
+          <AppText style={customStyles.rightText}>{param.startDosageMg} mg</AppText>
+        </View>
+        <View style={customStyles.row}>
+          <AppText style={customStyles.leftText}>Increment</AppText>
+          <AppText style={customStyles.rightText}>{param.incrementMg} mg</AppText>
+        </View>
+        <View style={customStyles.row}>
+          <AppText style={customStyles.leftText}>Phase Length</AppText>
+          <AppText style={customStyles.rightText}>{param.phaseLengthDays} days</AppText>
+        </View>
+        <View style={customStyles.row}>
+          <AppText style={customStyles.leftText}>Max dosage</AppText>
+          <AppText style={customStyles.rightText}>{param.maxDosageMg} mg</AppText>
+        </View>
         <Button
           style={customStyles.button}
           full
@@ -88,16 +77,33 @@ class ConfirmRegimenView extends Component<Props, any> {
       </View>
     )
   }
-
-
-  render() {
-
-    return (
-      <View style={customStyles.view}>
-        {this._renderRegimenInfo()}
-      </View>
-    )
-  }
 }
+
+
+const customStyles = StyleSheet.create({
+  view: {
+    flexDirection: "column", 
+    justifyContent: "flex-start",
+    alignItems: 'center',
+  },
+  row: {
+    flexDirection: 'row',
+    justifyContent: "center",
+    alignItems: 'center',
+  },
+  leftText: {
+    textAlign: 'right',
+    paddingRight: 10,
+    flex: 1
+  },
+  rightText: {
+    textAlign: 'left', 
+    paddingLeft: 10,
+    flex: 1
+  },
+  button: {
+    marginTop: 10,
+  }
+});
 
 export default ConfirmRegimenView;

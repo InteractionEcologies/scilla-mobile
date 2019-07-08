@@ -281,8 +281,8 @@ class RegimenCreationScreens extends React.Component<any, States>
   // MARK: - Rendering
   render() {
     return (
-      <Container>
-        <Content contentContainerStyle={AppStyles.content}>
+      // <Container>
+        <View style={AppStyles.contentBody}>
           {this._renderInnerView()}
           
           <View style={styles.nextBackBtnView}>
@@ -300,8 +300,8 @@ class RegimenCreationScreens extends React.Component<any, States>
             </Button>
           </View>
 
-        </Content>
-      </Container>
+        </View>
+      // </Container>
     )
   }
 

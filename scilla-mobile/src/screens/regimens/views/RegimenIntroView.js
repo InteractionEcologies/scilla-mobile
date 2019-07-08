@@ -28,6 +28,8 @@ class RegimenIntroView extends Component<Props, any> {
           activeDotIndex={this.props.currentStateIndex}
           dotColor='grey'
           activeDotColor='black'  
+
+          style={{marginBottom: 10}}
         />
         <RegimenSchedule
           regimenPhases={regimen.regimenPhases}

@@ -18,14 +18,16 @@ type Props = {
   totalDots: number, 
   activeDotIndex: number,
   dotColor?: string, 
-  activeDotColor?: string
+  activeDotColor?: string,
+
+  style?: any
 }
 
 export class DotPageIndicator extends React.Component<Props, any> {
 
   render() {
     return ( 
-      <View style={styles.dotPageIndicator}>
+      <View style={[styles.dotPageIndicator, this.props.style]}>
         {this.renderDots()}
       </View>
     )
@@ -72,6 +74,13 @@ export class DotPageIndicator extends React.Component<Props, any> {
 }
 
 const styles = StyleSheet.create({
+  dotPageIndicator: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 4, 
+    marginBottom: 4,
+    // width: '100%',
+  },
   dot: {
     width: 8, 
     height: 8, 
@@ -86,13 +95,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'black',
     marginRight: 4
   },
-  dotPageIndicator: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginTop: 4, 
-    marginBottom: 4,
-    width: '100%',
-  }
+
 });
 
 

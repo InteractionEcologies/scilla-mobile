@@ -4,7 +4,7 @@ import type { ReminderConfigObject } from "../libs/scijs";
 
 import { View } from "native-base";
 import { Platform, StyleSheet } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { AppText } from "../components";
 import { AlarmTime } from "../libs/scijs";
 
@@ -34,24 +34,16 @@ class ReminderSwitcher extends Component<any, any> {
         {visible &&
           <Fragment>
             {enabled &&
-              <Ionicons
+              <MaterialCommunityIcons
                 size={30}
-                name={
-                  Platform.OS === "ios"
-                  ? "ios-notifications-outline" 
-                  : "md-notifications-outline"
-                }
+                name="bell-outline"
                 onPress={ this.props.didToggleReminder }
               />
             }
             {!enabled &&
-              <Ionicons
+              <MaterialCommunityIcons
               size={30}
-              name={
-                Platform.OS === "ios"
-                ? "ios-notifications-off" 
-                : "md-notifications-off"
-              }
+              name="bell-off-outline"
               onPress={ this.props.didToggleReminder }
             />
             }

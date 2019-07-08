@@ -10,12 +10,12 @@ import { RegimenFactory, RegimenStatusOptions } from "../../libs/scijs";
 import AppStore from "../../services/AppStore";
 import AppService from "../../services/AppService";
 
-import styles from "./RegimenStyles";
+// import styles from "./RegimenStyles";
 import Colors from "../../constants/Colors";
 
-import { StyleSheet } from "react-native";
+import { StyleSheet, ScrollView } from "react-native";
 import { AppText } from "../../components";
-import { View, Button, Card, CardItem, Content } from "native-base";
+import { View, Button, Card, CardItem } from "native-base";
 
 import { ScreenNames } from "../../constants/Screens";
 import InputCodeView from "./views/InputCodeView";
@@ -115,25 +115,7 @@ const StateMachine = {
   }
 }
 
-const customStyles = StyleSheet.create({
-  content: {
-    flexDirection: "column",
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    flex: 1
-  },
-  card: {
-    marginLeft: 10, 
-    marginRight: 10,
-  },
-  cardItem: {
-    width: '100%',
-    flexDirection: "column",
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    // backgroundColor: Colors.primaryColor
-  }
-});
+
 
 type State = {
   regimen: ?IRegimen,
@@ -183,6 +165,7 @@ class RegimenRedeemScreen extends Component<any, State> {
   }
 
   showNavBtns = () => {
+    console.log("show nav btns");
     this.toggleNavBtns(true);
   }
 
@@ -308,9 +291,9 @@ class RegimenRedeemScreen extends Component<any, State> {
     regimen = ((regimen: any): IRegimen);
 
     return (
-      <Content>
-        <Card style={customStyles.card}>
-          <CardItem style={customStyles.cardItem}>
+      <ScrollView contentContainerStyle={styles.content}>
+        <Card style={styles.card}>
+          <CardItem style={styles.cardItem}>
             <Action is={StateNames.inputCode}>
               <InputCodeView 
                 onRedeemed={this.findRegimenByCode}
@@ -379,31 +362,101 @@ class RegimenRedeemScreen extends Component<any, State> {
           ? styles.nextBackBtnView
           : styles.onlyNextBtnView
         }>
-        { isBackBtnDisplayed &&
-          <Button 
-            style={styles.button}
-            iconLeft 
-            bordered={true}
-            onPress={this.goToPrevious}>
-            <AppText style={styles.textRight}>
-            Back
-            </AppText>
-          </Button>
-        }
-        { isNextBtnDisplayed &&
-          <Button
-            style={styles.button}
-            iconRight
-            bordered={true}
-            onPress={this.goToNext}>
-            <AppText style={styles.textRight}>Next</AppText>
-          </Button>
-        }
-      </View>
+          { isBackBtnDisplayed &&
+            <Button 
+              style={styles.button}
+              iconLeft 
+              bordered={true}
+              onPress={this.goToPrevious}>
+              <AppText style={styles.backBtnText}>
+              Back
+              </AppText>
+            </Button>
+          }
+          { isNextBtnDisplayed &&
+            <Button
+              primary
+              style={styles.nextButton}
+              iconRight
+              
+              bordered={true}
+              onPress={this.goToNext}>
+              <AppText style={styles.nextBtnText}>Next</AppText>
+            </Button>
+          }
+        </View>
       
-      </Content>
+      </ScrollView>
     )
   }
 }
+
+const styles = StyleSheet.create({
+  content: {
+    flexDirection: "column",
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    flex: 1,
+    paddingLeft: 10, 
+    paddingRight: 10
+  },
+  card: {
+    width: '100%',
+    marginRight: 10, 
+    marginLeft: 10
+    // backgroundColor: 'yellow'
+  },
+  cardItem: {
+    width: '100%',
+    flexDirection: "column",
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    // backgroundColor: 'green'
+  },
+  nextBackBtnView: {
+    height: 50,
+    width: '100%',
+    flexDirection: "row",
+    justifyContent: 'space-between',
+    left: 0, 
+    right: 0,
+    marginTop: 8,
+    paddingLeft: 10, 
+    paddingRight: 10
+  },
+  onlyNextBtnView: {
+    height: 50,
+    flexDirection: "row",
+    justifyContent: 'flex-end',
+    left: 0, 
+    right: 0,
+    marginTop: 8,
+    paddingLeft: 10, 
+    paddingRight: 10,
+  },
+  nextButton: {
+    width: 110, 
+    backgroundColor: Colors.primaryColor
+  },  
+  button: {
+    width: 110,
+    // backgroundColor: Colors.primaryColor
+  },
+  backBtnText: {
+    textAlign: 'center',
+    flex: 1
+  },
+  nextBtnText: {
+    textAlign: 'center',
+    flex: 1,
+    color: Colors.surfaceTextColor
+  },
+  dotPageIndicator: {
+    marginTop: 8
+  },
+  warningMessage: {
+    color: Colors.errorText
+  }
+});
 
 export default withStateMachine(StateMachine)(RegimenRedeemScreen);

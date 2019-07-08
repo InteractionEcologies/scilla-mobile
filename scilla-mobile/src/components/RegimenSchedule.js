@@ -64,7 +64,7 @@ export class RegimenSchedule extends React.Component<Props, any> {
 
   render() {
     return (
-      <View style={[{flex: 1}, this.props.style]}>
+      <View style={this.props.style}>
         <ThreePillTableHeader 
           columns={["Phase", "Morning", "Afternoon", "Evening"]}
         />

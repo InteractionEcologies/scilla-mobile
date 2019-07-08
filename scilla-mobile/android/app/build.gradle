@@ -23,7 +23,7 @@ android {
     applicationId 'com.intecolab.scilla'
     targetSdkVersion 26
     versionCode 1
-    versionName '0.1.0'
+    versionName '0.1.1'
     ndk {
       abiFilters 'armeabi-v7a', 'x86'
     }

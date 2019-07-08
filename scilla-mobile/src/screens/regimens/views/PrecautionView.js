@@ -1,7 +1,7 @@
 // @flow
 import React, { Component, Fragment } from "react"; 
 import { Title, AppText, DotPageIndicator } from "../../../components";
-import { Grid, Row, Col } from "native-base";
+import { View } from "native-base";
 
 type Props = {
   numStates: number, 
@@ -12,23 +12,21 @@ class PrecautionView extends Component<Props, any> {
 
   render() {
     return (
-      <Fragment>
+      <View>
         <Title>Precautions</Title>
         <DotPageIndicator 
           totalDots={this.props.numStates}
           activeDotIndex={this.props.currentStateIndex}
           dotColor='grey'
           activeDotColor='black'  
+
+          style={{marginBottom: 10}}
         />
-        <Grid>
-          <Row>
-            <AppText>• Do not stop your medication abruptly.</AppText> 
-          </Row>
-          <Row>
-            <AppText>• Contact your doctor if you have any questions.</AppText> 
-          </Row>
-        </Grid>
-      </Fragment>
+        <View style={{alignItems: "flex-start"}}>
+          <AppText>• Do not stop your medication abruptly.</AppText> 
+          <AppText>• Contact your doctor if you have any questions.</AppText> 
+        </View>
+      </View>
     );
   }
 }

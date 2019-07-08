@@ -48,7 +48,7 @@ class SelectMeasurementsView extends Component<Props, any> {
     // regimen.trackedMeasurementTypes
 
     return (
-      <Fragment>
+      <View>
         <Title>Select side effects to monitor</Title>
         <DotPageIndicator 
           totalDots={this.props.numStates}
@@ -57,7 +57,7 @@ class SelectMeasurementsView extends Component<Props, any> {
           activeDotColor='black'  
         />
         {this.renderMeasurements()}
-      </Fragment>
+      </View>
     );
   }
 
@@ -70,34 +70,33 @@ class SelectMeasurementsView extends Component<Props, any> {
     return _.map<any, any>(viewModel.measurements, (m: MeasurementView) => {
       index += 1;
       return (
-        <Row key={index}>
+        <View key={index} style={{width: '100%'}}>
           <Button 
             full 
             iconLeft 
-            bordered 
+            bordered={ m.selected ? false: true}
             style={{width: '100%', marginTop: 10}}
             onPress={(e) => {this.onToggleMeasurement(m)}}
           >
-              <Col size={1} style={{alignItems: 'flex-end'}}>
+              <View style={{alignItems: 'center', flex: 2}}>
               {m.selected &&
-              
                 <Ionicons 
                   name={
                     Platform.OS === "ios"
                     ? "ios-checkmark"
                     : "md-checkmark"
                   }
-                  size={30}
+                  size={20}
                 />
               } 
-              </Col>
-              <Col size={4}>
+              </View>
+              <View style={{flex: 4}}>
                 <AppText>
                   {m.type}
                 </AppText>
-              </Col>
+              </View>
           </Button>
-        </Row>
+        </View>
       )
     })
   }
