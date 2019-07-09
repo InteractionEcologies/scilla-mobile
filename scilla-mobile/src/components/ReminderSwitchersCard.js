@@ -3,7 +3,7 @@ import React, { Component, Fragment } from "react"
 import type { ReminderConfigObject } from "../libs/scijs";
 
 import { View } from "native-base";
-import { Platform, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { AppText } from "../components";
 import { AlarmTime } from "../libs/scijs";
@@ -19,16 +19,16 @@ type ReminderSwitcherProps = {
   enabled: boolean, // The state of the reminder
   visible: boolean, // some phases do not require all the reminders. 
   
-  didToggleReminder: (reminderSlotId: string) => {},
+  didToggleReminder: (e: any) => void,
 
   [key: string]: any
 
 }
 
-class ReminderSwitcher extends Component<any, any> {
+class ReminderSwitcher extends Component<ReminderSwitcherProps, any> {
 
   render() {
-    const { time, enabled, visible, reminderId } = this.props;
+    const { time, enabled, visible } = this.props;
     return (
       <View style={styles.switch}>
         {visible &&
@@ -60,9 +60,9 @@ class ReminderSwitcher extends Component<any, any> {
 
 type ReminderSwitchersCardProps = {
   reminderConfigs: ReminderConfigObject[],
-  didToggleReminder: (reminderSlotId: string) => {}
+  didToggleReminder: (reminderSlotId: string) => void
 }
-export default class ReminderSwitchersCard extends Component<any, any> {
+export default class ReminderSwitchersCard extends Component<ReminderSwitchersCardProps, any> {
 
   render() {
     return (
@@ -76,7 +76,7 @@ export default class ReminderSwitchersCard extends Component<any, any> {
     const { reminderConfigs } = this.props;
     const { didToggleReminder } = this.props;
     
-    return _.map<any, any>(reminderConfigs, (config) => {
+    return _.map<ReminderConfigObject, any>(reminderConfigs, (config: ReminderConfigObject) => {
       const time = new AlarmTime(config.time, appClock.now());
       const timeStr = time.toMoment().format("h:mm a");
       return (

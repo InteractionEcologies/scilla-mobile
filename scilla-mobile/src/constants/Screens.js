@@ -4,6 +4,7 @@ export const ScreenNames = {
 
   // Modals
   RegimenPhaseTransition: 'RegimenPhaseTransition',
+  RegimenPhaseManualUpdate: "RegimenPhaseManualUpdate",
 
   Main: "Main", // A switch navigator that switch between Auth and MainTabNaviagor
   

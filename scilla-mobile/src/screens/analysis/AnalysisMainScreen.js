@@ -4,7 +4,7 @@ import moment from "moment";
 
 import React from "react";
 import { StyleSheet, ScrollView  } from 'react-native';
-import { Content, View } from "native-base";
+import { View } from "native-base";
 import { Title } from "../../components";
 import AppStore from "../../services/AppStore";
 
@@ -16,8 +16,7 @@ import type {
 import { 
   MeasurementTypes,
   BaclofenUtils,
-  NotExistError,
-  fakeDailyEvals,
+  // fakeDailyEvals,
   IRegimenPhase
 } from "../../libs/scijs"; 
 

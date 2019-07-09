@@ -1,20 +1,13 @@
 // @flow
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 
-import { AppText, Title, DotPageIndicator } from "../../../components";
-import { Form, View, Row, Grid, Col, Input, Item, Label, Button } from "native-base";
-import { Platform, StyleSheet } from "react-native";
-import DateTimePicker from "react-native-modal-datetime-picker";
-import { Ionicons } from '@expo/vector-icons';
+import { Title, DotPageIndicator } from "../../../components";
+import { View} from "native-base";
 import { EditRemindersView } from "../../../components/EditRemindersView";
 
-import { IRegimen, ReminderTypeOptions, ReminderTimeConstraintOptions,
-  Utils, AlarmTime
-} from "../../../libs/scijs";
+import { IRegimen } from "../../../libs/scijs";
 import type { ReminderConfigObject } from "../../../libs/scijs";
 
-import _ from "lodash";
-import moment from "moment";
 
 type Props = {
   regimen: IRegimen,
@@ -33,6 +26,7 @@ const initialState: State = {
 }
 
 
+// eslint-disable-next-line no-unused-vars
 const SCOPE = "SetupRemindersView";
 
 class SetupRemindersView extends Component<Props, State> {
@@ -55,7 +49,7 @@ class SetupRemindersView extends Component<Props, State> {
 
   render() {
     // console.log(SCOPE, "render");
-    const { regimen, numStates, currentStateIndex } = this.props;
+    const { numStates, currentStateIndex } = this.props;
     const { reminders } = this.state;
 
     return (

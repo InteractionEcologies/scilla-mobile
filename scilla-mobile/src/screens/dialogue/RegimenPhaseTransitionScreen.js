@@ -8,13 +8,12 @@ import { AntDesign } from "@expo/vector-icons";
 import { Title, AppText } from "../../components";
 import RegimenPhaseTransitionBriefing from "../../components/RegimenPhaseTransitionBriefing";
 
-import type { RegimenPhaseChangeRequestType, IRegimenPhase } from "../../libs/scijs";
-import { RegimenPhaseChangeRequestTypes, IRegimen, RegimenPhasePermissionOptions, DateFormatISO8601 } from "../../libs/scijs";
+import type { RegimenPhaseChangeRequestType } from "../../libs/scijs";
+import { RegimenPhaseChangeRequestTypes, IRegimen, DateFormatISO8601 } from "../../libs/scijs";
 
 import NavigationService from "../../navigation/NavigationService";
 import AppStore from "../../services/AppStore";
 
-import moment from "moment";
 import AppService from "../../services/AppService";
 import AppClock from "../../services/AppClock";
 import AppNotificationManager from "../../services/AppNotificationManager";

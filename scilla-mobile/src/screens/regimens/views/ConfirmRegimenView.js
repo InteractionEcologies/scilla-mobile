@@ -1,5 +1,5 @@
 // @flow
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 
 import type { IRegimen } from "../../../libs/scijs";
 
@@ -8,11 +8,8 @@ import {
   Title,
   DotPageIndicator
 } from "../../../components"
-import { Grid, Row, Col, View, Button } from "native-base";
+import { View, Button } from "native-base";
 import { StyleSheet } from "react-native";
-import styles from "../RegimenStyles";
-import Colors from "../../../constants/Colors";
-import _ from "lodash";
 
 type Props = {
   // All of the views inside my react-automata will be rendered 

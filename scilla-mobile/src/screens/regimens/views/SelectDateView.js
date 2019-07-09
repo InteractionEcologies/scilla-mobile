@@ -3,7 +3,6 @@ import React, { Component } from "react";
 import { CalendarList } from "../../../components/Calendar";
 
 import {
-  AppText,
   Title,
   DotPageIndicator
 } from "../../../components"
@@ -19,7 +18,7 @@ type Props = {
   currentStateIndex: number
 }
 
-class SelectDateView extends Component<any, any> {
+class SelectDateView extends Component<Props, any> {
 
   selectDate = (date: Object) => {
     console.log("Select Date: ", date.dateString);

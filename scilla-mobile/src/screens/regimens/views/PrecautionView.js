@@ -1,5 +1,5 @@
 // @flow
-import React, { Component, Fragment } from "react"; 
+import React, { Component } from "react"; 
 import { Title, AppText, DotPageIndicator } from "../../../components";
 import { View } from "native-base";
 

@@ -3,7 +3,6 @@ import React from "react";
 import { createStackNavigator } from "react-navigation";
 import TabBarIcon from "../components/TabBarIcon";
 import { Platform } from "react-native";
-import { Root } from "native-base";
 import ReportMainScreen from "../screens/reports/ReportMainScreen";
 // import ReportSelectionScreen from "../screens/reports/ReportSelectionScreen";
 import ReportMeasurementScreen from "../screens/reports/ReportMeasurementScreen";

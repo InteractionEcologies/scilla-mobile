@@ -1,7 +1,6 @@
 // @flow
 import React from "react";
-import { View, StyleSheet } from "react-native";
-import { AppText, AppHeaderText } from "./StyledText";
+import { View } from "react-native";
 
 import { RegimenUtils, IRegimenPhase, PartOfDayOptions } from "../libs/scijs";
 import { ThreePillTableHeader, ThreePillTableRow } from "./ThreePillTable";

@@ -1,13 +1,13 @@
 // @flow
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 import { 
   IRegimen,
 } from "../../../libs/scijs";
 import type {
   MeasurementType
 } from "../../../libs/scijs";
-import { Platform, StyleSheet } from "react-native";
-import { Row, Col, View, Button } from "native-base";
+import { Platform } from "react-native";
+import { View, Button } from "native-base";
 import { Ionicons } from "@expo/vector-icons";
 import { Title, AppText, DotPageIndicator } from "../../../components";
 import RegimenViewModel from "../../../viewModels/RegimenViewModel";
@@ -40,12 +40,6 @@ class SelectMeasurementsView extends Component<Props, any> {
   }
 
   render() {
-
-    const { regimen } = this.props;
-
-    const viewModel = new RegimenViewModel(regimen);
-    
-    // regimen.trackedMeasurementTypes
 
     return (
       <View>

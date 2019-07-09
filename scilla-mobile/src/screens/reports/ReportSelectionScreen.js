@@ -1,15 +1,13 @@
 // @flow
-import moment from "moment";
 import _ from "lodash";
 import XDate from "xdate";
-import { StyleSheet } from "react-native";
 import React, { Fragment } from "react";
 import { 
-  Container, Content, View, Button, Card, CardItem,
+  Button, Card, CardItem,
   Spinner
 } from "native-base";
 import { ScrollView } from "react-native";
-import { AppText, Title } from "../../components";
+import { AppText } from "../../components";
 
 import type {
   MeasurementType
@@ -21,7 +19,6 @@ import AppStore from "../../services/AppStore";
 import AppClock from "../../services/AppClock";
 import styles from "./ReportStyles"; 
 import { ScreenNames } from "../../constants/Screens";
-import { OneWeekCalendar } from "../../components";
 import Colors from "../../constants/Colors";
 
 const appStore = new AppStore();
@@ -107,12 +104,7 @@ export default class ReportSelectionScreen extends React.Component<any, State> {
   }
 
   render(){
-    let { selectedDate, isLoading } = this.state;
-    let markedDates = {
-      [selectedDate]: {
-        selected: true
-      }
-    }
+    let { isLoading } = this.state;
 
     return(
       <ScrollView contentContainerStyle={styles.content}>
@@ -212,7 +204,3 @@ export default class ReportSelectionScreen extends React.Component<any, State> {
     }
   }
 }
-
-const customStyles = StyleSheet.create({
-  
-})

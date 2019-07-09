@@ -2,7 +2,7 @@
 import React from "react";
 import { View, StyleSheet, ScrollView } from "react-native";
 import {
-  Container, Content, Button,
+  Content, Button,
   Card, CardItem, Body, Spinner
 } from "native-base";
 
@@ -15,7 +15,6 @@ import type {
   ReminderConfigObject
 } from "../../libs/scijs";
 import {
-  DateFormatUXFriendly,
   DateFormatISO8601
 } from "../../libs/scijs";
 import _ from "lodash";
@@ -25,7 +24,6 @@ import AppStore from "../../services/AppStore";
 import AppClock from "../../services/AppClock";
 import AppInitializer from "../../services/AppInitializer";
 import AppNotificationManager from "../../services/AppNotificationManager";
-import { Calendar } from "../../components/Calendar";
 import Colors from "../../constants/Colors";
 import ReminderSwitchersCard from "../../components/ReminderSwitchersCard";
 

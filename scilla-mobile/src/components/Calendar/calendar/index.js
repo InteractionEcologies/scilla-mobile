@@ -18,6 +18,7 @@ import CalendarHeader from './header';
 import shouldComponentUpdate from './updater';
 
 //Fallback when RN version is < 0.44
+// eslint-disable-next-line react/forbid-foreign-prop-types
 const viewPropTypes = ViewPropTypes || View.propTypes;
 
 const EmptyArray = [];

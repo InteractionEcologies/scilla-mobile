@@ -1,27 +1,19 @@
 // @flow
 import React from "react";
 import { StyleSheet } from "react-native";
-import { Container, Content, View, Button, Toast, Card, CardItem} from "native-base";
+import { Content, Button, Toast, Card, CardItem} from "native-base";
 import { AppText, Title } from "../../components";
-import MoodScaleView from './views/MoodScaleView';
-import SleepScaleView from './views/SleepScaleView';
-import BaclofenScaleView from './views/BaclofenScaleView';
-import SpasticityScaleView from './views/SpasticityScaleView';
-import TiredScaleView from './views/TiredScaleView';
 import GenericScaleView from "./views/GenericScaleView";
-import moment from "moment";
-import { MeasurementTypes, DateFormatISO8601 } from "../../libs/scijs"; 
+import { MeasurementTypes } from "../../libs/scijs"; 
 import type { 
   MeasurementType,
   MeasurementObject,
   MeasurementValue
 } from "../../libs/scijs";
 import AppService from "../../services/AppService";
-import { ScreenNames } from "../../constants/Screens";
 import AppStore from "../../services/AppStore";
 import AppClock from "../../services/AppClock";
 
-import XDate from "xdate";
 import MemoView from "./views/MemoView";
 
 const appStore = new AppStore();
@@ -137,7 +129,7 @@ export default class ReportMeasurmentScreen extends React.Component<any, State> 
         selectedScaleValue, 
       } = this.state;
       let view;
-      let isDailyEvalView = false;
+      // let isDailyEvalView = false;
       let minValueDesc = "Best possible";
       let maxValueDesc = "Worst possible";
       let useGenericView = true;
