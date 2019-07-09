@@ -9,3 +9,4 @@ export * from "./RoundedCardItem";
 export * from "./OneWeekCalendar";
 export * from "./EditRemindersView";
 export * from "./ScaleSlider";
+export * from "./ThreePillTable";

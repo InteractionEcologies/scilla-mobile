@@ -242,10 +242,18 @@ const styles = StyleSheet.create({
 
   },
   content: {
-    flex: 1, 
+    // flex: 1, 
     justifyContent: 'flex-start',
     alignItems: 'center',
-    // backgroundColor: 'red'
+    // backgroundColor: 'red',
+    height: 600,
+  },
+  mainView: {
+    // flex: 1,
+    width: '100%',
+    paddingRight: 10, 
+    paddingLeft: 10,
+    // backgroundColor: 'yellow'
   },
   header: {
     // flex: 1,
@@ -268,11 +276,4 @@ const styles = StyleSheet.create({
     width: '100%'
 
   },
-  mainView: {
-    flex: 1,
-    width: '100%',
-    paddingRight: 10, 
-    paddingLeft: 10,
-    // backgroundColor: 'yellow'
-  }
 })

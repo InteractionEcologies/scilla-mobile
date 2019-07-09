@@ -15,6 +15,7 @@ import Colors from "../../constants/Colors";
 import AppStore from "../../services/AppStore";
 import AppClock from "../../services/AppClock";
 import AppNotificationManager from "../../services/AppNotificationManager";
+import { ScreenNames } from "../../constants/Screens";
 
 
 const appStore = AppStore.instance;
@@ -44,7 +45,8 @@ type State = {
 
   canIncreaseDosage: boolean, 
   canDecreaseDosage: boolean, 
-  canExtendDosage: boolean
+  canExtendDosage: boolean,
+  canSelectIdealPhase: boolean
 }
 
 const initialState = {
@@ -59,9 +61,10 @@ const initialState = {
   moveFromPhase: null, 
   moveToPhase: null,
 
-  canIncreaseDosage: true, 
-  canDecreaseDosage: true, 
-  canExtendDosage: true
+  canIncreaseDosage: false, 
+  canDecreaseDosage: false, 
+  canExtendDosage: false,
+  canSelectIdealPhase: false
 }
 
 
@@ -79,13 +82,15 @@ export default class RegimenEditScreen extends Component<any, State> {
     this.state = initialState;
   }
 
-  async componentWillMount() {
-    this.setState({isLoading: true});
-    this.initializeState();
-    this.setState({isLoading: false});
+  async componentDidMount() {
+    console.log(SCOPE, "didMount");
+    // this.setState({isLoading: true});
+    // this.initializeState();
+    // this.setState({isLoading: false});
   }
 
   componentWillFocus = async (payload: any) => {
+    console.log(SCOPE, "willFocus");
     this.initializeState();
   }
 
@@ -98,14 +103,21 @@ export default class RegimenEditScreen extends Component<any, State> {
       if(phase) {
         canExtendDosage = true;
       }
+
+      let canSelectIdealPhase = false;
+      if (now.isAfter(regimen.startDate, 'day')) {
+        canSelectIdealPhase = true;
+      }
       this.setState({
         regimen: regimen,
         canIncreaseDosage: regimen.canMoveToNextPhase(now),
         canDecreaseDosage: regimen.canMoveToPreviousPhase(now),
-        canExtendDosage: canExtendDosage
+        canExtendDosage: canExtendDosage,
+        canSelectIdealPhase: canSelectIdealPhase
       })
     }
   }
+
 
   handleIncreaseDosage = () => {
     // pop up a dialogue 
@@ -128,6 +140,7 @@ export default class RegimenEditScreen extends Component<any, State> {
       moveFromPhase: activePhase, 
       moveToPhase: nextPhase
     });
+
   }
 
   handleDecreaseDosage = () => {
@@ -147,6 +160,7 @@ export default class RegimenEditScreen extends Component<any, State> {
       moveFromPhase: activePhase, 
       moveToPhase: nextPhase
     });
+
   }
 
   handleExtendDosage = () => {
@@ -156,11 +170,15 @@ export default class RegimenEditScreen extends Component<any, State> {
     let activePhase = regimen.getActiveRegimenPhase();
 
     this.setState({
-      isPhaseChangeModalVisible: true,
+      isExtendModalVisible: true,
       updateActionType: RegimenUpdateActionTypes.extend, 
       moveFromPhase: activePhase, 
       moveToPhase: activePhase
     });
+  }
+
+  handleSelectIdealPhase = () => {
+    this.props.navigation.navigate(ScreenNames.RegimenSelectIdealPhase);
   }
 
   hidePhaseChangeModal = () => {
@@ -207,6 +225,7 @@ export default class RegimenEditScreen extends Component<any, State> {
       moveToPhase: null
     })
 
+    this.props.navigation.popToTop();
   }
 
   render() {
@@ -257,7 +276,7 @@ export default class RegimenEditScreen extends Component<any, State> {
           <Button 
             style={styles.button}
             full
-            disabled
+            onPress={this.handleSelectIdealPhase}
           >
             <AppText>Select Ideal Dosage</AppText>
           </Button>
@@ -293,25 +312,27 @@ export default class RegimenEditScreen extends Component<any, State> {
           isVisible={isExtendModalVisible}
         >
           <View style={styles.modal}>
-            <AppText>This will extend your current phase by a week.</AppText>
+            <Title style={{fontSize: 20, marginTop: 20, marginBottom: 20}}>Extend current phase?</Title>
+            <AppText style={{marginLeft: 30, marginRight: 30}}>
+              This will extend your current phase by a week from today. Do you want to proceed?
+            </AppText>
             <View style={styles.modalBtnView}>
               <Button
-                onPress={this.hidePhaseChangeModal}
+                onPress={this.hideExtendModal}
                 bordered
-                style={{flex: 1}}
+                // style={{flex: 1}}
               >
                 <AppText>Cancel</AppText>
               </Button>
               <Button
                 onPress={this.confirmUpdate}
-                style={{flex: 1}}
+                // style={{flex: 1}}
               >
                 <AppText>Confirm</AppText>
               </Button>
             </View>
           </View>
         </Modal>
-        
       </View>
     )
   }

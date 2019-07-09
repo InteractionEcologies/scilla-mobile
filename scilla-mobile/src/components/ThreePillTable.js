@@ -40,7 +40,7 @@ export class ThreePillTableRow extends React.Component<Props, any> {
           </PillRegion>)
       } else if (this.props.highlighted) {
         pills.push(
-          <PillRegion key={i} color={Colors.accentColor}>
+          <PillRegion key={i} color={Colors.primaryColor}>
             <AppText style={styles.pillText}>{text}</AppText>
           </PillRegion>)
       } else {

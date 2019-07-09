@@ -9,6 +9,7 @@ import RegimenCreationScreens from "../screens/regimens/RegimenCreationScreens";
 import RegimenRedeemScreen from "../screens/regimens/RegimenRedeemScreen";
 import RegimenEditScreen from "../screens/regimens/RegimenEditScreen";
 import RegimenEditReminderScreen from "../screens/regimens/RegimenEditReminderScreen";
+import RegimenSelectIdealPhase from "../screens/regimens/RegimenSelectIdealPhaseScreen";
 
 import {ScreenNames} from "../constants/Screens";
 
@@ -22,7 +23,8 @@ let RegimenStack = createStackNavigator(
     [ScreenNames.RegimenCreation]: RegimenCreationScreens,
     [ScreenNames.RegimenRedeem]: RegimenRedeemScreen,
     [ScreenNames.RegimenEdit]: RegimenEditScreen, 
-    [ScreenNames.RegimenEditReminders]: RegimenEditReminderScreen
+    [ScreenNames.RegimenEditReminders]: RegimenEditReminderScreen,
+    [ScreenNames.RegimenSelectIdealPhase]: RegimenSelectIdealPhase,
   },
   {
     initialRouteName: ScreenNames.RegimenMain
