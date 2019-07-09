@@ -114,7 +114,7 @@ export default class AppInitializer {
     let now = this.appClock.now();
     let regimen: IRegimen = await this.appStore.getLatestRegimen();
     let shouldRequest = regimen.shouldRequestPhaseChangePermission(now);
-    console.log(SCOPE, "should request phase shift permission:", shouldRequest);
+    // console.log(SCOPE, "should request phase shift permission:", shouldRequest);
     if(shouldRequest) {
       console.log(SCOPE, "Navigate to phase transition");
       NavigationService.navigate(ScreenNames.RegimenPhaseTransition);
@@ -134,7 +134,7 @@ export default class AppInitializer {
         this.appStore.updateRegimen(regimen);
         
         let reminderConfigs = regimen.getActiveReminderConfigs();
-        console.log(SCOPE, "update reminder conigs", reminderConfigs);
+        // console.log(SCOPE, "update reminder conigs", reminderConfigs);
         this.appNotiManager.setNotificationsByReminderConfigs(reminderConfigs);
       }  
     } catch (e) {

@@ -39,10 +39,11 @@ const appClock = new AppClock();
 const appInitializer = new AppInitializer();
 const appNotiManager = new AppNotificationManager();
 
-const SCOPE = "RegimenMainScreen";
+const SCOPE = "RegimenMainScreen:";
 
 export default class RegimenMainScreen extends React.Component<any, State> {
   _isMounted = false
+  _isInitializedOnce = false
   
 
   static navigationOptions: any = {
@@ -69,17 +70,23 @@ export default class RegimenMainScreen extends React.Component<any, State> {
   async componentDidMount() {
     this._isMounted = true;
 
-    await appInitializer.onRegimenMainScreenLoaded();
-
-    this.setState({isCheckingLatestRegimen: true});
-    await this.initializeState();
-    this.setState({isCheckingLatestRegimen: false});
   }
 
   componentWillFocus = async (payload: any) => {
     console.info(SCOPE, "willFocus");
+
+    // Only when the screen is first mounted, we will show 
+    // a loading screen. Otherwise we will dynamically update 
+    // the original screen. 
+    if(!this._isInitializedOnce) {
+      this.setState({isCheckingLatestRegimen: true});
+      await this.initializeState();
+      this.setState({isCheckingLatestRegimen: false});
+      this._isInitializedOnce = true;  
+    } else {
+      this.initializeState(); 
+    }
     await appInitializer.onRegimenMainScreenLoaded();
-    this.initializeState();
   }
 
   componentWillUnmount() {
@@ -96,21 +103,9 @@ export default class RegimenMainScreen extends React.Component<any, State> {
   async initializeState() {
     if(!this._isMounted) return;
     console.log(SCOPE, "initializeState")
-    let regimen: ?IRegimen = null;
-
-    try {
-      regimen = await appStore.getLatestRegimen();
-    } catch (e) {
-      // Regimen does not exist. Do nothing. 
-      if(e.name === "NotExistError") {
-        console.log(SCOPE, "Regimen does not exist");
-      } 
-    }
-
-    if(regimen == null) {
-      // this.setState({isCheckingLatestRegimen: false})
-      return;
-    }
+    let regimen = await appStore.getLatestRegimen();
+    
+    if(regimen == null) return;
 
     let activePhase = regimen.getActiveRegimenPhase();
     if(activePhase)  {
@@ -118,12 +113,10 @@ export default class RegimenMainScreen extends React.Component<any, State> {
         regimen: regimen,
         currentRegimenPhaseObject: activePhase.toObj(),
         reminderConfigs: _.cloneDeep(regimen.getActiveReminderConfigs())
+      }, () => {
+        // force view to be updated w.r.t reminderConfigs 
+        this.forceUpdate();  
       });  
-      this.forceUpdate();
-      
-    } else if (regimen.completed) {
-      // Completed 
-      console.debug("This regimen is completed.")
     } else {
       let upcomingPhase = regimen.getRegimenPhaseByOrder(0);
       if(upcomingPhase) {
@@ -194,7 +187,7 @@ export default class RegimenMainScreen extends React.Component<any, State> {
 
   toggleReminder = (reminderSlotId: string) => {
     //
-    console.log() 
+    // console.log() 
     const { regimen } = this.state;
     if (regimen == null) return;
 
@@ -215,13 +208,12 @@ export default class RegimenMainScreen extends React.Component<any, State> {
   }
 
   goToUpdateRegimen = (regimenId: string) => {
-    console.dir(regimenId);
+    // console.dir(regimenId);
   }
 
   render() {
-    const { isCheckingLatestRegimen } = this.state;
+    const { isCheckingLatestRegimen, regimen } = this.state;
     return (
-      // <Container>
         <ScrollView>
           {/* Must have this contentContainerStyle to center 
             the content within the ScrollView.
@@ -240,7 +232,6 @@ export default class RegimenMainScreen extends React.Component<any, State> {
             </View>
           </Content>
         </ScrollView>
-      // </Container>
     )
   }
 
@@ -269,10 +260,12 @@ export default class RegimenMainScreen extends React.Component<any, State> {
     let regimenHasStarted = true;
 
     let today = appClock.now();
-    if(today.isBefore(regimen.startDate)) {
-      regimenHasStarted = false;
-    }
-
+    let title = "Current Regimen Phase";
+    if (regimen.completed) {
+      title = "Past Regimen"
+    } else if(today.isBefore(regimen.startDate)) {
+      title = "Upcoming Regimen";
+    } 
     // let markedDates = this.getMarkedDays();
     // console.log(SCOPE, currentRegimenPhaseObject);
     
@@ -282,17 +275,24 @@ export default class RegimenMainScreen extends React.Component<any, State> {
     }
     return (
       <View style={{width: '100%'}}>
+        {regimen && regimen.completed &&
+          <Card>
+             <Button full onPress={this.goToRedeemRegimen}>
+              <AppText>Redeem a New Regimen by Code</AppText>
+            </Button>
+          </Card>
+        }
         <Card style={styles.currentRegimenPhaseCard}>
           <CardItem header bordered>
-            {regimenHasStarted &&
-              <AppText style={{flex: 4}}>Current Regimen Phase</AppText>
-            }
-            {!regimenHasStarted &&
-              <AppText>Upcoming Regimen</AppText>
-            }
-            <Button small bordered style={{flex: 1}}
+            <AppText style={{flex: 4}}>{title}</AppText>
+            {regimen && !regimen.completed &&
+              <Button small bordered style={{flex: 1}}
               onPress={this.didPressEditRegimenBtn}
-            ><AppText>Edit</AppText></Button>
+              >
+                <AppText>Edit</AppText>
+              </Button>
+            }
+            
           </CardItem>
           <CardItem>
             <Body>

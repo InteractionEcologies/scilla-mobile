@@ -51,6 +51,8 @@ const initialState: State = {
 
 const SCOPE = "DashboardMainScreen";
 export default class DashboardMainScreen extends React.Component<any, State> {
+  _isInitializedOnce = false
+
   static navigationOptions: any = {
     title: "Today"
   }
@@ -70,15 +72,14 @@ export default class DashboardMainScreen extends React.Component<any, State> {
 
   componentDidMount() {
     appInitializer.onMainScreenLoaded();
-    this.updateTreatmentsByDate(this.state.selectedDateStr);
     appStore.initialize();
   } 
 
   componentWillFocus = (payload: any) => {
     let today = appClock.now();
     this.setState({todayDateStr: today.format(DateFormatISO8601)});
-    this.updateTreatmentsByDate(this.state.selectedDateStr);
-    
+    this.updateTreatmentsByDate(this.state.selectedDateStr);  
+
   }
 
   componentWillUnmount() {
@@ -121,7 +122,7 @@ export default class DashboardMainScreen extends React.Component<any, State> {
 
     } catch (e) {
       if(e.name === "NotExistError") {
-        console.log("Regimen does not exist.")
+        console.log(SCOPE, "Regimen does not exist.")
       }
     }
   }
@@ -146,14 +147,14 @@ export default class DashboardMainScreen extends React.Component<any, State> {
   }
 
   onTreatmentCompiled = (treatmentId: string) => {
-    console.log(`Complied treatment: ${treatmentId}`);
+    console.log(SCOPE, `Complied treatment: ${treatmentId}`);
     let report = this.state.complianceReportMap[treatmentId];
     let status = ComplianceReportHelper.toggleTakeAndGetNewStatus(report);
     this._updateComplianceCardStatus(treatmentId, status);
   }
 
   onTreatmentSnoozed = (treatmentId: string) => {
-    console.log(`Snoozed treatment: ${treatmentId}`);
+    console.log(SCOPE, `Snoozed treatment: ${treatmentId}`);
     let report = this.state.complianceReportMap[treatmentId];
     let timeUnix = ComplianceReportHelper.getNewSnoozeTime(report);
     this._updateComplianceCardTime(treatmentId, timeUnix);

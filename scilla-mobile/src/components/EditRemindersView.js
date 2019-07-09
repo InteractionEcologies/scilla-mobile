@@ -50,11 +50,11 @@ export class EditRemindersView extends Component<Props, State> {
     const { reminders } = this.props;
     // find the config 
     let foundConfig = _.find<any, any>(reminders, (config) => {
-      console.log("target: ", id.toString(), "compared to: ", config.id.toString());
+      // console.log("target: ", id.toString(), "compared to: ", config.id.toString());
       return id.toString() === config.id.toString();
     })
 
-    console.log(SCOPE, "foundConfig", foundConfig);
+    // console.log(SCOPE, "foundConfig", foundConfig);
 
     if(foundConfig) {
       let alarmTime = new AlarmTime(foundConfig.time);
@@ -70,13 +70,13 @@ export class EditRemindersView extends Component<Props, State> {
     const { selectedReminderId } = this.state;
     const { reminders } = this.props;
 
-    console.log(SCOPE, "selected reminder id:", selectedReminderId);
+    // console.log(SCOPE, "selected reminder id:", selectedReminderId);
     // Does find returns a reference?
     let foundConfig = _.find(reminders, (config) => {
       return config.id === selectedReminderId;
     })
     
-    console.log(SCOPE, "foundConfig", foundConfig);
+    // console.log(SCOPE, "foundConfig", foundConfig);
 
     if(foundConfig) {
       foundConfig.time = moment(time).format("HH:mm");
@@ -87,11 +87,11 @@ export class EditRemindersView extends Component<Props, State> {
       isTimePickerVisible: false
     });
 
-    console.log("Picked time:", time);
+    // console.log("Picked time:", time);
   }
 
   toggleReminder = (id: string) => {
-    console.log(SCOPE, "toggle reminder", id);
+    // console.log(SCOPE, "toggle reminder", id);
     const { reminders } = this.props;
 
     let foundConfig = _.find(reminders, (config) => {

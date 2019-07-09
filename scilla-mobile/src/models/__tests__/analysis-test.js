@@ -59,7 +59,7 @@ describe("daily evaluation data frame", () => {
     let df = new DailyEvalDataFrame();
     df.addDataPoints(fakeDailyEvalDataPoints);
     let meanPoints = df.getMeanDataPointsByTypes([MeasurementTypes.sleepQuality]);
-    console.log(meanPoints);
+    // console.log(meanPoints);
     meanPoints = _.sortBy(meanPoints, 'dosage');
     expect(meanPoints[0].value).toEqual(2);
     expect(meanPoints[1].value).toEqual(2);

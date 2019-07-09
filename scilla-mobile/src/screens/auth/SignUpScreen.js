@@ -23,7 +23,7 @@ export default class SignUpScreen extends React.Component<any, any> {
 
   componentDidMount() {
     let user = appService.auth.currentUser;
-    console.log(user);
+    // console.log(user);
   }
 
   handleSignUp = () => {

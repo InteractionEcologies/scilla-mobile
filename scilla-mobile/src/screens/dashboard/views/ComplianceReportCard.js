@@ -19,20 +19,21 @@ type Props = {
   onTreatmentSkipped: (treatmentId: string) => void
 }
 
+const SCOPE = "ComplianceReportCard:"
 export default class ComplianceReportCard extends React.Component<Props, any> {
 
   snooze = () => {
-    console.log("snooze");
+    // console.log("snooze");
     this.props.onTreatmentSnoozed(this.props.treatment.id);
   }
 
   comply = () => {
-    console.log("comply");
+    // console.log("comply");
     this.props.onTreatmentComplied(this.props.treatment.id);
   }
 
   skip = () => {
-    console.log("skip");
+    // console.log("skip");
     this.props.onTreatmentSkipped(this.props.treatment.id);
   }
 
@@ -68,7 +69,7 @@ export default class ComplianceReportCard extends React.Component<Props, any> {
     // if(this.props.report.expectedTreatmentTime !== this.props.treatment.time) {
     //   additionalStyle = styles.snoozedTimeTitle;
     // }
-    console.log("Treatment time", time);
+    // console.log(SCOPE, "Treatment time", time);
     let friendlyTime = moment(time, DateFormatTimeOfDay).format("h:mm A");
     return (<Title style={additionalStyle}>{friendlyTime}</Title>);
   }

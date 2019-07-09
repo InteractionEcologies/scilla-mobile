@@ -16,7 +16,7 @@ type Notification = {
 }
 const appClock = AppClock.instance;
 
-const SCOPE = "AppNotificationManager."
+const SCOPE = "AppNotificationManager:"
 /**
  * Should update this along with regimen phase transition. 
  */
@@ -42,7 +42,7 @@ export default class AppNotificationManager {
   }
 
   didReceiveNotification(notification: Notification) {
-    console.log(SCOPE, "didReceiveNotification", notification);
+    // console.log(SCOPE, "didReceiveNotification", notification);
   }
 
   async requestPermission() {

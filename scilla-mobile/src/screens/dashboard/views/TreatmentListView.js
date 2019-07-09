@@ -18,14 +18,14 @@ type Props = {
   onTreatmentSnoozed: (treatmentId: string) => void
 }
 
-const SCOPE = "TreatmentListView";
+const SCOPE = "TreatmentListView:";
 export default class TreatmentListView extends React.Component<Props, any> {
 
   render() {
 
     const { complianceReportMap, treatmentMap } = this.props;
     const length = Object.keys(complianceReportMap).length;
-    console.log(SCOPE, "number of compliance reports", length);
+    // console.log(SCOPE, "number of compliance reports", length);
     return (
       <View>
         {length > 0 &&

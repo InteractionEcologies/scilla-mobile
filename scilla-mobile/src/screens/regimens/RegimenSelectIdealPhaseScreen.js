@@ -89,9 +89,9 @@ export default class RegimenSelectIdealPhaseScreen extends Component<any, State>
   }
 
   didPressCheckbox = (e: any, phaseOrder: number) => {
-    console.log(SCOPE, phaseOrder);
+    // console.log(SCOPE, phaseOrder);
     const { regimenSelectedStatusMap, selectedRegimenOrder } = this.state;
-    console.log(SCOPE, !regimenSelectedStatusMap[phaseOrder]);
+    // console.log(SCOPE, !regimenSelectedStatusMap[phaseOrder]);
 
     let newValue = !regimenSelectedStatusMap[phaseOrder];
     for(let key of Object.keys(regimenSelectedStatusMap)) {
@@ -102,7 +102,7 @@ export default class RegimenSelectIdealPhaseScreen extends Component<any, State>
       selectedRegimenOrder: phaseOrder === selectedRegimenOrder ? null : phaseOrder,
       regimenSelectedStatusMap: regimenSelectedStatusMap
     }, () => {
-      console.log(SCOPE, regimenSelectedStatusMap);
+      // console.log(SCOPE, regimenSelectedStatusMap);
     });
   }
 
@@ -110,10 +110,7 @@ export default class RegimenSelectIdealPhaseScreen extends Component<any, State>
     const { regimen, selectedRegimenOrder } = this.state;
     if(regimen == null || selectedRegimenOrder == null) return;
     
-    let phase = regimen.getRegimenPhaseByOrder(selectedRegimenOrder);
-    if(phase == null) return;
-    phase.status = RegimenPhaseStatusOptions.selected;
-    regimen.completed = true;
+    regimen.selectFinalPhaseByOrder(selectedRegimenOrder);
     appStore.updateRegimen(regimen);
     this.props.navigation.popToTop();
   }
