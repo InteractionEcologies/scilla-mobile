@@ -2,9 +2,6 @@
 import React from "react";
 
 import {
-  MeasurementTypes,
-  DateFormatISO8601,
-  NotExistError,
   IRegimen
 } from "../../libs/scijs";
 import type {
@@ -13,20 +10,11 @@ import type {
   MeasurementValue
 } from "../../libs/scijs"
 
-import { Container, Content, Text, View, Icon, Button, Card, CardItem, Right, Toast } from "native-base";
+import { Text, View, Icon, Button, Card, CardItem, Right, Toast } from "native-base";
 import { ScrollView, StyleSheet } from "react-native";
 import { AppText, Title, DotPageIndicator } from "../../components";
 // import styles from "./ReportStyles"; 
 
-import MoodScaleView from './views/MoodScaleView';
-import SleepScaleView from './views/SleepScaleView';
-import BaclofenScaleView from './views/BaclofenScaleView';
-import SpasticityScaleView from './views/SpasticityScaleView';
-import TiredScaleView from './views/TiredScaleView';
-import ExerciseReportView from './views/ExerciseReportView';
-import MedicationReportView from './views/MedicationReportView';
-import GenericScaleView from "./views/GenericScaleView";
-import MemoView from './views/MemoView'
 import MeasurementScaleViewFactory from "./views/MeasurementScaleViewFactory";
 
 import { ScreenNames } from "../../constants/Screens";
@@ -58,6 +46,7 @@ type State = {
   dailyEvalReportObjId: ?string
 }
 
+// eslint-disable-next-line no-unused-vars
 const SCOPE = "ReportDailyEvaluationScreen";
 export default class ReportDailyEvaluationScreen extends React.Component<any, State> {
 
@@ -116,7 +105,7 @@ export default class ReportDailyEvaluationScreen extends React.Component<any, St
         
         // Look up required measurementTypes
         this._createInitialMeasurementsByType();
-        console.log('cannot find daily eval')  
+        console.log(SCOPE, 'cannot find daily eval')  
       }
     }
   }
@@ -325,7 +314,7 @@ export default class ReportDailyEvaluationScreen extends React.Component<any, St
     let selectedValueForMedication: {
       [key: MeasurementType]: MeasurementValue
     } = {}; 
-    let isDailyEvalView = true;
+    // let isDailyEvalView = true;
     
     selectedScaleValue = this.state.measurementsByType[measurementType]
 
@@ -469,6 +458,7 @@ export default class ReportDailyEvaluationScreen extends React.Component<any, St
 
 const styles = StyleSheet.create({
   content: {
+    flexGrow: 1,
     width: '100%', 
     paddingRight: 10, 
     paddingLeft: 10

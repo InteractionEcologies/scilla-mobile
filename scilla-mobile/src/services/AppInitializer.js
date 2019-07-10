@@ -8,7 +8,7 @@ import { IRegimen } from "../libs/scijs";
 import AppClock from "./AppClock";
 import AppNotificationManager from "./AppNotificationManager";
 
-const SCOPE = "AppInitializer";
+const SCOPE = "AppInitializer:";
 
 /** Handle init tasks and foreground/background transitions. 
  *  Provide callbacks at important places of the app, such as
@@ -19,8 +19,8 @@ export default class AppInitializer {
   static instance: AppInitializer
 
   // Singletons. 
-  appStore = new AppStore();
   appService = new AppService(); // this will init ds and auth services. 
+  appStore = new AppStore();
   appClock = new AppClock();
   appNotiManager = new AppNotificationManager();
 
@@ -35,6 +35,7 @@ export default class AppInitializer {
   }
 
   setup = () => { 
+    console.log(SCOPE, "setup");
     // Much call initialize to use appService. 
     // This will initialize the subservices (ds and auth). 
     // We use a initialize to take in configuration, 
@@ -42,7 +43,7 @@ export default class AppInitializer {
     this.appService.initialize();
 
     // 
-    this.appClock.setCurrentDatetime(moment("2019-07-23"));
+    this.appClock.setCurrentDatetime(moment("2019-07-24"));
   }
 
   /**

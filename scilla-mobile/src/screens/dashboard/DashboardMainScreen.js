@@ -1,7 +1,7 @@
 // @flow
 import React from "react";
-import { View, StyleSheet, ScrollView, Spinner } from "react-native";
-import { Container, Content, Fab } from "native-base"; 
+import { View, StyleSheet, ScrollView } from "react-native";
+import { Container, Fab, Card, CardItem, Button } from "native-base"; 
 import AppStore from "../../services/AppStore";
 import {
   DateFormatTimeOfDay, 
@@ -16,7 +16,7 @@ import { Treatment } from "../../libs/scijs/models/regimen";
 import TreatmentListView from "./views/TreatmentListView";
 import moment from "moment";
 import { ComplianceReportHelper } from "../../models/ComplianceReportHelper";
-import { OneWeekCalendar } from "../../components";
+import { OneWeekCalendar, AppText } from "../../components";
 import XDate from "xdate";
 import AppClock from "../../services/AppClock";
 import AppInitializer from "../../services/AppInitializer";
@@ -37,7 +37,11 @@ type State = {
   // control whether to show treatments/compliance reports
   // if it is a future date, should show a disabled version of treatments. 
   showTreatments: boolean,
-  isLoading: boolean
+  
+  isLoading: boolean,
+  hasRegimen: boolean, 
+  isRegimenStarted: boolean,
+
 }
 
 const initialState: State = {
@@ -46,12 +50,16 @@ const initialState: State = {
   selectedDateStr: appClock.now().format(DateFormatISO8601),
   todayDateStr: appClock.now().format(DateFormatISO8601),
   showTreatments: false,
-  isLoading: false
+  
+  isLoading: false,
+  hasRegimen: false,
+  isRegimenStarted: false,
 }
 
 const SCOPE = "DashboardMainScreen";
 export default class DashboardMainScreen extends React.Component<any, State> {
   _isInitializedOnce = false
+  _isMounted = false
 
   static navigationOptions: any = {
     title: "Today"
@@ -71,14 +79,15 @@ export default class DashboardMainScreen extends React.Component<any, State> {
   }
 
   componentDidMount() {
+    this._isMounted = true;
     appInitializer.onMainScreenLoaded();
     appStore.initialize();
   } 
 
-  componentWillFocus = (payload: any) => {
+  componentWillFocus = async (payload: any) => {
     let today = appClock.now();
     this.setState({todayDateStr: today.format(DateFormatISO8601)});
-    this.updateTreatmentsByDate(this.state.selectedDateStr);  
+    await this.updateTreatmentsByDate(this.state.selectedDateStr);  
 
   }
 
@@ -87,10 +96,34 @@ export default class DashboardMainScreen extends React.Component<any, State> {
   }
 
   async updateTreatmentsByDate(date: string) {
+    if (!this._isMounted) return;
+    let selectedDate = moment(date);
+    let today = appClock.now();
+
     try {
-      let selectedDate = moment(date);
-      let today = appClock.now();
       let regimen = await appStore.getLatestRegimen();
+      
+      if(regimen == null) {
+        this.setState({
+          hasRegimen: false,
+          isRegimenStarted: false
+        });
+        return;
+      } else {
+        this.setState({
+          hasRegimen: true
+        })
+      }
+
+      if(selectedDate.isBefore(regimen.startDate)) {
+        this.setState({
+          isRegimenStarted: false
+        })
+      } else {
+        this.setState({
+          isRegimenStarted: true
+        })
+      }
 
       // Prepare treatments information
       let treatments = regimen.getTreatmentsByDate(selectedDate);
@@ -119,12 +152,15 @@ export default class DashboardMainScreen extends React.Component<any, State> {
         treatmentMap: treatmentMap,
         complianceReportMap: complianceReportMap
       });
-
-    } catch (e) {
-      if(e.name === "NotExistError") {
-        console.log(SCOPE, "Regimen does not exist.")
-      }
+    } catch(e) {
+      console.log(e);
+      this.setState({
+        hasRegimen: false,
+        isRegimenStarted: false
+      });
     }
+
+
   }
 
   didPressReportBtn = () => {
@@ -195,7 +231,7 @@ export default class DashboardMainScreen extends React.Component<any, State> {
   }
 
   render() {
-    let { selectedDateStr } = this.state;
+    let { selectedDateStr, hasRegimen, isRegimenStarted } = this.state;
     let markedDates = {
       [selectedDateStr]: {
         selected: true
@@ -215,24 +251,53 @@ export default class DashboardMainScreen extends React.Component<any, State> {
 
         <ScrollView contentContainerStyle={styles.content}>
           <View style={styles.mainView}>
-            <TreatmentListView
-              treatmentMap={this.state.treatmentMap}
-              complianceReportMap={this.state.complianceReportMap}
-              onTreatmentSkipped={this.onTreatmentSkipped}
-              onTreatmentCompiled={this.onTreatmentCompiled}
-              onTreatmentSnoozed={this.onTreatmentSnoozed}
-            />
+            {!hasRegimen &&
+              <Card>
+                <CardItem>
+                  <AppText style={{flex: 1, textAlign: 'center'}}>You don't have a regimen yet.</AppText>
+                </CardItem>
+                <CardItem style={styles.cardItem}>
+                <Button
+                  style={{flex: 1}}
+                  full
+                  onPress={ () => {this.props.navigation.navigate(ScreenNames.RegimenRedeem)}}
+                >
+                  <AppText>Redeem a regimen by code</AppText>
+                </Button>
+                </CardItem>
+              </Card> 
+            }
+            {hasRegimen && !isRegimenStarted &&
+              <Card>
+                <CardItem>
+                  <AppText style={{flex: 1, textAlign: 'center'}}>Your regimen is not started yet on this day.</AppText>
+                </CardItem>
+                <CardItem style={styles.cardItem}>
+                </CardItem>
+              </Card> 
+            }
+            {hasRegimen && isRegimenStarted &&
+              <TreatmentListView
+                treatmentMap={this.state.treatmentMap}
+                complianceReportMap={this.state.complianceReportMap}
+                onTreatmentSkipped={this.onTreatmentSkipped}
+                onTreatmentCompiled={this.onTreatmentCompiled}
+                onTreatmentSnoozed={this.onTreatmentSnoozed}
+              />
+            }
           </View>
           
         </ScrollView>
-        <Fab
-          style={{backgroundColor: Colors.accentColor}}
-          onPress={this.didPressReportBtn}
-        >
-          <SimpleLineIcons 
-            name="pencil"
-          />
-        </Fab>  
+        {hasRegimen &&
+          <Fab
+            style={{backgroundColor: Colors.accentColor}}
+            onPress={this.didPressReportBtn}
+          >
+            <SimpleLineIcons 
+              name="pencil"
+            />
+          </Fab>  
+        }
       </Container>
     )
   }
@@ -278,6 +343,8 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     // marginBottom: 50,
     width: '100%'
-
   },
+  cardItem: {
+    width: '100%'
+  }
 })

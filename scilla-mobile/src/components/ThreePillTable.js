@@ -1,5 +1,5 @@
 // @flow
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 import { View, StyleSheet } from "react-native";
 import { AppText, AppHeaderText } from "./StyledText";
 import Colors from "../constants/Colors";
@@ -27,7 +27,7 @@ type Props = {
   [key: string]: any
 }
 
-export class ThreePillTableRow extends React.Component<Props, any> {
+export class ThreePillTableRow extends Component<Props, any> {
   _renderPillRegions = () => {
     let pills = [];
 
@@ -54,7 +54,7 @@ export class ThreePillTableRow extends React.Component<Props, any> {
   }
 
   render() {
-    const { rowIndex, rowDesc, highlighted } = this.props;
+    const { rowIndex, rowDesc } = this.props;
     const hasRowIndex = rowIndex != null;
 
     //console.log("row", highlighted);

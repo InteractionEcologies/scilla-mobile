@@ -14,7 +14,7 @@ let AnalysisStack = createStackNavigator(
 )
 
 AnalysisStack.navigationOptions = {
-  tabBarLabel: "Analysis",
+  tabBarLabel: "Trend",
   tabBarIcon: ({ focused }) => (
     <TabBarIcon 
       focused={focused}

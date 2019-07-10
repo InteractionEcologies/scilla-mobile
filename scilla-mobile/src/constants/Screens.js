@@ -34,4 +34,7 @@ export const ScreenNames = {
 
   // Analysis
   AnalysisMain: "AnalysisMain",
+
+  // Settings
+  SettingsMain: "SettingsMain"
 }

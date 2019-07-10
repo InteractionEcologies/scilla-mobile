@@ -232,7 +232,6 @@ export default class RegimenEditScreen extends Component<any, State> {
     const { isLoading, 
       isPhaseChangeModalVisible, 
       isExtendModalVisible,
-      isSelectPhaseModalVisible, 
       canIncreaseDosage, 
       canDecreaseDosage,
       canExtendDosage, 

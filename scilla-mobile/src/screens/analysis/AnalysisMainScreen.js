@@ -2,10 +2,10 @@
 import _ from "lodash";
 import moment from "moment";
 
-import React from "react";
+import React, { Fragment } from "react";
 import { StyleSheet, ScrollView  } from 'react-native';
 import { View } from "native-base";
-import { Title } from "../../components";
+import { Title, AppText } from "../../components";
 import AppStore from "../../services/AppStore";
 
 import type {
@@ -28,39 +28,63 @@ import { MeasurementSelectionBtn } from "./views/MeasurementSelectionBtn";
 // import { Svg } from "expo";
 import { ScatterPlot } from "./views/ScatterPlot";
 import { DotPlot } from "./views/DotPlot";
+
 import AppClock from "../../services/AppClock";
+import Colors from "../../constants/Colors";
 // const { Circle, Rect, G } = Svg; 
 
 
 const appStore: AppStore = AppStore.instance;
 const appClock: AppClock = AppClock.instance;
 
-type State = {
-  trackedMeasurementTypes: MeasurementType[],
-  selectedMeasurementTypes: string[],
-}
 
-const SCOPE = "AnalysisMainScreen";
+
 const X_AXIS_PADDING = 2;
 const Y_AXIS_PADDING = 0.5;
 const MIN_MEASUREMENT_SCORE = 0;
 const MAX_MEASUREMENT_SCORE = 5;
 
+type State = {
+  trackedMeasurementTypes: MeasurementType[],
+  selectedMeasurementTypes: string[],
+  hasRegimen: boolean
+}
+
+const SCOPE = "AnalysisMainScreen";
 export default class AnalysisMainScreen extends React.Component<any, State> {
+  componentWillFocusSubscription: any;
+
   static navigationOptions: any = {
-    title: "Analysis"
+    title: "Trend"
   }
 
   state = {
     trackedMeasurementTypes: [],
     selectedMeasurementTypes: [],
+    hasRegimen: false
   }
 
   dailyEvalDataFrame = new DailyEvalDataFrame()
 
+  constructor(props: any) {
+    super(props);
+    this.componentWillFocusSubscription = this.props.navigation.addListener(
+      'willFocus',
+      this.componentWillFocus
+    );
+  }
+
   componentDidMount() {
     console.log(SCOPE, "componentDidMount");
+    
+  }
+
+  componentWillFocus = async (payload: any) => { 
     this.initializeState()
+  }
+
+  componentWillUnmount() {
+    this.componentWillFocusSubscription.remove();
   }
 
   async initializeState() {
@@ -70,12 +94,16 @@ export default class AnalysisMainScreen extends React.Component<any, State> {
       this.dailyEvalDataFrame.summarize();
 
       this.setState({
+        hasRegimen: true,
         trackedMeasurementTypes: regimen.getTrackedMeasurementTypes(),
         selectedMeasurementTypes: [regimen.getTrackedMeasurementTypes()[0]],
       })
     // console.log(this.dailyEvalDataFrame)
     } catch(e) {
-      console.log(e)
+      console.log(e);
+      this.setState({
+        hasRegimen: false
+      })
     }
   }
 
@@ -90,6 +118,7 @@ export default class AnalysisMainScreen extends React.Component<any, State> {
   async getDailyEvals(regimen: IRegimen) {
     let startDate = regimen.startDate;
     let today = appClock.now();
+
     return await appStore.getDailyEvalsByDateRange(
       startDate,
       today
@@ -101,9 +130,13 @@ export default class AnalysisMainScreen extends React.Component<any, State> {
     let allPoints: DailyEvalDataPoint[] = [];
 
     dailyEvals.forEach( (dailyEval) => {
+      console.log(SCOPE, dailyEval);
       let dosage = this.getDosage(regimen, dailyEval);
-      let points = AnalysisUtils.convertDailyEvalObjToDataPoints(dailyEval, dosage);
-      allPoints = allPoints.concat(points);
+      // FIXME: Currently only show daily evaluations reported in the latest regimen. 
+      if(dosage !== -1) {
+        let points = AnalysisUtils.convertDailyEvalObjToDataPoints(dailyEval, dosage);
+        allPoints = allPoints.concat(points);
+      }
     })
     return allPoints;
   }
@@ -133,7 +166,6 @@ export default class AnalysisMainScreen extends React.Component<any, State> {
       return null;
     }
   }
-
 
   renderSelectionButtons = (): any => {
     let plottableTypes = []
@@ -217,22 +249,31 @@ export default class AnalysisMainScreen extends React.Component<any, State> {
 
 
   render() {
+    const { hasRegimen } = this.state;
     return (
-      <ScrollView contentContainerStyle={styles.mainView}>
+      <ScrollView contentContainerStyle={styles.content}>
         <Title style = {styles.title}>Symptom Trend</Title> 
-        {this.renderSelectionButtons()}
-        {this.renderChart()}
+        {!hasRegimen && 
+          <AppText>You do not have a regimen yet. Please redeem one first.</AppText>
+        }
+        {hasRegimen &&
+          <Fragment>
+            {this.renderSelectionButtons()}
+            {this.renderChart()}
+          </Fragment>
+        }
+        
       </ScrollView>
     )
   }
 }
 
 const styles = StyleSheet.create({
-  mainView: {
-    flex: 1, 
-    justifyContent: 'center',
+  content: {
+    flexGrow: 1, 
+    justifyContent: 'flex-start',
     alignItems: 'center',
-    backgroundColor: 'white'
+    backgroundColor: Colors.surfaceColor
   },
   btnView:{
     height: 50,

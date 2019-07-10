@@ -1,21 +1,19 @@
 // @flow
 import React from 'react';
 import {
-  View, StyleSheet, FlatList
+  View, StyleSheet, ScrollView
 } from 'react-native';
 import { 
-  Content, List, ListItem, Button, Container
+  Button, 
 } from "native-base";
 import {
   AppText
-} from "../components/";
-import Colors from "../constants/Colors";
-import { Styles as AppStyles } from "../constants/Styles";
+} from "../../components";
+import { Styles as AppStyles } from "../../constants/Styles";
 
 // import { ExpoConfigView } from '@expo/samples';
 // import Auth from "../libs/Auth";
-import firebase from "firebase";
-import AppService from "../services/AppService";
+import AppService from "../../services/AppService";
 const appService = new AppService();
 
 export default class SettingsScreen extends React.Component<any, any> {
@@ -37,23 +35,28 @@ export default class SettingsScreen extends React.Component<any, any> {
      * content, we just wanted to give you a quick view of your config */
     // return <ExpoConfigView />;
     return (
-      <Container>
-        <Content contentContainerStyle={AppStyles.content}>
+
+        <ScrollView contentContainerStyle={styles.content}>
           <View style={[AppStyles.contentBody, styles.contentBody]}>
             <Button onPress={this.signOut} block>
               <AppText>Sign Out</AppText>
             </Button>
           </View>
           
-        </Content>
-      </Container>
+        </ScrollView>
 
     )
   }
 }
 
 const styles = StyleSheet.create({
+  content: {
+    flexGrow: 1, 
+    width: '100%', 
+    paddingRight: 10, 
+    paddingLeft: 10
+  },
   contentBody: {
-    marginTop: 10
+  
   }
 })

@@ -1,5 +1,5 @@
 // @flow
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 
 import moment from "moment";
 import _ from "lodash";
@@ -40,18 +40,45 @@ const initialState = {
 }
 
 export default class ReportMainScreen extends Component<any, State> {
+  _isMounted = false
+  _isInitializedOnce = false
+  componentWillFocusSubscription: any;
 
+  static navigationOptions: any = {
+    title: "Daily Report"
+  }
+  
   constructor(props: any) {  
     super(props);
 
     this.state = initialState;
+    this.componentWillFocusSubscription = this.props.navigation.addListener(
+      'willFocus',
+      this.componentWillFocus
+    );
   }
 
   async componentWillMount() {
 
-    this.setState({isLoading: true});
-    let regimen = await appStore.getLatestRegimen();
-    if (regimen) {
+  }
+
+  componentWillFocus = async (payload: any) => { 
+    if(!this._isInitializedOnce) {
+      this._isInitializedOnce = true;
+      this.setState({isLoading: true});
+      await this.initState()
+      this.setState({isLoading: false});
+    } else {
+      this.initState();
+    }
+  }
+
+  async initState() {
+
+    try {
+      let regimen = await appStore.getLatestRegimen();
+      if (regimen == null) return;
+    
       this.setState({regimen: regimen});
 
       let startDate = regimen.startDate;
@@ -74,9 +101,13 @@ export default class ReportMainScreen extends Component<any, State> {
           markedDatesObj: vm.getMarkedDatesObj(this.state.selectedDateStr)
         })
       }
-
+    } catch(e) {
     }
-    this.setState({isLoading: false});
+  }
+
+
+  componentWillUnmount() {
+    this.componentWillFocusSubscription.remove();
   }
 
   /**
@@ -126,7 +157,7 @@ export default class ReportMainScreen extends Component<any, State> {
   }
 
   render() {
-    const { isLoading, regimen, selectedDateStr, markedDatesObj,
+    const { isLoading, regimen, markedDatesObj,
       todayStr
     } = this.state;
 
@@ -145,7 +176,18 @@ export default class ReportMainScreen extends Component<any, State> {
         }
         {!isLoading && !regimen &&
           <Card style={styles.content}>
-            <AppText>You do not have a regimen yet. Please redeem one first.</AppText>
+            <CardItem>
+              <AppText style={{flex: 1}}>You do not have a regimen yet. Please redeem one first.</AppText>  
+            </CardItem>
+            <CardItem>
+              <Button 
+                style={{flex: 1}}
+                full
+                onPress={ () => {this.props.navigation.navigate(ScreenNames.RegimenRedeem)}}
+              >
+                <AppText>Redeem Regimen by Code</AppText>
+              </Button>
+            </CardItem>
           </Card>
         }
         {!isLoading && !!regimen &&

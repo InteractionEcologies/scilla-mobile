@@ -1,26 +1,23 @@
 // @flow
 import React, { Component } from "react";
 import { View, ScrollView, StyleSheet } from "react-native";
-import { Spinner, CheckBox, Button } from "native-base"
+import { Button } from "native-base"
 import { IRegimen, IRegimenPhase, RegimenPhaseStatusOptions,
   PartOfDayOptions, RegimenUtils
 } from "../../libs/scijs";
 // import type {  }
 import AppStore from "../../services/AppStore";
-import AppClock from "../../services/AppClock";
 import AppNotificationManager from "../../services/AppNotificationManager";
 import { 
-  Title, AppText, RegimenSchedule,
+  Title, AppText,
   ThreePillTableRow, ThreePillTableHeader
 } from "../../components";
 import { Feather } from "@expo/vector-icons";
 
 import _ from 'lodash';
 import Colors from "../../constants/Colors";
-import { backgroundColor } from "../../components/Calendar/style";
 
 const appStore = new AppStore();
-const appClock = new AppClock();
 const appNotiManager = new AppNotificationManager();
 
 type State = {
@@ -41,6 +38,7 @@ const initializeState = {
   regimenSelectedStatusMap: {}
 }
 
+// eslint-disable-next-line no-unused-vars
 const SCOPE = "RegimenSelectIdealPhaseScreen";
 export default class RegimenSelectIdealPhaseScreen extends Component<any, State> {
   
@@ -72,9 +70,12 @@ export default class RegimenSelectIdealPhaseScreen extends Component<any, State>
     
     let regimenSelectedStatusMap = {}
     let regimenPhases = regimen.regimenPhases;
+    let selectedRegimenOrder = null
     _.forEach(regimenPhases, (phase) => {
-      if(phase.status === RegimenPhaseStatusOptions.selected ) {
+      if(phase.status === RegimenPhaseStatusOptions.isTrying ) {
         regimenSelectedStatusMap[phase.phase] = true;
+        selectedRegimenOrder = phase.phase;
+
       } else {
         regimenSelectedStatusMap[phase.phase] = false;
       }
@@ -83,6 +84,7 @@ export default class RegimenSelectIdealPhaseScreen extends Component<any, State>
     this.setState({
       regimen: regimen, 
       regimenPhases: regimenPhases,
+      selectedRegimenOrder: selectedRegimenOrder,
       regimenSelectedStatusMap: regimenSelectedStatusMap
     })
 
@@ -112,6 +114,7 @@ export default class RegimenSelectIdealPhaseScreen extends Component<any, State>
     
     regimen.selectFinalPhaseByOrder(selectedRegimenOrder);
     appStore.updateRegimen(regimen);
+    appNotiManager.setNotificationsByReminderConfigs(regimen.getActiveReminderConfigs());
     this.props.navigation.popToTop();
   }
 
@@ -175,7 +178,7 @@ export default class RegimenSelectIdealPhaseScreen extends Component<any, State>
   }
 
   render() {
-    const { regimenPhases, selectedRegimenOrder } = this.state;
+    const { selectedRegimenOrder } = this.state;
     return (
       <ScrollView contentContainerStyle={styles.content}>
         <Title>Select Ideal Dosage</Title>

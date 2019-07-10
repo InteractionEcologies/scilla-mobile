@@ -103,29 +103,34 @@ export default class RegimenMainScreen extends React.Component<any, State> {
   async initializeState() {
     if(!this._isMounted) return;
     console.log(SCOPE, "initializeState")
-    let regimen = await appStore.getLatestRegimen();
-    
-    if(regimen == null) return;
 
-    let activePhase = regimen.getActiveRegimenPhase();
-    if(activePhase)  {
-      this.setState({
-        regimen: regimen,
-        currentRegimenPhaseObject: activePhase.toObj(),
-        reminderConfigs: _.cloneDeep(regimen.getActiveReminderConfigs())
-      }, () => {
-        // force view to be updated w.r.t reminderConfigs 
-        this.forceUpdate();  
-      });  
-    } else {
-      let upcomingPhase = regimen.getRegimenPhaseByOrder(0);
-      if(upcomingPhase) {
+    try {
+      let regimen = await appStore.getLatestRegimen();
+      
+      if(regimen == null) return;
+
+      let activePhase = regimen.getActiveRegimenPhase();
+      if(activePhase)  {
         this.setState({
           regimen: regimen,
-          currentRegimenPhaseObject: upcomingPhase.toObj()
-        });
-      }
-    }      
+          currentRegimenPhaseObject: activePhase.toObj(),
+          reminderConfigs: _.cloneDeep(regimen.getActiveReminderConfigs())
+        }, () => {
+          // force view to be updated w.r.t reminderConfigs 
+          this.forceUpdate();  
+        });  
+      } else {
+        let upcomingPhase = regimen.getRegimenPhaseByOrder(0);
+        if(upcomingPhase) {
+          this.setState({
+            regimen: regimen,
+            currentRegimenPhaseObject: upcomingPhase.toObj()
+          });
+        }
+      }      
+    } catch(e) {
+      
+    }
   
     // this.setState({isCheckingLatestRegimen: false})
   }
@@ -212,7 +217,7 @@ export default class RegimenMainScreen extends React.Component<any, State> {
   }
 
   render() {
-    const { isCheckingLatestRegimen, regimen } = this.state;
+    const { isCheckingLatestRegimen } = this.state;
     return (
         <ScrollView>
           {/* Must have this contentContainerStyle to center 
@@ -256,8 +261,6 @@ export default class RegimenMainScreen extends React.Component<any, State> {
       reminderConfigs 
     } = this.state;
     if (!regimen) return;
-
-    let regimenHasStarted = true;
 
     let today = appClock.now();
     let title = "Current Regimen Phase";

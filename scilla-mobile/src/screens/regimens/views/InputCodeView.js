@@ -1,9 +1,7 @@
 // @flow
 import React, { Component, Fragment } from 'react';
-import styles from "../RegimenStyles";
 import { StyleSheet } from "react-native";
-import { 
-  View, 
+import {
   Form, 
   Input,
   Item,

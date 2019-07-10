@@ -1,29 +1,11 @@
 // @flow
-import React from 'react';
-import { Platform } from 'react-native';
-import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
-
-import TabBarIcon from '../components/TabBarIcon';
-import SettingsScreen from '../screens/SettingsScreen';
+import { createBottomTabNavigator } from 'react-navigation';
 
 import RegimenStack from "./RegimenStackNavigator";
 import ReportStack from "./ReportStackNavigator";
 import AnalysisStack from "./AnalysisStackNavigator";
 import DashboardStack from "./DashboardStackNavigator";
-
-const SettingsStack = createStackNavigator({
-  Settings: SettingsScreen,
-});
-
-SettingsStack.navigationOptions = {
-  tabBarLabel: 'Settings',
-  tabBarIcon: ({ focused }) => (
-    <TabBarIcon
-      focused={focused}
-      name={Platform.OS === 'ios' ? `ios-options` : 'md-options'}
-    />
-  ),
-};
+import SettingsStack from "./SettingsStackNavigator";
 
 export default createBottomTabNavigator({
   DashboardStack,

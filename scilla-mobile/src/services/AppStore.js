@@ -8,13 +8,11 @@ import {
   NotExistError
 } from "../libs/scijs";
 import type { 
-  RegimenObject,
   UserId,
   MeasurementObject, 
   DailyEvaluationObject,
   ComplianceReportObject, 
   UserProfileObject,
-  DateTypeISO8601
 } from "../libs/scijs";
 import _ from "lodash";
 import moment from "moment";
@@ -39,7 +37,9 @@ const appClock = new AppClock();
 export default class AppStore implements IAppStore { 
 
   static instance: AppStore
-  appService = AppService.instance;
+  // appService = AppService.instance;
+  appService = new AppService();
+  
   
   latestRegimen: ?IRegimen;
   lastCheckPhaseUpdateTime = appClock.now().subtract(1, 'day');

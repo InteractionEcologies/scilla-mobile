@@ -8,6 +8,7 @@ import {  FirebaseNativeAuth } from "./FirebaseNativeAuth";
 
 import firebase from "react-native-firebase";
 
+const SCOPE = "AppServiceImplWithFirebaseNative:"
 export class AppServiceImplWithFirebaseNative implements IAppService {
   static instance: AppServiceImplWithFirebaseNative;
   auth: IAuth;
@@ -26,6 +27,7 @@ export class AppServiceImplWithFirebaseNative implements IAppService {
   }
 
   initialize(config: AppServiceConfig = {}) {
+    console.log(SCOPE, "initialize")
     this.auth = new FirebaseNativeAuth();
     firebase.firestore().settings({
       persistence: true

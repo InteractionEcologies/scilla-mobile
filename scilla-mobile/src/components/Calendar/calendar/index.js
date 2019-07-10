@@ -19,7 +19,7 @@ import shouldComponentUpdate from './updater';
 
 // This is a hack
 import AppClock from "../../../services/AppClock";
-const appClock = AppClock.instance;
+const appClock = new AppClock();
 
 //Fallback when RN version is < 0.44
 // eslint-disable-next-line react/forbid-foreign-prop-types

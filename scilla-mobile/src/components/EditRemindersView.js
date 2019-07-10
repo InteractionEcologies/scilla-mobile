@@ -1,10 +1,10 @@
 // @flow
 import React, { Component, Fragment } from "react";
-import { StyleSheet, Platform } from "react-native";
+import { StyleSheet } from "react-native";
 
-import { View, Row, Grid, Col, Button } from "native-base";
+import { View, Button } from "native-base";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import type { IRegimen, ReminderConfigObject } from "../libs/scijs";
+import type { ReminderConfigObject } from "../libs/scijs";
 import { AlarmTime, Utils, ReminderTypeOptions } from "../libs/scijs"; 
 import { AppText } from "./StyledText";
 import DateTimePicker from "react-native-modal-datetime-picker";
@@ -29,6 +29,7 @@ const initialState: State = {
   selectedReminderId: ''
 }
 
+// eslint-disable-next-line no-unused-vars
 const SCOPE = "EditRemindersView";
 
 export class EditRemindersView extends Component<Props, State> {
@@ -105,7 +106,6 @@ export class EditRemindersView extends Component<Props, State> {
   }
 
   render() {
-    const { reminders } = this.props;
     const { isTimePickerVisible, timePickerTime } = this.state;
     return (
       <View style={customStyles.main}>

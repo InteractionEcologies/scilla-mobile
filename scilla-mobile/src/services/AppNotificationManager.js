@@ -78,7 +78,7 @@ export default class AppNotificationManager {
     const options = {
       time: (new Date()).getTime() + (sec * 1000)
     }
-    let nid = await Notifications.scheduleLocalNotificationAsync(localNotification, options);
+    await Notifications.scheduleLocalNotificationAsync(localNotification, options);
   }
 
   async setNotificationsByReminderConfigs(configs: ReminderConfigObject[]) {

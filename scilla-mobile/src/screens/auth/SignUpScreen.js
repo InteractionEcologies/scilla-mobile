@@ -1,18 +1,16 @@
 // @flow
 import React from "react";
-import {
-  StyleSheet, TextInput, View, AsyncStorage
-} from "react-native"
-import { Container, Content, Text, Button, Form, 
+import { Container, Content, Button, Form, 
   Label, Item, Input
 } from "native-base";
 import { AppText, Title } from "../../components"
 // import Auth from "../../libs/Auth";
+import { ScreenNames } from "../../constants/Screens";
+import AuthStyles from "./AuthStyles";
+
 import AppService from "../../services/AppService";
 const appService = new AppService();
 
-import { ScreenNames } from "../../constants/Screens";
-import AuthStyles from "./AuthStyles";
 
 export default class SignUpScreen extends React.Component<any, any> {
   state = {
@@ -22,7 +20,7 @@ export default class SignUpScreen extends React.Component<any, any> {
   }
 
   componentDidMount() {
-    let user = appService.auth.currentUser;
+    // let user = appService.auth.currentUser;
     // console.log(user);
   }
 
@@ -44,16 +42,6 @@ export default class SignUpScreen extends React.Component<any, any> {
       email: appService.auth.currentUser.email,
       role: "patient"
     })
-  }
-
-  _createUserProfile = async () => {
-    let user = appService.auth.currentUser;
-    let profile = {
-      uid: user.uid,
-      email: user.email, 
-      first_name: "",
-      last_name: ""
-    }
   }
 
   render() {

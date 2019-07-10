@@ -15,7 +15,7 @@ let DashboardStack = createStackNavigator({
 });
 
 DashboardStack.navigationOptions = {
-  tabBarLabel: 'Today',
+  tabBarLabel: 'Dashboard',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
