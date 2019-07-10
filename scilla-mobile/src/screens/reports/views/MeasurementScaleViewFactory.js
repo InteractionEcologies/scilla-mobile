@@ -4,11 +4,13 @@ import type { MeasurementType, MeasurementValue } from "../../../libs/scijs";
 import { MeasurementTypes } from "../../../libs/scijs";
 import MemoView from "./MemoView";
 import GenericScaleView from "./GenericScaleView"
+import { AdditionalMeasurementViewTypes } from "../constants";
+import MedicationReportView from "./MedicationReportView";
 export default class MeasurementScaleViewFactory {
 
   static createView(
-      type: MeasurementType,
-      selectedScaleValue: MeasurementValue,
+      type: MeasurementType | string,
+      selectedScaleValue: any,
       updateSelectedScaleValue: (type: MeasurementType, value: MeasurementValue) => void
     ): any {
     let view;
@@ -60,6 +62,22 @@ export default class MeasurementScaleViewFactory {
         case MeasurementTypes.mood:
           minValueDesc = "Very good mood";
           maxValueDesc = "Very bad mood";
+          break;
+        case AdditionalMeasurementViewTypes.additionalIlliness:
+          view = <MedicationReportView
+            type={type}
+            selectedValue={selectedScaleValue}
+            updateSelectedScaleValue={updateSelectedScaleValue}
+          />
+          useGenericView = false;
+          break;
+        case AdditionalMeasurementViewTypes.additionalTreatment:
+          view = <MedicationReportView
+            type={type}
+            selectedValue={selectedScaleValue}
+            updateSelectedScaleValue={updateSelectedScaleValue}
+          />
+          useGenericView = false;
           break;
         default: 
           break;

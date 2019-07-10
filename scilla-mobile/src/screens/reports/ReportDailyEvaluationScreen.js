@@ -1,5 +1,5 @@
 // @flow
-import React from "react";
+import React, { Fragment} from "react";
 
 import {
   IRegimen
@@ -7,7 +7,8 @@ import {
 import type {
   MeasurementObject,
   MeasurementType,
-  MeasurementValue
+  MeasurementValue,
+  DailyEvaluationObject
 } from "../../libs/scijs"
 
 import { Text, View, Icon, Button, Card, CardItem, Right, Toast } from "native-base";
@@ -27,9 +28,11 @@ import _ from "lodash";
 import XDate from "xdate";
 
 import { 
-  RequiredCheckboxMeasurementTypesInDailyEval, 
-  RequiredMeasurementTypesInDailyEval, 
-  DailyEvalQuestionPriorityMap
+  RequiredAdditionalIllinessMeasurementTypes,
+  RequiredAdditionalTreatmentMeasurementTypes, 
+  RequiredAdditionalMeasurementTypes, 
+  DailyEvalQuestionPriorityMap,
+  AdditionalMeasurementViewTypes
 } from "./constants";
 
 const appStore = AppStore.instance;
@@ -37,13 +40,15 @@ const appService = AppService.instance;
 const appClock = AppClock.instance; 
 
 type State = {
+  selectedDate: string,
+  regimen: ?IRegimen, 
+  dailyEvalObj: ?DailyEvaluationObject,
   measurementsByType: {
     [key: MeasurementType]: MeasurementValue
   },
-  selectedDate: string,
   inSituMeasurements: MeasurementObject[],
-  step: number, 
-  dailyEvalReportObjId: ?string
+  measurementViewStates: string[],
+  step: number
 }
 
 // eslint-disable-next-line no-unused-vars
@@ -55,15 +60,15 @@ export default class ReportDailyEvaluationScreen extends React.Component<any, St
   };
 
   state = {
-    measurementsByType: {},
     selectedDate: this.props.navigation.getParam('selectedDate', null),
+    regimen: null, 
+    dailyEvalObj: null, 
+    measurementsByType: {},
     inSituMeasurements: [],
     step: 0,
-    dailyEvalReportObjId: null
+    measurementViewStates: []
   }
 
-  dailyEvalViews = [];
-  regimen: IRegimen;
   newDailyEvalReport = null;
   
   componentWillFocusSubscription: any;
@@ -77,15 +82,12 @@ export default class ReportDailyEvaluationScreen extends React.Component<any, St
   }
 
   componentDidMount() {
-    this.regimen = this.props.navigation.getParam('regimen', null);
-    this.initializeState();
-    this.getInSituMeasurements();
+
   }
 
   componentWillFocus = (payload: any) => {
     console.info("willFocus", payload);
     this.initializeState();
-    this.getInSituMeasurements();
   }
 
   componentWillUnmount() {
@@ -93,40 +95,89 @@ export default class ReportDailyEvaluationScreen extends React.Component<any, St
   }
 
   async initializeState() {
+    let regimen: ?IRegimen = await this.fetchRegimen();
+    if(regimen == null) return;
+
+    // look up existing daily eval 
+    let date = moment(this.state.selectedDate);
+    let report: ?DailyEvaluationObject = await this.fetchDailyEvalByDate(date);
+
+    // init measurementsByType
+    let measurementsByType;
+    if(report) {
+      measurementsByType = report.measurementsByType;
+    } else {
+      measurementsByType = this._createInitialMeasurementsByType(regimen);
+    }
+
+    let inSituMeasurements = await this.fetchMeasurementsByDate(date);
+    let measurementViewStates = this.createMeasurementViewStates(measurementsByType);
+
+    // Set 
+    this.setState({
+      regimen: regimen, 
+      dailyEvalObj: report, 
+      measurementsByType: measurementsByType,
+      inSituMeasurements: inSituMeasurements,
+      measurementViewStates: measurementViewStates
+    })
+
+  }
+
+  async fetchRegimen(): Promise<?IRegimen> {
     try {
-      let date = moment(this.state.selectedDate);
-      let dailyEvalReportObj = await appStore.getDailyEvalByDate(date);
-      this.setState({
-        measurementsByType: dailyEvalReportObj.measurementsByType,
-        dailyEvalReportObjId: dailyEvalReportObj.id
-      }, ()=>{this._initDailyEvalViews()});
+      let regimen = await appStore.getLatestRegimen();
+      return regimen;
+    } catch(e) {
+      console.log(SCOPE, e);
+      return null;
+    }
+  }
+
+  async fetchDailyEvalByDate(date: moment): Promise<?DailyEvaluationObject> {
+    try {
+      return await appStore.getDailyEvalByDate(date);
+      // this.setState({
+      //   measurementsByType: dailyEvalReportObj.measurementsByType,
+      //   dailyEvalReportObjId: dailyEvalReportObj.id
+      // }, ()=>{this._createMeasurementViewStates()}
     } catch (e) {
       if(e.name === 'NotExistError'){
-        
         // Look up required measurementTypes
-        this._createInitialMeasurementsByType();
+        // this._createInitialMeasurementsByType();
         console.log(SCOPE, 'cannot find daily eval')  
+        return null;
       }
     }
   }
 
-  async _createInitialMeasurementsByType(){
+  async fetchMeasurementsByDate(date: moment): Promise<MeasurementObject[]> {
     try {
-        let regimen = this.regimen;
-
-        this.setState({
-          measurementsByType: {
-            ...this._initMeasurementsByType(regimen.getTrackedMeasurementTypes(), 0),
-            ...this._initMeasurementsByType(RequiredCheckboxMeasurementTypesInDailyEval, false),
-            ...this._initMeasurementsByType(RequiredMeasurementTypesInDailyEval, '')
-          }         
-        }, ()=>{this._initDailyEvalViews()})    
-      } catch (e) {
+      return await appStore.getMeasurementsByDate(date);
+      // let allMeasurements = await appStore.getMeasurementsByDate('2018-11-26');
+      // this.setState({
+      //   inSituMeasurements: allMeasurements
+      // })
+    } catch (e) {
         console.log(e);
-      }
+        return [];
+    }
   }
 
-  _initMeasurementsByType = (measurementTypes: MeasurementType[], initialValue: MeasurementValue) =>{
+  
+  _createInitialMeasurementsByType(regimen: IRegimen){
+    return {
+      ...this._initMeasurementsByType(regimen.getTrackedMeasurementTypes(), 0),
+      ...this._initMeasurementsByType(RequiredAdditionalIllinessMeasurementTypes, false),
+      ...this._initMeasurementsByType(RequiredAdditionalTreatmentMeasurementTypes, false),
+      ...this._initMeasurementsByType(RequiredAdditionalMeasurementTypes, '')  
+    }
+  }
+
+  /**
+   * Return an Object with key being a MeasurementType 
+   */
+  _initMeasurementsByType = (measurementTypes: MeasurementType[], initialValue: MeasurementValue): Object => {
     let initialMeasurementObj = {};
     for(let type of measurementTypes){
       initialMeasurementObj[type] = initialValue;
@@ -134,30 +185,23 @@ export default class ReportDailyEvaluationScreen extends React.Component<any, St
     return initialMeasurementObj;
   }
 
-  async getInSituMeasurements(){
-    try {
-      let date = moment(this.state.selectedDate);
-      let allMeasurements = await appStore.getMeasurementsByDate(date);
-      // let allMeasurements = await appStore.getMeasurementsByDate('2018-11-26');
-      this.setState({
-        inSituMeasurements: allMeasurements
-      })
-    } catch (e) {
-        console.log(e);
-    }
-  }
 
-  _initDailyEvalViews = () =>{
-    let measurementTypesFromRegimen = _.keys(this.state.measurementsByType)
+  createMeasurementViewStates = (measurementsByType: Object) =>{
+    let optionalMeasurementTypes = _.keys(measurementsByType)
                                       .filter((type)=>this._isOptionalMeasurementType(type));
-    measurementTypesFromRegimen = this._sortMeasurementTypesByPriority(measurementTypesFromRegimen);
-    this.dailyEvalViews = [...measurementTypesFromRegimen, 
-                          ...RequiredMeasurementTypesInDailyEval];
+    optionalMeasurementTypes = this._sortMeasurementTypesByPriority(optionalMeasurementTypes);
+    return [
+      ...optionalMeasurementTypes, 
+      AdditionalMeasurementViewTypes.additionalIlliness,
+      AdditionalMeasurementViewTypes.additionalTreatment,
+      ...RequiredAdditionalMeasurementTypes
+    ];
   }
 
   _isOptionalMeasurementType = (type:string) =>{
-    return (!RequiredMeasurementTypesInDailyEval.includes(type) && 
-            !RequiredCheckboxMeasurementTypesInDailyEval.includes(type)) 
+    return (!RequiredAdditionalMeasurementTypes.includes(type) && 
+            !RequiredAdditionalTreatmentMeasurementTypes.includes(type) &&
+            !RequiredAdditionalIllinessMeasurementTypes.includes(type))
   }
 
   _sortMeasurementTypesByPriority = (measurementTypes: MeasurementType[]) => {
@@ -165,7 +209,7 @@ export default class ReportDailyEvaluationScreen extends React.Component<any, St
     let measurementTypesWithPriority = _.map(measurementTypes, (type: MeasurementType) => {
       return {
         type: type,
-        priority: DailyEvalQuestionPriorityMap[type]  
+        priority: _.get(DailyEvalQuestionPriorityMap, type, 1000)
       }
     });
 
@@ -177,6 +221,7 @@ export default class ReportDailyEvaluationScreen extends React.Component<any, St
   }
 
   updateSelectedScaleValue = (type: string, value: MeasurementValue) =>{
+    console.log(SCOPE, "updateSelectedScaleValue", type, value);
     let measurementsByType = {...this.state.measurementsByType}
     measurementsByType[type] = value
     this.setState(
@@ -204,17 +249,21 @@ export default class ReportDailyEvaluationScreen extends React.Component<any, St
   }
 
   _createDailyEvalReport = (meaurementsByType: {[key: MeasurementType]:MeasurementValue}) => {
-    if(this.regimen == null) return;
+    const { regimen, dailyEvalObj } = this.state;
+    if(regimen == null) return;
 
     let user = appService.auth.currentUser;
     let uid = user.uid;
-    let regimenId = this.regimen.id;
-    let regimenPhase = this.regimen.getRegimenPhaseByDate(moment(this.state.selectedDate));
+    let regimenId = regimen.id;
+    let regimenPhase = regimen.getRegimenPhaseByDate(moment(this.state.selectedDate));
 
     if(regimenPhase == null) return;
-
+    let id = null;
+    if(dailyEvalObj) {
+      id = dailyEvalObj.id;
+    }
     let newDailyEvalReport = {
-        id: this.state.dailyEvalReportObjId || appService.generatePushID(), 
+        id: id || appService.generatePushID(), 
         uid: uid,
         date: this.state.selectedDate, 
         createdAtTimestamp: appClock.now().unix(),
@@ -235,7 +284,7 @@ export default class ReportDailyEvaluationScreen extends React.Component<any, St
   }
 
   goToNext = () =>{
-    if (this.state.step === this.dailyEvalViews.length-1){
+    if (this.state.step === this.state.measurementViewStates.length-1){
       this.onMeasurementValuesConfirmed();
       this.props.navigation.navigate(ScreenNames.ReportMain);
     } else {
@@ -259,13 +308,12 @@ export default class ReportDailyEvaluationScreen extends React.Component<any, St
   }
 
   setNextBtnText(){
-    if(this.state.step === this.dailyEvalViews.length-1){
+    if(this.state.step === this.state.measurementViewStates.length-1){
       return 'Done'
     } else {
       return 'Next'
     }
   }
-
 
   renderInSituReportView = (measurementType:string) => {
     let inSituReport; 
@@ -273,7 +321,7 @@ export default class ReportDailyEvaluationScreen extends React.Component<any, St
       inSituReport = 
         <Card style={styles.inSituCard}>
           <CardItem header bordered>
-            <Title>Your {measurementType} Memos:</Title>
+            <Title>Your {measurementType} Memos</Title>
           </CardItem>
           {this._renderInSituMeasurements(measurementType)}
         </Card>
@@ -307,131 +355,78 @@ export default class ReportDailyEvaluationScreen extends React.Component<any, St
     }  
   }
 
-  renderScaleView(measurementType:string){
+  renderScaleView(measurementViewState: string){
+    const { measurementsByType } = this.state;
+    
+    // Can be a MeasurementValue or an Object with key as MeasurementType. 
+    // The latter case is used for non-standalone scale such as checkboxes. 
+    // FIXME: This is Dora's interface design. Not ideal, but will live with it now.  
+    let initialValue: any; 
+
     let view;
-    let renderedMeasurementType = measurementType
-    let selectedScaleValue;
-    let selectedValueForMedication: {
-      [key: MeasurementType]: MeasurementValue
-    } = {}; 
-    // let isDailyEvalView = true;
+    console.log(SCOPE, "renderScaleView", measurementViewState);
+    if(measurementViewState === AdditionalMeasurementViewTypes.additionalIlliness) {
+      initialValue = {};
+      RequiredAdditionalIllinessMeasurementTypes.forEach((type: string) => {
+        initialValue[type] = measurementsByType[type]
+      })
+    } else if (measurementViewState === AdditionalMeasurementViewTypes.additionalTreatment) {
+      initialValue = {};
+      RequiredAdditionalTreatmentMeasurementTypes.forEach((type: string) => {
+        initialValue[type] = measurementsByType[type]
+      });
+    } else {
+      initialValue = measurementsByType[measurementViewState]
+    }
     
-    selectedScaleValue = this.state.measurementsByType[measurementType]
-
-    RequiredCheckboxMeasurementTypesInDailyEval.forEach((type:string)=>{
-      selectedValueForMedication[type] = this.state.measurementsByType[type]
-    })
-    
-
     view = MeasurementScaleViewFactory.createView(
-      renderedMeasurementType,
-      selectedScaleValue, 
+      measurementViewState,
+      initialValue, 
       this.updateSelectedScaleValue
     )
-
-    // switch(renderedMeasurementType) {
-    //     case MeasurementTypes.sleepQuality: 
-
-    //       view = <SleepScaleView
-    //         type = {measurementType}
-    //         selectedScaleValue = {selectedScaleValue}
-    //         updateSelectedScaleValue = {this.updateSelectedScaleValue}
-    //         isDailyEvalView = {isDailyEvalView}
-    //       />;
-    //       break;
-    //     case MeasurementTypes.spasticitySeverity: 
-    //       view = <SpasticityScaleView
-    //         type = {measurementType}
-    //         selectedScaleValue = {selectedScaleValue}
-    //         updateSelectedScaleValue = {this.updateSelectedScaleValue}
-    //         isDailyEvalView = {isDailyEvalView}
-    //       />
-    //       break;
-    //     case MeasurementTypes.baclofenAmount:
-    //       view = <BaclofenScaleView
-    //         type = {measurementType}
-    //         selectedScaleValue = {selectedScaleValue}
-    //         updateSelectedScaleValue = {this.updateSelectedScaleValue}
-    //         isDailyEvalView = {isDailyEvalView}
-    //       />
-    //       break;
-    //     case MeasurementTypes.tiredness:
-    //       view = <TiredScaleView
-    //         type = {measurementType}
-    //         selectedScaleValue = {selectedScaleValue}
-    //         updateSelectedScaleValue = {this.updateSelectedScaleValue}
-    //         isDailyEvalView = {isDailyEvalView}
-    //       />
-    //       break;
-    //     case MeasurementTypes.mood:
-    //       view = <MoodScaleView
-    //         type = {measurementType}
-    //         selectedScaleValue = {selectedScaleValue}
-    //         updateSelectedScaleValue = {this.updateSelectedScaleValue}
-    //         isDailyEvalView = {isDailyEvalView}
-    //       />
-    //       break;
-    //     case MeasurementTypes.exerciseTime:
-    //       view = <ExerciseReportView 
-    //         type = {measurementType}
-    //         selectedScaleValue = {selectedScaleValue}
-    //         updateSelectedScaleValue = {this.updateSelectedScaleValue}
-    //       />
-    //       break;
-    //     case MeasurementTypes.medication:
-    //       view = <MedicationReportView 
-    //         selectedValue = {selectedValueForMedication}
-    //         updateSelectedScaleValue = {this.updateSelectedScaleValue}
-    //       />
-    //       break;
-    //     case MeasurementTypes.memo:
-    //       view = <MemoView 
-    //         type = {measurementType}
-    //         selectedScaleValue = {selectedScaleValue}
-    //         updateSelectedScaleValue = {this.updateSelectedScaleValue}
-    //       />
-    //       break;
-    //     default: 
-    //       view = <SleepScaleView
-    //         type = {measurementType}
-    //         selectedScaleValue = {selectedScaleValue}
-    //         updateSelectedScaleValue = {this.updateSelectedScaleValue}
-    //         isDailyEvalView = {isDailyEvalView}
-    //       />;
-    //       break;
-    //   }
-      return(
-           <Card style={styles.card}>
-             <CardItem header bordered>
-              <Title>Rate today's overall symptom</Title>
-             </CardItem>
-             <CardItem style={styles.cardItem}>
-              {view}
-             </CardItem>
-          </Card>
-      );
+    
+    let title = "Rate today's overall symptom"
+    if(measurementViewState === AdditionalMeasurementViewTypes.additionalIlliness) {
+      title = "Additional illiness experience"
+    } else if (measurementViewState === AdditionalMeasurementViewTypes.additionalTreatment) {
+      title = "Additional treatment you've received"
+    } else {
+      title = measurementViewState;
+    }
+    return(
+      <Card style={styles.card}>
+        {/* <CardItem header bordered>
+        <Title style={{flex: 1}}>{title}</Title>
+        </CardItem> */}
+        <CardItem style={styles.cardItem}>
+        {view}
+        </CardItem>
+      </Card>
+    );
   }
 
 
   render(){
     let { selectedDate } = this.state;
-    let measurementType = this.dailyEvalViews[this.state.step];
+    let measurementType = this.state.measurementViewStates[this.state.step];
 
-    const friendlyDateStr = moment(selectedDate).format("dddd, Do MMM")
+    const friendlyDateStr = moment(selectedDate).format("dddd, MMM Do")
 
     return(
       <ScrollView contentContainerStyle={styles.content}>
           <Card style={styles.card}>
             <Title style={styles.titleText}>{friendlyDateStr}</Title>   
             <DotPageIndicator 
-              totalDots={this.dailyEvalViews.length}
+              totalDots={this.state.measurementViewStates.length}
               activeDotIndex={this.state.step}
-              dotColor={'grey'}
-              activeDotColor={'black'}  
             />
           </Card>
-          {this.renderScaleView(measurementType)}
-          {this.renderInSituReportView(measurementType)}
+          {measurementType &&
+            <Fragment>
+              {this.renderScaleView(measurementType)}
+              {this.renderInSituReportView(measurementType)}
+            </Fragment>
+          }
           <View style={styles.nextBackBtnView}>
             <Button 
               iconLeft 
@@ -464,13 +459,13 @@ const styles = StyleSheet.create({
     paddingLeft: 10
   },
   card: {
-    // width: '100%',
-    // alignItems: 'center'
   },
   cardItem: {
     width: '100%',
   },  
   nextBackBtnView: {
+    marginTop: 20,
+    marginBottom: 20,
     flexDirection: "row",
     justifyContent: 'space-between',
   },
@@ -478,7 +473,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },  
   button: {
-    // flex: 1
     width: 130
   },
   btnTextLeft: {

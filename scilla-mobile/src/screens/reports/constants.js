@@ -1,16 +1,31 @@
 // @flow
 import { MeasurementTypes } from "../../libs/scijs";
 
-export const RequiredMeasurementTypesInDailyEval = [
+export const AdditionalMeasurementViewTypes = {
+  additionalTreatment: 'Additional Treatment',
+  additionalIlliness: "Additional Illiness"
+}
+
+export const RequiredAdditionalMeasurementTypes = [
   // MeasurementTypes.exerciseTime,
   MeasurementTypes.memo
 ]
 
-export const RequiredCheckboxMeasurementTypesInDailyEval = [
+export const RequiredAdditionalTreatmentMeasurementTypes = [
   MeasurementTypes.botox,
   MeasurementTypes.triggerPointInjection,
   MeasurementTypes.accupuncture,
   MeasurementTypes.physicalTherapy
+]
+
+export const RequiredAdditionalIllinessMeasurementTypes = [
+  MeasurementTypes.runnyNose, 
+  MeasurementTypes.sneezing, 
+  MeasurementTypes.coughing, 
+  MeasurementTypes.soreThroat, 
+  MeasurementTypes.feelingUnderTheWeather, 
+  MeasurementTypes.headache, 
+  MeasurementTypes.chills
 ]
 
 // A question with lower number will be shown first in daily evaluation
