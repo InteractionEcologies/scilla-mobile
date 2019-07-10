@@ -68,8 +68,8 @@ class InputCodeView extends Component<Props, any> {
         <DotPageIndicator 
           totalDots={this.props.numStates}
           activeDotIndex={this.props.currentStateIndex}
-          dotColor='grey'
-          activeDotColor='black'  
+          // dotColor='grey'
+          // activeDotColor='black'  
         />
         <AppText>Enter your 4-digit study code</AppText>
         <Form style={customStyles.form}>

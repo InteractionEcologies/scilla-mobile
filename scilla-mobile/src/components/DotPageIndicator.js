@@ -79,13 +79,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: 4, 
     marginBottom: 4,
-    // width: '100%',
   },
   dot: {
     width: 8, 
     height: 8, 
     borderRadius: 4,
-    backgroundColor: 'grey',
+    backgroundColor: '#BDBDBD',
     marginRight: 4
   },
   activeDot: {

@@ -243,11 +243,14 @@ const styles = StyleSheet.create({
 
   },
   content: {
-    // flex: 1, 
+    // Use flexGrow instead of flex to make the content
+    // scrollable to the bottom. 
+    // See: https://medium.com/@peterpme/taming-react-natives-scrollview-with-flex-144e6ff76c08
+    flexGrow: 1, 
     justifyContent: 'flex-start',
     alignItems: 'center',
     // backgroundColor: 'red',
-    height: 600,
+    // height: 600,
   },
   mainView: {
     // flex: 1,

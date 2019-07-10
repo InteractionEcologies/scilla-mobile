@@ -20,8 +20,8 @@ export default class IntroView extends React.Component<Props, any> {
         <DotPageIndicator 
           totalDots={this.props.numStates}
           activeDotIndex={this.props.currentStateIndex}
-          dotColor='grey'
-          activeDotColor='black'  
+          // dotColor='grey'
+          // activeDotColor='black'  
         />
         <TextBullet>
           <AppText>

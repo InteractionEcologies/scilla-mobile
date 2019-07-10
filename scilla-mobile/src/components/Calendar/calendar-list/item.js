@@ -3,6 +3,7 @@ import {Text, View} from 'react-native';
 import Calendar from '../calendar';
 import styleConstructor from './style';
 
+const SCOPE = "CalendarListItem";
 class CalendarListItem extends Component {
   static defaultProps = {
     hideArrows: true,
@@ -23,6 +24,7 @@ class CalendarListItem extends Component {
   render() {
     const row = this.props.item;
     if (row.getTime) {
+      console.log(SCOPE, row);
       return (
         <Calendar
           theme={this.props.theme}

@@ -47,8 +47,8 @@ class SelectMeasurementsView extends Component<Props, any> {
         <DotPageIndicator 
           totalDots={this.props.numStates}
           activeDotIndex={this.props.currentStateIndex}
-          dotColor='grey'
-          activeDotColor='black'  
+          // dotColor='grey'
+          // activeDotColor='black'  
         />
         {this.renderMeasurements()}
       </View>

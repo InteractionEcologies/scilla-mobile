@@ -40,14 +40,14 @@ class SelectDateView extends Component<Props, any> {
         <DotPageIndicator 
           totalDots={this.props.numStates}
           activeDotIndex={this.props.currentStateIndex}
-          dotColor='grey'
-          activeDotColor='black'  
+          // dotColor='grey'
+          // activeDotColor='black'  
 
         />
         <CalendarList 
           style={{height: 100}}
           pastScrollRange={0}
-          futureScrollRange={2}
+          futureScrollRange={3}
           scrollEnabled={true}
           markedDates={vm.calendarMarkedDateObj}
           markingType={'period'}

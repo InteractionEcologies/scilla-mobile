@@ -17,6 +17,10 @@ import SingleDay from './day/custom';
 import CalendarHeader from './header';
 import shouldComponentUpdate from './updater';
 
+// This is a hack
+import AppClock from "../../../services/AppClock";
+const appClock = AppClock.instance;
+
 //Fallback when RN version is < 0.44
 // eslint-disable-next-line react/forbid-foreign-prop-types
 const viewPropTypes = ViewPropTypes || View.propTypes;
@@ -165,7 +169,8 @@ class Calendar extends Component {
       state = 'disabled';
     } else if (!dateutils.sameMonth(day, this.state.currentMonth)) {
       state = 'disabled';
-    } else if (dateutils.sameDate(day, XDate(this.props.current))) {
+    } else if (dateutils.sameDate(day, XDate(appClock.now().toDate()))) {
+      // FIXME: This is a hack to make the calendar renders at a simulated time. 
       state = 'today';
     }
     let dayComp;
