@@ -28,6 +28,7 @@ export interface IAppStore {
   deactivateRegimen(id: string): Promise<void>;
 
   // Compliance Reports
+  observeComplianceReports(): void;
   getOrInitComplianceReportsForDate(date: moment): Promise<ComplianceReportObject[]>;
   getComplianceReport(id: string): Promise<ComplianceReportObject>;
   getComplianceReportsByDate(date: moment): Promise<ComplianceReportObject[]>;

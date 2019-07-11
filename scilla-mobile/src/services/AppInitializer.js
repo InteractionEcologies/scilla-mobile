@@ -92,6 +92,9 @@ export default class AppInitializer {
 
   onRegimenRedeemed = async () =>  {
     console.log(SCOPE, "onRegimenRedeemed");
+    // FIXME: should set a subscriber for latest regimen in 
+    // AppStore rather than manually calling cache reset. 
+    this.appStore.resetRegimenCache();
     await this.appStore.getLatestRegimen()
     this.appStore.observeComplianceReports();
   }

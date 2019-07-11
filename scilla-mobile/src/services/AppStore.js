@@ -148,6 +148,10 @@ export default class AppStore implements IAppStore {
     }
   }
 
+  resetRegimenCache() {
+    this.latestRegimen = null;
+  }
+
   insertRegimen(regimen: IRegimen): Promise<IRegimen> {
     return this.appService.ds.upsertRegimen(regimen.toObj());
   }
