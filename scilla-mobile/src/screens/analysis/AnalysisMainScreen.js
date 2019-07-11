@@ -111,7 +111,7 @@ export default class AnalysisMainScreen extends React.Component<any, State> {
     let dailyEvals = await this.getDailyEvals(regimen);
     let dataPoints = await this.convertDailyEvalsToDataPoints(regimen, dailyEvals);
     let dataframe = new DailyEvalDataFrame();
-    console.log(SCOPE, dataPoints);
+    console.log(SCOPE, "createDailyEvalDataFrame", dataPoints);
     dataframe.addDataPoints(dataPoints);
     return dataframe;
   }
@@ -131,7 +131,7 @@ export default class AnalysisMainScreen extends React.Component<any, State> {
     let allPoints: DailyEvalDataPoint[] = [];
 
     dailyEvals.forEach( (dailyEval) => {
-      console.log(SCOPE, dailyEval);
+      console.log(SCOPE, "daily eval", dailyEval);
       let dosage = this.getDosage(regimen, dailyEval);
       // FIXME: Currently only show daily evaluations reported in the latest regimen. 
       if(dosage !== -1) {
@@ -160,8 +160,10 @@ export default class AnalysisMainScreen extends React.Component<any, State> {
 
     // let regimenPhase = regimen.getRegimenPhaseByDate(moment(dailyEval.date));
     let regimenPhase;
-    if (dailyEval.regimenPhase) {
-      regimenPhase = regimen.getRegimenPhaseByOrder(dailyEval.regimenPhase);
+    let order: ?number = dailyEval.regimenPhase;
+    if (order !== null) {
+      order = ((order: any): number);
+      regimenPhase = regimen.getRegimenPhaseByOrder(order);
     }
     if(regimenPhase == null) { return null }
     if(regimen.id === regimenId && regimenPhase.phase === phase) {

@@ -1,7 +1,7 @@
 // @flow
 import React from "react";
 import { View, StyleSheet, ScrollView } from "react-native";
-import { Container, Fab, Card, CardItem, Button } from "native-base"; 
+import { Container, Fab, Card, CardItem, Button, Spinner } from "native-base"; 
 import AppStore from "../../services/AppStore";
 import {
   DateFormatTimeOfDay, 
@@ -101,12 +101,14 @@ export default class DashboardMainScreen extends React.Component<any, State> {
     let today = appClock.now();
 
     try {
+      this.setState({isLoading: true});
       let regimen = await appStore.getLatestRegimen();
       
       if(regimen == null) {
         this.setState({
           hasRegimen: false,
-          isRegimenStarted: false
+          isRegimenStarted: false,
+          isLoading: false
         });
         return;
       } else {
@@ -151,13 +153,15 @@ export default class DashboardMainScreen extends React.Component<any, State> {
 
       this.setState({
         treatmentMap: treatmentMap,
-        complianceReportMap: complianceReportMap
+        complianceReportMap: complianceReportMap,
+        isLoading: false
       });
     } catch(e) {
       console.log(e);
       this.setState({
         hasRegimen: false,
-        isRegimenStarted: false
+        isRegimenStarted: false,
+        isLoading: false
       });
     }
 
@@ -232,7 +236,7 @@ export default class DashboardMainScreen extends React.Component<any, State> {
   }
 
   render() {
-    let { selectedDateStr, hasRegimen, isRegimenStarted } = this.state;
+    let { selectedDateStr, hasRegimen, isRegimenStarted, isLoading } = this.state;
     let markedDates = {
       [selectedDateStr]: {
         selected: true
@@ -252,7 +256,10 @@ export default class DashboardMainScreen extends React.Component<any, State> {
 
         <ScrollView contentContainerStyle={styles.content}>
           <View style={styles.mainView}>
-            {!hasRegimen &&
+            {isLoading &&
+              <Spinner color={Colors.primaryColor}/>
+            }
+            {!isLoading && !hasRegimen &&
               <Card>
                 <CardItem>
                   <AppText style={{flex: 1, textAlign: 'center'}}>You don't have a regimen yet.</AppText>
@@ -268,7 +275,7 @@ export default class DashboardMainScreen extends React.Component<any, State> {
                 </CardItem>
               </Card> 
             }
-            {hasRegimen && !isRegimenStarted &&
+            {!isLoading && hasRegimen && !isRegimenStarted &&
               <Card>
                 <CardItem>
                   <AppText style={{flex: 1, textAlign: 'center'}}>Your regimen is not started yet on this day.</AppText>
@@ -277,7 +284,7 @@ export default class DashboardMainScreen extends React.Component<any, State> {
                 </CardItem>
               </Card> 
             }
-            {hasRegimen && isRegimenStarted &&
+            {!isLoading && hasRegimen && isRegimenStarted &&
               <TreatmentListView
                 treatmentMap={this.state.treatmentMap}
                 complianceReportMap={this.state.complianceReportMap}

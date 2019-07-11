@@ -86,7 +86,7 @@ export default class ReportDailyEvaluationScreen extends React.Component<any, St
   }
 
   componentWillFocus = (payload: any) => {
-    console.info("willFocus", payload);
+    // console.info("willFocus", payload);
     this.initializeState();
   }
 
@@ -101,6 +101,7 @@ export default class ReportDailyEvaluationScreen extends React.Component<any, St
     // look up existing daily eval 
     let date = moment(this.state.selectedDate);
     let report: ?DailyEvaluationObject = await this.fetchDailyEvalByDate(date);
+    console.log(SCOPE, "report", report);
 
     // init measurementsByType
     let measurementsByType;
@@ -255,14 +256,13 @@ export default class ReportDailyEvaluationScreen extends React.Component<any, St
     let user = appService.auth.currentUser;
     let uid = user.uid;
     let regimenId = regimen.id;
-    let regimenPhase;
-    if (regimen.completed) {
-      regimenPhase = regimen.getActiveRegimenPhase();
-    } else {
-      regimenPhase = regimen.getRegimenPhaseByDate(moment(this.state.selectedDate));
-    }
+    let regimenPhase = regimen.getRegimenPhaseByDate(moment(this.state.selectedDate));
 
+    if(regimenPhase == null && regimen.completed) {
+      regimenPhase = regimen.getActiveRegimenPhase();
+    } 
     if(regimenPhase == null) return;
+
     let id = null;
     if(dailyEvalObj) {
       id = dailyEvalObj.id;
