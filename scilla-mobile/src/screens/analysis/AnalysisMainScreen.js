@@ -80,7 +80,7 @@ export default class AnalysisMainScreen extends React.Component<any, State> {
   }
 
   componentWillFocus = async (payload: any) => { 
-    this.initializeState()
+    await this.initializeState()
   }
 
   componentWillUnmount() {
@@ -111,6 +111,7 @@ export default class AnalysisMainScreen extends React.Component<any, State> {
     let dailyEvals = await this.getDailyEvals(regimen);
     let dataPoints = await this.convertDailyEvalsToDataPoints(regimen, dailyEvals);
     let dataframe = new DailyEvalDataFrame();
+    console.log(SCOPE, dataPoints);
     dataframe.addDataPoints(dataPoints);
     return dataframe;
   }
@@ -208,35 +209,37 @@ export default class AnalysisMainScreen extends React.Component<any, State> {
   }
 
   renderChart = () => {
+    console.log(SCOPE, "renderChart");
     let meanDataPointsByType = this.dailyEvalDataFrame
                                   .getMeanDataPointsByTypes(this.state.selectedMeasurementTypes)
 
-    if(this.state.selectedMeasurementTypes.length !== 1) {
+    if (this.state.selectedMeasurementTypes.length == 0) {
+      return (
+        <View style={styles.warningView}>
+          <AppText>
+            No symptoms or potential side effects selected. 
+          </AppText>
+        </View>
+      )
+    }
+    else if (this.state.selectedMeasurementTypes.length > 1) {
 
-      console.log("render scatter plot");
-      return <ScatterPlot 
-        width={400}
-        height={400}
-        selectedMeasurementTypes={this.state.selectedMeasurementTypes}
-        meanDataPoints={meanDataPointsByType}
-        xDomain={[0 - X_AXIS_PADDING, 30 + X_AXIS_PADDING]}
-        yDomain={[
-          MIN_MEASUREMENT_SCORE - Y_AXIS_PADDING, 
-          MAX_MEASUREMENT_SCORE + Y_AXIS_PADDING
-        ]}
-        xTicks={[0, 5, 10, 15, 20, 25, 30]}
-      />      
-    } else {
-        let dataPoints = this.dailyEvalDataFrame
-                          .getDisplacedDataPointsByType(this.state.selectedMeasurementTypes[0])
-
-        console.log("render dot plot");
-        return <DotPlot
+      console.log(SCOPE, "render scatter plot", meanDataPointsByType);
+      if(meanDataPointsByType.length === 0) {
+        return (
+          <View style={styles.warningView}>
+            <AppText>
+              You don't have any daily report yet. 
+              Report for a couple days and come back later to gain insights on your symptoms.
+            </AppText>
+          </View>
+        )
+      } else {
+        return <ScatterPlot 
           width={400}
           height={400}
           selectedMeasurementTypes={this.state.selectedMeasurementTypes}
           meanDataPoints={meanDataPointsByType}
-          dotDataPoints={dataPoints}
           xDomain={[0 - X_AXIS_PADDING, 30 + X_AXIS_PADDING]}
           yDomain={[
             MIN_MEASUREMENT_SCORE - Y_AXIS_PADDING, 
@@ -244,6 +247,36 @@ export default class AnalysisMainScreen extends React.Component<any, State> {
           ]}
           xTicks={[0, 5, 10, 15, 20, 25, 30]}
         />
+      }      
+    } else {
+        let dataPoints = this.dailyEvalDataFrame
+                          .getDisplacedDataPointsByType(this.state.selectedMeasurementTypes[0])
+
+        console.log(SCOPE, "render dot plot", dataPoints);
+        if(dataPoints.length === 0) {
+          return (
+            <View style={styles.warningView}>
+              <AppText>
+                You don't have any daily report yet. 
+                Report for a couple days and come back later to gain insights on your symptoms.
+              </AppText>
+            </View>
+          )
+        } else {
+          return <DotPlot
+            width={400}
+            height={400}
+            selectedMeasurementTypes={this.state.selectedMeasurementTypes}
+            meanDataPoints={meanDataPointsByType}
+            dotDataPoints={dataPoints}
+            xDomain={[0 - X_AXIS_PADDING, 30 + X_AXIS_PADDING]}
+            yDomain={[
+              MIN_MEASUREMENT_SCORE - Y_AXIS_PADDING, 
+              MAX_MEASUREMENT_SCORE + Y_AXIS_PADDING
+            ]}
+            xTicks={[0, 5, 10, 15, 20, 25, 30]}
+          />
+        }
     }
   }
 
@@ -252,7 +285,7 @@ export default class AnalysisMainScreen extends React.Component<any, State> {
     const { hasRegimen } = this.state;
     return (
       <ScrollView contentContainerStyle={styles.content}>
-        <Title style = {styles.title}>Symptom Trend</Title> 
+        {/* <Title style = {styles.title}>Symptom Trend</Title>  */}
         {!hasRegimen && 
           <AppText>You do not have a regimen yet. Please redeem one first.</AppText>
         }
@@ -294,6 +327,10 @@ const styles = StyleSheet.create({
   },
   title: {
     marginTop: 30,
-
+  },
+  warningView: {
+    marginLeft: 20, 
+    marginRight: 20,
+    marginTop: 20, 
   }
 })

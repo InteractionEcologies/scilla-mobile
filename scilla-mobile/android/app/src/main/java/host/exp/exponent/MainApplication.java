@@ -14,6 +14,7 @@ import expolib_v1.okhttp3.OkHttpClient;
 import io.invertase.firebase.RNFirebasePackage;
 import io.invertase.firebase.auth.RNFirebaseAuthPackage;
 import io.invertase.firebase.firestore.RNFirebaseFirestorePackage;
+import io.invertase.firebase.fabric.crashlytics.RNFirebaseCrashlyticsPackage; 
 //import org.unimodules.core.interfaces.Package;
 import expo.loaders.provider.interfaces.AppLoaderPackagesProviderInterface;
 //import expo.modules.ads.admob.AdMobPackage;

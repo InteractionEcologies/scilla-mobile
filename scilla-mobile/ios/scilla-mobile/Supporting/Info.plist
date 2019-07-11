@@ -17,7 +17,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.1.1</string>
+	<string>0.1.2</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -37,20 +37,6 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>1</string>
-	<key>Fabric</key>
-	<dict>
-		<key>APIKey</key>
-		<string>81130e95ea13cd7ed9a4f455e96214902c721c99</string>
-		<key>Kits</key>
-		<array>
-			<dict>
-				<key>KitInfo</key>
-				<dict/>
-				<key>KitName</key>
-				<string>Crashlytics</string>
-			</dict>
-		</array>
-	</dict>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -69,7 +55,7 @@
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Allow scilla-mobile to access your microphone</string>
 	<key>NSMotionUsageDescription</key>
-	<string>Allow scilla-mobile to access your device's accelerometer</string>
+	<string>Allow scilla-mobile to access your device&apos;s accelerometer</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Give scilla-mobile permission to save photos</string>
 	<key>NSPhotoLibraryUsageDescription</key>
