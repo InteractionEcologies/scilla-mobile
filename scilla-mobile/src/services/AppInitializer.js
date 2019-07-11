@@ -43,7 +43,7 @@ export default class AppInitializer {
     this.appService.initialize();
 
     // 
-    this.appClock.setCurrentDatetime(moment("2019-07-18"));
+    // this.appClock.setCurrentDatetime(moment("2019-07-18"));
   }
 
   /**
@@ -88,6 +88,12 @@ export default class AppInitializer {
   onEnterForeground = async () => {
     console.log(SCOPE, "enter foreground");
     await this.updateRegimenPhaseAndRequestPermission();
+  }
+
+  onRegimenRedeemed = async () =>  {
+    console.log(SCOPE, "onRegimenRedeemed");
+    await this.appStore.getLatestRegimen()
+    this.appStore.observeComplianceReports();
   }
 
   /**

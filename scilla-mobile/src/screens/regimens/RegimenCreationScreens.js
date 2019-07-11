@@ -218,7 +218,7 @@ class RegimenCreationScreens extends React.Component<any, States>
     console.log("finalize regimen");
     this.regimen.make();
     
-    appStore.insertRegimen(this.regimen);
+    appStore.updateRegimen(this.regimen);
 
   }
 

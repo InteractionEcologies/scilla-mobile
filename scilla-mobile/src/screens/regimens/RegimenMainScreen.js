@@ -105,10 +105,13 @@ export default class RegimenMainScreen extends React.Component<any, State> {
     console.log(SCOPE, "initializeState")
 
     try {
+      // console.log(SCOPE, "will fetch regimen,", moment().valueOf());
       let regimen = await appStore.getLatestRegimen();
-      
+      // console.log(SCOPE, "did fetch regimen,", moment().valueOf());
+
       if(regimen == null) return;
 
+      // console.log(SCOPE, "will get phase,", moment().valueOf());
       let activePhase = regimen.getActiveRegimenPhase();
       if(activePhase)  {
         this.setState({
@@ -128,6 +131,7 @@ export default class RegimenMainScreen extends React.Component<any, State> {
           });
         }
       }      
+      // console.log(SCOPE, "did get phase,", moment().valueOf());
     } catch(e) {
       
     }

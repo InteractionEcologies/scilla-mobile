@@ -21,7 +21,7 @@ We develop this mobile application with an ejected version of Expo. Expo can be 
 
 ## Major Dependencies
 * **Visual Studio Code** 
-* **React Native** (v0.55.4)
+* **React Native** (v0.57)
 * **node** (v8.11.4 LTS)
 * **Expo** (v32.0.0)
 * **Flow** 

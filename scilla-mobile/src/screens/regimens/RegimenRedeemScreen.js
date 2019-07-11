@@ -29,10 +29,12 @@ import PrecautionView from "./views/PrecautionView";
 import CompletionView from "./views/CompletionView";
 
 import moment from "moment";
+import AppInitializer from "../../services/AppInitializer";
 
 // This is a singleton. 
 const appService = AppService.instance;
 const appStore = AppStore.instance;
+const appInitializer = AppInitializer.instance;
 
 const StateNames = {
   inputCode: 'showInputCode',
@@ -114,7 +116,6 @@ const StateMachine = {
     }
   }
 }
-
 
 
 type State = {
@@ -248,15 +249,16 @@ class RegimenRedeemScreen extends Component<any, State> {
   }
 
   saveRegimen = async () => {
+    console.log(SCOPE, "saveRegimen");
     let { regimen } = this.state;
 
     if(regimen) {
       let userProfile = await appStore.getUserProfile();
       regimen.setUserId(userProfile.uid);
       regimen.setStatus(RegimenStatusOptions.active);
-      if (regimen) {
-        await appService.ds.upsertRegimen(regimen.toObj());
-      }  
+      await appService.ds.upsertRegimen(regimen.toObj());
+      appInitializer.onRegimenRedeemed()
+        
     }
   }
 

@@ -13,12 +13,16 @@ import type {
   DailyEvaluationObject,
   ComplianceReportObject, 
   UserProfileObject,
+  RegimenObject,
+  DateTypeISO8601
 } from "../libs/scijs";
 import _ from "lodash";
 import moment from "moment";
 import AppClock from "./AppClock"
 
 const appClock = new AppClock();
+
+const SCOPE = "AppStore:";
 /* AppStore Singleton 
  * This is a layer that abstract cloud persistence storage and 
  * local cache to support offline mode. It also allow
@@ -43,6 +47,14 @@ export default class AppStore implements IAppStore {
   
   latestRegimen: ?IRegimen;
   lastCheckPhaseUpdateTime = appClock.now().subtract(1, 'day');
+  
+  complianceReportMap: {
+    [date: DateTypeISO8601]: {
+      [id: string]: ComplianceReportObject
+    }
+  } = {}
+
+  complianceReportObserver: any
 
   constructor() {
     if(!AppStore.instance) {
@@ -52,19 +64,50 @@ export default class AppStore implements IAppStore {
   }
 
   initialize(today: moment = appClock.now()): Promise<void> {
-    
+    console.log(SCOPE, "initialize");
     return Promise.all([
       this.getUserProfile(),
       this.getLatestRegimen()
-    ]).then(()=>{
-      return this.getOrInitComplianceReportsForDate(today);
-    }).then(()=>{})
+    ])
+    .then(() => {
+      this.observeComplianceReports();
+    })
     .catch( (error) => {
       // console.log(error);
       if (error.name === "NotExisterror") {
         console.log("Regimen does not exist.")
       }
     });
+  }
+
+  observeComplianceReports = () => {
+    if (this.latestRegimen == null) return;
+    
+    // unsubscribe the previous subscription. 
+    if (this.complianceReportObserver) {
+      this.complianceReportObserver();
+    }
+
+    this.complianceReportObserver = this.appService.ds
+      .observeComplianceReportsByRegimen(
+        this.uid, 
+        this.latestRegimen.id, 
+        this.onUpdatedComplianceReports
+      )
+  }
+
+  onUpdatedComplianceReports = (reports: ComplianceReportObject[]) => {
+    
+    _.forEach(reports, (report: ComplianceReportObject) => {
+      if ( _.has(this.complianceReportMap, report.date)) {
+        this.complianceReportMap[report.date][report.id] = report
+      } else {
+        this.complianceReportMap[report.date] = {}
+        this.complianceReportMap[report.date][report.id] = report
+      }
+    })
+
+    console.log(SCOPE, "onUpdatedComplianceReports", this.complianceReportMap);
   }
 
   get uid() {
@@ -97,8 +140,8 @@ export default class AppStore implements IAppStore {
   }
 
   hasActiveRegimen(): boolean {
-   if(this.uid
-    && this.latestRegimen) {
+    if(this.uid
+      && this.latestRegimen) {
       return true;
     } else {
       return false;
@@ -119,38 +162,39 @@ export default class AppStore implements IAppStore {
   }
 
   getLatestRegimen(): Promise<IRegimen> {
-    // if(this.latestRegimen) {
-    //   return Promise.resolve(this.latestRegimen)
-    // } else {
-    //   return this.appService.ds.getLatestRegimen(this.uid)
-    //     .then( (obj) => {
-    //       this._cacheLatestRegimenFromObj(obj);
-    //       return ((this.latestRegimen:any):IRegimen);
-    //     })
-    //     .catch( (error) => {
-    //       throw new NotExistError("Regimen does not exist")
-    //     })
-    // }
+    if(this.latestRegimen) {
+      return Promise.resolve(this.latestRegimen)
+    } else {
+      return this.appService.ds.getLatestRegimen(this.uid)
+        .then( (obj) => {
+          this._cacheLatestRegimenFromObj(obj);
+          return ((this.latestRegimen:any):IRegimen);
+        })
+        .catch( (error) => {
+          throw new NotExistError("Regimen does not exist")
+        })
+    }
 
-    return this.appService.ds.getLatestRegimen(this.uid)
-      .then((regimenObj) => {
-        return RegimenFactory.createRegimenFromObj(regimenObj);
-      })
-      .catch( (error) => {
-        throw new NotExistError("Regimen does not exist");
-      })
-    ;
+    // return this.appService.ds.getLatestRegimen(this.uid)
+    //   .then((regimenObj) => {
+    //     return RegimenFactory.createRegimenFromObj(regimenObj);
+    //   })
+    //   .catch( (error) => {
+    //     throw new NotExistError("Regimen does not exist");
+    //   })
+    // ;
   }
 
   updateRegimen(regimen: IRegimen): Promise<void> {
-    // let cachedRegimenId = _.get(this, 'latestRegimen.id', null);
-    // let cacheUpdateRequired = regimen.id === cachedRegimenId;
+    let cachedRegimenId = _.get(this, 'latestRegimen.id', null);
+    let cacheUpdateRequired = regimen.id === cachedRegimenId;
     let regimenObj = regimen.toObj();
+
     return this.appService.ds.upsertRegimen(regimenObj)
       .then( () => {
-        // if(cacheUpdateRequired) {
-        //   this._cacheLatestRegimenFromObj(regimenObj)
-        // }
+        if(cacheUpdateRequired) {
+          this._cacheLatestRegimenFromObj(regimenObj)
+        }
       })
   }
 
@@ -159,9 +203,9 @@ export default class AppStore implements IAppStore {
   //   this._cacheLatestRegimenFromObj(regimenObj);
   // }
 
-  // _cacheLatestRegimenFromObj(regimenObj: RegimenObject) {
-  //   this.latestRegimen = RegimenFactory.createRegimenFromObj(regimenObj);
-  // }
+  _cacheLatestRegimenFromObj(regimenObj: RegimenObject) {
+    this.latestRegimen = RegimenFactory.createRegimenFromObj(regimenObj);
+  }
 
   deactivateRegimen(id: string): Promise<void> {
     let cachedRegimenId = _.get(this, 'latestRegimen.id', null);
@@ -186,8 +230,9 @@ export default class AppStore implements IAppStore {
     return this.getLatestRegimen()
       .then( (regimen) => {
         currentRegimen = regimen;
-        return this.appService.ds
-          .getComplianceReportsByRegimenAndDate(this.uid, regimen.id, date.format(DateFormatISO8601));
+        // return this.appService.ds
+        //   .getComplianceReportsByRegimenAndDate(this.uid, regimen.id, date.format(DateFormatISO8601));
+        return this._getComplianceReportsByRegimenAndDateWithCache(this.uid, regimen.id, date.format(DateFormatISO8601));
       })
       .then( (reports) => {
         existingReports = reports;
@@ -199,6 +244,26 @@ export default class AppStore implements IAppStore {
         let reports = existingReports.concat(missingReports);
         return _.sortBy(reports, ['treatmentId']);
       })
+  }
+
+  _getComplianceReportsByRegimenAndDateWithCache(
+    uid: UserId, 
+    regimenId: string, 
+    date: DateTypeISO8601): Promise<ComplianceReportObject[]> 
+  {
+
+    if (this.latestRegimen && regimenId === this.latestRegimen.id) {
+      // Look up cache 
+      if(_.has(this.complianceReportMap, date)) {
+        return Promise.resolve(_.values(this.complianceReportMap[date]))
+      } else {
+        return this.appService.ds
+          .getComplianceReportsByRegimenAndDate(uid, regimenId, date)
+      }
+    } else {
+      return this.appService.ds
+        .getComplianceReportsByRegimenAndDate(uid, regimenId, date);
+    }
   }
 
   _initMissingComplianceReports(reports: ComplianceReportObject[]): Promise<void> {

@@ -102,7 +102,9 @@ export default class DashboardMainScreen extends React.Component<any, State> {
 
     try {
       this.setState({isLoading: true});
+      // console.log(SCOPE, 'will fetch regimen,', moment().valueOf());
       let regimen = await appStore.getLatestRegimen();
+      // console.log(SCOPE, 'did fetch regimen,', moment().valueOf());
       
       if(regimen == null) {
         this.setState({
@@ -128,8 +130,11 @@ export default class DashboardMainScreen extends React.Component<any, State> {
       }
 
       // Prepare treatments information
+      // console.log(SCOPE, 'will fetch treatments,', moment().valueOf());
       let treatments = regimen.getTreatmentsByDate(selectedDate);
-      console.log(SCOPE, "updateTreatmentsByDate", "treatments", treatments);
+      // console.log(SCOPE, 'did fetch treatments,', moment().valueOf());
+      // console.log(SCOPE, "updateTreatmentsByDate", "treatments", treatments);
+
       let treatmentMap = {};
       treatments.forEach( (treatment) => {
         treatmentMap[treatment.id] = treatment;
@@ -140,36 +145,36 @@ export default class DashboardMainScreen extends React.Component<any, State> {
       // for this date, as the report may still change. 
       // FIXME: But even compliance reports for today can change. Increase dosage or
       // decrease dosage will change the report for today
+      // console.log(SCOPE, 'will create compliance reports,', moment().valueOf());
       let complianceReportMap = {}
       let complianceReports = [];
       if(selectedDate.isSameOrBefore(today)) {
         complianceReports = await appStore.getOrInitComplianceReportsForDate(selectedDate);
       } else {
       }
-      
+      // console.log(SCOPE, 'did create compliance reports,', moment().valueOf());
+
       complianceReports.forEach((report) =>  {
         complianceReportMap[report.treatmentId] = report;
       })
-
+      
       this.setState({
         treatmentMap: treatmentMap,
         complianceReportMap: complianceReportMap,
         isLoading: false
       });
     } catch(e) {
-      console.log(e);
+      // console.log(e);
       this.setState({
         hasRegimen: false,
         isRegimenStarted: false,
         isLoading: false
       });
     }
-
-
   }
 
   didPressReportBtn = () => {
-    console.log(SCOPE, "didPressReportBtn");
+    // console.log(SCOPE, "didPressReportBtn");
     this.props.navigation.navigate(ScreenNames.ReportSelection);
   }
 
@@ -188,14 +193,14 @@ export default class DashboardMainScreen extends React.Component<any, State> {
   }
 
   onTreatmentCompiled = (treatmentId: string) => {
-    console.log(SCOPE, `Complied treatment: ${treatmentId}`);
+    // console.log(SCOPE, `Complied treatment: ${treatmentId}`);
     let report = this.state.complianceReportMap[treatmentId];
     let status = ComplianceReportHelper.toggleTakeAndGetNewStatus(report);
     this._updateComplianceCardStatus(treatmentId, status);
   }
 
   onTreatmentSnoozed = (treatmentId: string) => {
-    console.log(SCOPE, `Snoozed treatment: ${treatmentId}`);
+    // console.log(SCOPE, `Snoozed treatment: ${treatmentId}`);
     let report = this.state.complianceReportMap[treatmentId];
     let timeUnix = ComplianceReportHelper.getNewSnoozeTime(report);
     this._updateComplianceCardTime(treatmentId, timeUnix);
