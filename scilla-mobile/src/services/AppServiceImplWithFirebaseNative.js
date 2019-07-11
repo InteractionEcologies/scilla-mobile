@@ -29,7 +29,9 @@ export class AppServiceImplWithFirebaseNative implements IAppService {
   initialize(config: AppServiceConfig = {}) {
     console.log(SCOPE, "initialize")
     this.auth = new FirebaseNativeAuth();
+    
     firebase.firestore().settings({
+      timestampsInSnapshots: true,
       persistence: true
     });
     this.ds = new FirebaseDS(firebase.firestore());

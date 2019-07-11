@@ -158,8 +158,11 @@ export default class AnalysisMainScreen extends React.Component<any, State> {
     let regimenId = dailyEval.regimenId; 
     let phase = dailyEval.regimenPhase; 
 
-    let regimenPhase = regimen.getRegimenPhaseByDate(moment(dailyEval.date));
-
+    // let regimenPhase = regimen.getRegimenPhaseByDate(moment(dailyEval.date));
+    let regimenPhase;
+    if (dailyEval.regimenPhase) {
+      regimenPhase = regimen.getRegimenPhaseByOrder(dailyEval.regimenPhase);
+    }
     if(regimenPhase == null) { return null }
     if(regimen.id === regimenId && regimenPhase.phase === phase) {
       return regimenPhase

@@ -255,7 +255,12 @@ export default class ReportDailyEvaluationScreen extends React.Component<any, St
     let user = appService.auth.currentUser;
     let uid = user.uid;
     let regimenId = regimen.id;
-    let regimenPhase = regimen.getRegimenPhaseByDate(moment(this.state.selectedDate));
+    let regimenPhase;
+    if (regimen.completed) {
+      regimenPhase = regimen.getActiveRegimenPhase();
+    } else {
+      regimenPhase = regimen.getRegimenPhaseByDate(moment(this.state.selectedDate));
+    }
 
     if(regimenPhase == null) return;
     let id = null;

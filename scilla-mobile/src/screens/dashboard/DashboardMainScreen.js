@@ -127,6 +127,7 @@ export default class DashboardMainScreen extends React.Component<any, State> {
 
       // Prepare treatments information
       let treatments = regimen.getTreatmentsByDate(selectedDate);
+      console.log(SCOPE, "updateTreatmentsByDate", "treatments", treatments);
       let treatmentMap = {};
       treatments.forEach( (treatment) => {
         treatmentMap[treatment.id] = treatment;
