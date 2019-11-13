@@ -22,6 +22,7 @@ import { ScreenNames } from "../../constants/Screens";
 import AppService from "../../services/AppService";
 import AppStore from "../../services/AppStore";
 import AppClock from "../../services/AppClock";
+import UsageLogger, { UsageEvents } from "../../services/UsageLogger";
 
 import moment from "moment";
 import _ from "lodash";
@@ -38,6 +39,7 @@ import {
 const appStore = AppStore.instance;
 const appService = AppService.instance;
 const appClock = AppClock.instance; 
+const logger = UsageLogger.instance;
 
 type State = {
   selectedDate: string,
@@ -82,11 +84,12 @@ export default class ReportDailyEvaluationScreen extends React.Component<any, St
   }
 
   componentDidMount() {
-
+    logger.logEvent(UsageEvents.report_daily_begin);
   }
 
   componentWillFocus = (payload: any) => {
     // console.info("willFocus", payload);
+    
     this.initializeState();
   }
 
@@ -247,6 +250,7 @@ export default class ReportDailyEvaluationScreen extends React.Component<any, St
         step: 0
       });
     this._showToast();
+    logger.logEvent(UsageEvents.report_daily_complete);
   }
 
   _createDailyEvalReport = (meaurementsByType: {[key: MeasurementType]:MeasurementValue}) => {

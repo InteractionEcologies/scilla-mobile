@@ -7,6 +7,7 @@ import NavigationService from "../navigation/NavigationService";
 import { IRegimen } from "../libs/scijs";
 import AppClock from "./AppClock";
 import AppNotificationManager from "./AppNotificationManager";
+import UsageLogger from "./UsageLogger";
 
 const SCOPE = "AppInitializer:";
 
@@ -23,6 +24,7 @@ export default class AppInitializer {
   appStore = new AppStore();
   appClock = new AppClock();
   appNotiManager = new AppNotificationManager();
+  logger = new UsageLogger();
 
   constructor() {
     if(!AppInitializer.instance) {
@@ -57,6 +59,8 @@ export default class AppInitializer {
    * Will be called once Dashboard screen is loaded. 
    */
   onMainScreenLoaded = async () => {
+    this.logger.setUserId(this.appStore.uid);
+
     console.log(SCOPE, "onMainScreenLoaded")
     try {
       await this.appNotiManager.requestPermission();

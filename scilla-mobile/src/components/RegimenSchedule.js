@@ -12,6 +12,7 @@ type Props = {
   style?: any
 }
 
+// eslint-disable-next-line no-unused-vars
 const SCOPE = "RegimenSchedule:"
 export class RegimenSchedule extends React.Component<Props, any> {
   componentDidMount() {

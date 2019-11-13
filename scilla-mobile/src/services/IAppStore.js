@@ -20,6 +20,7 @@ export interface IAppStore {
   shouldCheckRegimenPhaseUpdate(): boolean;
 
   // Regimen
+  resetRegimenCache(): void;
   hasActiveRegimen(): boolean;
   insertRegimen(regimen: IRegimen): Promise<IRegimen>;
   getRegimens(): Promise<IRegimen[]>;

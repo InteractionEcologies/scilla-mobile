@@ -23,10 +23,12 @@ import AppInitializer from "../../services/AppInitializer";
 import { SimpleLineIcons } from "@expo/vector-icons";
 import Colors from "../../constants/Colors";
 import { ScreenNames } from "../../constants/Screens";
+import UsageLogger, { UsageEvents } from "../../services/UsageLogger";
 
 const appStore: AppStore = new AppStore();
 const appClock = new AppClock();
 const appInitializer = new AppInitializer();
+const logger = new UsageLogger();
 
 type State = {
   treatmentMap: {[treatmentId: string]: Treatment}, // key: id of treatment
@@ -85,6 +87,7 @@ export default class DashboardMainScreen extends React.Component<any, State> {
   } 
 
   componentWillFocus = async (payload: any) => {
+    logger.logEvent(UsageEvents.screen_view, {screen: SCOPE})
     let today = appClock.now();
     this.setState({todayDateStr: today.format(DateFormatISO8601)});
     await this.updateTreatmentsByDate(this.state.selectedDateStr);  

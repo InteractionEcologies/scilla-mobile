@@ -107,7 +107,7 @@ export default class AppStore implements IAppStore {
       }
     })
 
-    console.log(SCOPE, "onUpdatedComplianceReports", this.complianceReportMap);
+    // console.log(SCOPE, "onUpdatedComplianceReports", this.complianceReportMap);
   }
 
   get uid() {

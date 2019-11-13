@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 // @flow
 import React, { Component } from "react";
 import { View, ScrollView, StyleSheet } from "react-native";
@@ -32,6 +33,11 @@ export default class BaseScreen extends Component<any, any> {
 
   componentWillFocus = async (payload: any) => { 
 
+  }
+
+
+  componentWillUnmount() {
+    this.componentWillFocusSubscription.remove();
   }
 
   render() {

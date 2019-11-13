@@ -19,6 +19,7 @@ type Props = {
   onTreatmentSkipped: (treatmentId: string) => void
 }
 
+// eslint-disable-next-line no-unused-vars
 const SCOPE = "ComplianceReportCard:"
 export default class ComplianceReportCard extends React.Component<Props, any> {
 

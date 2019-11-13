@@ -42,7 +42,7 @@ We develop this mobile application with an ejected version of Expo. Expo can be 
   * Follow [expo setup guide](https://expo.io/learn)
   * Install node.js
   * If you need to maintain multiple node versions, use [n](https://github.com/tj/n)
-  * npm install expo-cli --global
+  * `npm install expo-cli --global`
 * Clone the repo
   * git clone <repo>
   * Use VSCode to open <repo>/scilla-mobile

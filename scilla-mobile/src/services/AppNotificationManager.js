@@ -1,6 +1,7 @@
 // @flow
 import type { ReminderConfigObject } from "../libs/scijs";
-import { Notifications, Permissions } from "expo";
+import { Notifications } from "expo";
+import * as Permissions from "expo-permissions";
 import { AlarmTime } from "../libs/scijs";
 import AppClock from "./AppClock";
 
@@ -16,6 +17,7 @@ type Notification = {
 }
 const appClock = AppClock.instance;
 
+// eslint-disable-next-line no-unused-vars
 const SCOPE = "AppNotificationManager:"
 /**
  * Should update this along with regimen phase transition. 

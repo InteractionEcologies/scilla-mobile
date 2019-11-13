@@ -13,12 +13,14 @@ import type {
 import AppService from "../../services/AppService";
 import AppStore from "../../services/AppStore";
 import AppClock from "../../services/AppClock";
+import UsageLogger, { UsageEvents } from "../../services/UsageLogger";
 
 import MemoView from "./views/MemoView";
 
-const appStore = new AppStore();
-const appService = new AppService();
-const appClock = new AppClock();
+const appStore = AppStore.instance;
+const appService = AppService.instance;
+const appClock = AppClock.instance;
+const logger = UsageLogger.instance;
 
 type State = {
   // currentDate: string, 
@@ -67,6 +69,7 @@ export default class ReportMeasurmentScreen extends React.Component<any, State> 
         value: value
     }
     appStore.insertMeasurement(this.newReport);
+    logger.logEvent(UsageEvents.report_mem);
   }
 
   _goToReportSelectionScreen = () =>{

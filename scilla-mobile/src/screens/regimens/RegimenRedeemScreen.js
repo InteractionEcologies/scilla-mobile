@@ -30,11 +30,13 @@ import CompletionView from "./views/CompletionView";
 
 import moment from "moment";
 import AppInitializer from "../../services/AppInitializer";
+import UsageLogger, { UsageEvents } from "../../services/UsageLogger";
 
 // This is a singleton. 
 const appService = AppService.instance;
 const appStore = AppStore.instance;
 const appInitializer = AppInitializer.instance;
+const logger = UsageLogger.instance;
 
 const StateNames = {
   inputCode: 'showInputCode',
@@ -147,7 +149,12 @@ class RegimenRedeemScreen extends Component<any, State> {
     this.state = initialState;
   }
 
+  componentDidMount() {
+    logger.logEvent(UsageEvents.redeem_begin);
+  }
+
   goToMain = () => {
+    logger.logEvent(UsageEvents.redeem_complete);
     this.props.navigation.navigate(ScreenNames.RegimenMain);
   }
 

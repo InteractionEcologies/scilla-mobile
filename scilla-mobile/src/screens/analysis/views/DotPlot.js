@@ -19,8 +19,7 @@ import type {
   DailyEvalDataPoint,
 } from "../../../models/analysis"
 import _ from "lodash";
-import { Svg } from "expo";
-const { G } = Svg;
+import Svg, { G } from "react-native-svg";
 
 type Props = {
   width: number, 
