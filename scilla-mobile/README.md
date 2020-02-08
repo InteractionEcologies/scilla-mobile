@@ -37,6 +37,13 @@ We develop this mobile application with an ejected version of Expo. Expo can be 
   * We still dependent on other `victory-<xxx>` packages, those packages do not use `react-native-svg` thus it is safe to use. See `scilla-mobile/package.json` for the ones we dependent on. These dependencies are copied from `victory-native/package.json`
 
 ## Development Setup
+### Overview
+* Mac
+  * Setup XCode
+  * Start expo server (locally)
+  * Run XCode project with an iPhone attached. 
+  * The code should run on the phone now!
+
 ### Setup Development Environment
 * Setup Expo
   * Follow [expo setup guide](https://expo.io/learn)
@@ -56,15 +63,17 @@ We develop this mobile application with an ejected version of Expo. Expo can be 
 * Start expo server 
   * `cd ./scilla-mobile`
   * `expo start -c`
+    * or `expo start -c --localhost` 
+    * or `expo start -c --lan`
+    * or `expo start -c --tunnel` (I have to use it when working at a caffe.)
 * Use XCode to open `scilla-mobile.xcworkspace`
 * Navigate to the `ios/` folder under terminal. Install dependency via Cocoapods. (`pod install`)
-* Build an run the ios code on a simulator. 
+* Build and run the ios code on a simulator. 
 
 ### Running on Android
 * Use Android Studio to open the `android` folder. 
 * Disable Instant Run (In Preferences > Build, Execution, Deployment)
 * Run the code. 
-
 
 ## Unitesting (with Jest)
 * Run all unittests with autowatch `npm run test:all`

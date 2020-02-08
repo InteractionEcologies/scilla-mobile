@@ -1,12 +1,12 @@
 // @flow
 import type { ReminderConfigObject } from "../libs/scijs";
+import { ReminderTypeOptions } from "../libs/scijs";
 import { Notifications } from "expo";
 import * as Permissions from "expo-permissions";
 import { AlarmTime } from "../libs/scijs";
 import AppClock from "./AppClock";
 
 type Notification = {
-  
   origin: string, // "selected" if the notification was tapped on by the user
                   // "received" if the notification was received while the user was in the app. 
   data: Object, 
@@ -25,8 +25,33 @@ const SCOPE = "AppNotificationManager:"
 export default class AppNotificationManager {
   
   static instance: AppNotificationManager
+
+  static androidChannelId: string = "scilla";
+  static categoryOptions = {
+    treatment: "treatment",
+    dailyEval: "dailyEval"
+  };
+  static actionOptions = {
+    take: {
+      actionId: "take",
+      buttonTitle: "Take"
+    },
+    skip: {
+      actionId: "skip",
+      buttonTitle: "Skip"
+    },
+    report: {
+      actionId: "report",
+      buttonTitle: "Report"
+    },
+    ignore: {
+      actionId: "ignore",
+      buttonTitle: "Ignore"
+    }
+  };
+
   scheduledNotificationIds: number[] = []
-  
+
   constructor() {
     if(!AppNotificationManager.instance) {
       AppNotificationManager.instance = this;
@@ -41,6 +66,42 @@ export default class AppNotificationManager {
 
   setup() {
     Notifications.addListener(this.didReceiveNotification);
+    
+    this.initCategories();
+    this.initAndroidChannels();
+  }
+
+  async initCategories() {
+    await Notifications.createCategoryAsync(
+      AppNotificationManager.categoryOptions.treatment, 
+      [
+        AppNotificationManager.actionOptions.take, 
+        AppNotificationManager.actionOptions.skip
+      ]
+    )
+
+    await Notifications.createCategoryAsync(
+      AppNotificationManager.categoryOptions.dailyEval, 
+      [
+        AppNotificationManager.actionOptions.report, 
+        AppNotificationManager.actionOptions.ignore
+      ]
+    )
+  }
+
+  async initAndroidChannels() {
+    let channel = {
+      name: "Scilla", 
+      description: "Scilla's Notifications", 
+      sound: true, 
+      vibrate: true, 
+      badge: false
+    }
+  
+    await Notifications.createChannelAndroidAsync(
+      AppNotificationManager.androidChannelId, 
+      channel
+    )
   }
 
   didReceiveNotification(notification: Notification) {
@@ -88,18 +149,40 @@ export default class AppNotificationManager {
     await this._cancelScheduledNotifications();
 
     for(let config of configs) {
-      config = (config: ReminderConfigObject)
+      config = (config: ReminderConfigObject);
+
+      // removed disabled notifications. 
+      if (config.enabled === false) continue;
+
       let alarmTime = new AlarmTime(config.time, appClock.now());
       let time = alarmTime.toMoment().toDate();
       
-      const localNotification = {
-        title: "Remember to take your medication",
-        body: "Remember to take your medication."
-      }
-      const options = {
+      let localNotification: Object = {}			
+      let options: Object = {
         time: time, 
-        repeat: 'day'
+        repeat: 'day',
+        ios: {
+          sound: true
+        },
+        android: {
+          channelId: AppNotificationManager.androidChannelId
+        }
       }
+
+			switch (config.type) {
+				case ReminderTypeOptions.dailyEval:
+						localNotification.title = "Remember to take your medication";
+            localNotification.body = "";
+            options.categoryId = AppNotificationManager.categoryOptions.dailyEval;
+						break;
+				case ReminderTypeOptions.treatment:
+						localNotification.title = "Report your symptoms";
+            localNotification.body = "Remember to report your symptoms today."
+            options.categoryId = AppNotificationManager.categoryOptions.treatment;
+						break;
+				default:
+						break; 
+			} 
 
       let nid = await Notifications.scheduleLocalNotificationAsync(localNotification, options);
       this.scheduledNotificationIds.push(nid);

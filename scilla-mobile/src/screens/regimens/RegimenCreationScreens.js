@@ -1,4 +1,5 @@
 // @flow
+// Deprecated. 
 import React from "react";
 // import { Machine, State } from "xstate";
 import { Action, withStateMachine } from "react-automata";
