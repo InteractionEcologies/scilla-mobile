@@ -2,6 +2,7 @@
 import type { ReminderConfigObject } from "../libs/scijs";
 import { ReminderTypeOptions } from "../libs/scijs";
 import { Notifications } from "expo";
+import { Platform } from "react-native";
 import * as Permissions from "expo-permissions";
 import { AlarmTime } from "../libs/scijs";
 import AppClock from "./AppClock";
@@ -97,15 +98,17 @@ export default class AppNotificationManager {
       vibrate: true, 
       badge: false
     }
-  
-    await Notifications.createChannelAndroidAsync(
-      AppNotificationManager.androidChannelId, 
-      channel
-    )
+    
+    if (Platform.OS === "android") {
+      await Notifications.createChannelAndroidAsync(
+        AppNotificationManager.androidChannelId, 
+        channel
+      )
+    }
   }
 
   didReceiveNotification(notification: Notification) {
-    // console.log(SCOPE, "didReceiveNotification", notification);
+    console.log(SCOPE, "didReceiveNotification", notification);
   }
 
   async requestPermission() {
@@ -171,13 +174,13 @@ export default class AppNotificationManager {
 
 			switch (config.type) {
 				case ReminderTypeOptions.dailyEval:
-						localNotification.title = "Remember to take your medication";
-            localNotification.body = "";
+						localNotification.title = "Report your symptoms";
+            localNotification.body = "Tap to report your symptoms today."
             options.categoryId = AppNotificationManager.categoryOptions.dailyEval;
 						break;
 				case ReminderTypeOptions.treatment:
-						localNotification.title = "Report your symptoms";
-            localNotification.body = "Remember to report your symptoms today."
+            localNotification.title = "Remember to take your medication";
+            localNotification.body = "Tap to see medication schedule.";
             options.categoryId = AppNotificationManager.categoryOptions.treatment;
 						break;
 				default:
@@ -185,6 +188,7 @@ export default class AppNotificationManager {
 			} 
 
       let nid = await Notifications.scheduleLocalNotificationAsync(localNotification, options);
+      console.log(SCOPE, "Scheduled notification", nid);
       this.scheduledNotificationIds.push(nid);
     }
     

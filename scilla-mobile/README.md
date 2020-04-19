@@ -64,7 +64,7 @@ We develop this mobile application with an ejected version of Expo. Expo can be 
   * `cd ./scilla-mobile`
   * `expo start -c`
     * or `expo start -c --localhost` 
-    * or `expo start -c --lan`
+    * or `expo start -c --lan` (Use this at home)
     * or `expo start -c --tunnel` (I have to use it when working at a caffe.)
 * Use XCode to open `scilla-mobile.xcworkspace`
 * Navigate to the `ios/` folder under terminal. Install dependency via Cocoapods. (`pod install`)
