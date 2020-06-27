@@ -4,7 +4,6 @@
     "description": "Find the optimal spasticity care.",
     "slug": "scilla-mobile",
     "privacy": "unlisted",
-    "sdkVersion": "33.0.0",
     "platforms": [
       "ios",
       "android"
@@ -40,6 +39,7 @@
       "package": "com.intecolab.scilla",
       "publishBundlePath": "android/app/src/main/assets/shell-app.bundle",
       "publishManifestPath": "android/app/src/main/assets/shell-app-manifest.json"
-    }
+    },
+    "entryPoint": "node_modules/expo/AppEntry.js"
   }
 }

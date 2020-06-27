@@ -1,5 +1,6 @@
 // @flow
-import firebase from "react-native-firebase";
+import firebase from "@react-native-firebase/app";
+import '@react-native-firebase/analytics';
 
 export default class UsageLogger {
   static instance: UsageLogger;

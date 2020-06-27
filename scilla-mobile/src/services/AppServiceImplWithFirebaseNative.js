@@ -6,7 +6,9 @@ import { FirebaseDS, IAuth, IDataSource,
 } from "../libs/scijs";
 import {  FirebaseNativeAuth } from "./FirebaseNativeAuth";
 
-import firebase from "react-native-firebase";
+import firebase from "@react-native-firebase/app";
+import '@react-native-firebase/firestore'
+import '@react-native-firebase/auth'
 
 const SCOPE = "AppServiceImplWithFirebaseNative:"
 export class AppServiceImplWithFirebaseNative implements IAppService {
@@ -31,7 +33,6 @@ export class AppServiceImplWithFirebaseNative implements IAppService {
     this.auth = new FirebaseNativeAuth();
     
     firebase.firestore().settings({
-      timestampsInSnapshots: true,
       persistence: true
     });
     this.ds = new FirebaseDS(firebase.firestore());

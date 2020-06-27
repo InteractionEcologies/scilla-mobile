@@ -38,9 +38,9 @@ export default class AppInitializer {
 
   setup = () => { 
     console.log(SCOPE, "setup");
-    // Much call initialize to use appService. 
+    // Must call initialize to use appService. 
     // This will initialize the subservices (ds and auth). 
-    // We use a initialize to take in configuration, 
+    // We use an initialize method to take in configuration, 
     // as currently there is not way to define constructor interface. 
     this.appService.initialize();
 

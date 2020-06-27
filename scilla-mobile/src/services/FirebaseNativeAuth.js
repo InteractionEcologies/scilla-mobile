@@ -1,7 +1,8 @@
 /* eslint-disable no-useless-constructor */
 // @flow
 import { IAuth } from "../libs/scijs";
-import firebase from "react-native-firebase";
+import firebase from "@react-native-firebase/app";
+import '@react-native-firebase/auth';
 
 export class FirebaseNativeAuth implements IAuth {
   constructor(

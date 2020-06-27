@@ -65,7 +65,7 @@ export default class SettingsScreen extends React.Component<any, any> {
               <AppText>Sign Out</AppText>
             </Button>
 
-            {/* Debug use */}
+            {/* ======== Debug use =========== */}
             {/* <Button onPress={this.notifyDiary} block>
               <AppText>Create Diary Notification</AppText>
             </Button> */}

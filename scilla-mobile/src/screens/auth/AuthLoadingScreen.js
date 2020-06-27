@@ -1,6 +1,5 @@
 // @flow
 import React from "react";
-import * as firebase from "firebase";
 
 import { ScreenNames } from "../../constants/Screens";
 
