@@ -14,21 +14,25 @@ import MainTabNavigator from './MainTabNavigator';
 const RootStack = createStackNavigator();
 const MainOrAuthStack = createStackNavigator();
 
-function MainOrAuthSwitchNavigator() {
-  return (
-    <MainOrAuthStack.Navigator
-      initialRouteName="Auth"
-    >
-      <MainOrAuthStack.Screen
-        name="Auth"
-        component={AuthSwitchNavigator}
-      />
-      <MainOrAuthStack.Screen
-        name="Main"
-        component={MainTabNavigator}
-      />
-    </MainOrAuthStack.Navigator>
-  )
+// function MainOrAuthSwitchNavigator() {
+//   return (
+//     <MainOrAuthStack.Navigator
+//       initialRouteName="Auth"
+//     >
+//       <MainOrAuthStack.Screen
+//         name="Auth"
+//         component={AuthSwitchNavigator}
+//       />
+//       <MainOrAuthStack.Screen
+//         name="Main"
+//         component={MainTabNavigator}
+//       />
+//     </MainOrAuthStack.Navigator>
+//   )
+// }
+
+function MainOrAuthSwitchNavigator({navigation}) {
+  
 }
 
 

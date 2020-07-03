@@ -12,7 +12,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { Asset } from "expo-asset";
 import * as Font from "expo-font";
 import * as Icon from '@expo/vector-icons'
-import AppContainer from "./src/navigation/AppNavigatorV2";
+import AppContainer from "./src/navigation/AppNavigator";
 import AppInitializer from "./src/services/AppInitializer";
 
 const SCOPE = "App";
