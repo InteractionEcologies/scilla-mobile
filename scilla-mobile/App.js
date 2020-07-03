@@ -5,7 +5,8 @@ import {
   AppState, 
   StyleSheet,
   View,
-  Text 
+  Text,
+  YellowBox
 } from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
 import { Asset } from "expo-asset";
@@ -22,6 +23,10 @@ export default class App extends React.Component<any, any> {
   };
 
   async componentDidMount() {
+    // FIXME: NativeBase has an issue with the latest React Native. 
+    // A fix is in NativeBase but the new version is not yet released. 
+    YellowBox.ignoreWarnings(['Animated: `useNativeDriver`']);
+
     AppState.addEventListener('change', this._handleAppStateChange);
 
     try {
@@ -29,6 +34,7 @@ export default class App extends React.Component<any, any> {
       // It shows an error "Native splash screen is already hidden"
       // Still not sure what it means. Need to fix this. 
       // await SplashScreen.preventAutoHideAsync();
+      // Also a relevant issue: https://github.com/expo/expo/issues/7689
     } catch (e) {
       console.warn(e);
     }
