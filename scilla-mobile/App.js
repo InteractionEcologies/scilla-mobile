@@ -1,4 +1,5 @@
 // @flow
+import 'react-native-gesture-handler';
 import React from 'react';
 import { AppState, Platform, StatusBar, StyleSheet, View } from 'react-native';
 import { AppLoading } from 'expo';
@@ -16,6 +17,9 @@ import Colors from "./src/constants/Colors";
 import moment from "moment";
 import AppInitializer from "./src/services/AppInitializer";
 import NavigationService from "./src/navigation/NavigationService";
+
+import { enableScreens } from 'react-native-screens';
+enableScreens();
 
 const SCOPE = "App";
 

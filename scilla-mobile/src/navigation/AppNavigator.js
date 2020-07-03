@@ -1,5 +1,9 @@
+// @flow
 import React from 'react';
-import { createSwitchNavigator, createStackNavigator, createAppContainer } from 'react-navigation';
+import { createSwitchNavigator, createAppContainer,
+} from 'react-navigation';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from "@react-navigation/stack";
 import MainTabNavigator from './MainTabNavigator';
 import AuthSwitchNavigator from './AuthSwitchNavigator';
 import { ScreenNames } from "../constants/Screens";

@@ -21,15 +21,15 @@ We develop this mobile application with an ejected version of Expo. Expo can be 
 
 ## Major Dependencies
 * **Visual Studio Code** 
-* **React Native** (v0.57)
+* **React Native** (v0.62)
 * **node** (v12.x LTS)
-* **Expo** (v33.0.0)
+* **Expo** (v38.0.0)
 * **Flow** 
 * **Jest**
 * react-navigation 
 * NativeBase (v2.12.1)
-* React Native Firebase (npm) (v4.2)
-* React Native Firebase (iOS SDK) (v5.3.0)
+* React Native Firebase (npm) 
+* React Native Firebase (iOS SDK) 
 * react-native-svg (v6.2.2) in Expo
   * Android Gradle builds the react-native-svg in Expo rather than the standard one. 
 * Victory (visualization)
@@ -161,3 +161,5 @@ We develop this mobile application with an ejected version of Expo. Expo can be 
   * Podfile for Expo is setup so that we will fetch `ExpoKit` (the core ExpoKit library) from github using a certain release, and the rest of expo modules (e.g., EXGL) from node_modules. 
 
 
+## Flow
+* flow-typed create-stub <package_name>
