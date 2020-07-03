@@ -32,7 +32,7 @@ const AppNavigator = createStackNavigator(
     initialRouteName: ScreenNames.MainOrAuthSwitchNavigator, 
     mode: 'modal', 
     headerMode: 'none', // use "none" to remove header bar and back button. 
-    transparentCard: true,
+    // cardStyle: { backgroundColor: 'transparent'},
     
     // disable transition animation as this stack is used for showing dialogues
     // We use a modal inside each dialogue that can handle swipe to dismiss, 

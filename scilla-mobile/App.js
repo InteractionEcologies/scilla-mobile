@@ -6,12 +6,19 @@ import {
   StyleSheet,
   View,
   Text,
-  YellowBox
+  Platform,
+  YellowBox,
+  StatusBar
 } from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
 import { Asset } from "expo-asset";
 import * as Font from "expo-font";
 import * as Icon from '@expo/vector-icons'
+
+import { StyleProvider, Container, Root } from "native-base";
+import getTheme from "./src/constants/native-base-theme/components";
+import commonColor from "./src/constants/native-base-theme/variables/commonColor";
+
 import AppContainer from "./src/navigation/AppNavigator";
 import AppInitializer from "./src/services/AppInitializer";
 
@@ -62,11 +69,24 @@ export default class App extends React.Component<any, any> {
     }
     
     return (
-      <View style={styles.container}>
-        <AppContainer/>
-      </View>
+      
+        <View style={styles.container}>
+          {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
+          {/* Root is used to support ActionSheet and Toast. */}
+          <Root>
+            {/* Native Base Container */}
+            {/* <Container> */}
+              {/* React Navigation Container */}
+              <AppContainer 
+                // ref={navigatorRef => {
+                //   NavigationService.setTopLevelNavigator(navigatorRef);
+                // }}
+              />
+            {/* </Container> */}
+          </Root>
+        </View>
     )
-    
+
   }
 
   _handleAppStateChange = (nextAppState: string) => {

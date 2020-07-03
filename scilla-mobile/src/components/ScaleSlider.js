@@ -1,7 +1,8 @@
 // @flow
 import React from "react";
 import { View } from "native-base";
-import { StyleSheet, Slider } from "react-native";
+import { StyleSheet } from "react-native";
+import Slider from '@react-native-community/slider';
 import { AppText } from "./StyledText";
 import type { MeasurementValue } from "../libs/scijs";
 
