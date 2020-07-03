@@ -27,7 +27,7 @@ We develop this mobile application with an ejected version of Expo. Expo can be 
 * **Flow** 
 * **Jest**
 * react-navigation 
-* NativeBase (v2.12.1)
+* NativeBase (v2.13)
 * React Native Firebase (npm) 
 * React Native Firebase (iOS SDK) 
 * react-native-svg (v6.2.2) in Expo
@@ -50,15 +50,14 @@ We develop this mobile application with an ejected version of Expo. Expo can be 
   * Install node.js
   * If you need to maintain multiple node versions, use [n](https://github.com/tj/n)
   * `npm install expo-cli --global`
-* Clone the repo
-  * git clone <repo>
+* Clone the repo with submodules
+  * `git clone --recursive git@github.com:InteractionEcologies/scilla-mobile.git`
   * Use VSCode to open <repo>/scilla-mobile
     * Note that most of the config files required by the IDE locate inside `scilla-mobile/scilla-mobile` rather than the root folder. Open this folder allows VSCode to run Jest and flow extensios. 
 * Install dependencies
   * Use terminal, navigate to `scilla-mobile/scilla-mobile/`
   * Run `npm install expo`
   * Run `expo install`
-* To start serving the javascript code, use `expo start -c`. 
 
 ### Running on iOS
 * Start expo server 
