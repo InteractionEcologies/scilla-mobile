@@ -13,7 +13,7 @@ We develop this mobile application with an ejected version of Expo. Expo can be 
     * Android: `/android/app/google-services.json`
     * iOS: `/ios/scilla-mobile/GoogleService-info.plist`
 
-## Repo structures
+## Repo structure
 * `scilla-mobile`: the main source file for the mobile app. 
 * Besides `scilla-mobile/`, this repo contains two other submodules. 
   * `scilla-mobile.wiki`: for documentation purpose. 
@@ -56,8 +56,9 @@ We develop this mobile application with an ejected version of Expo. Expo can be 
     * Note that most of the config files required by the IDE locate inside `scilla-mobile/scilla-mobile` rather than the root folder. Open this folder allows VSCode to run Jest and flow extensios. 
 * Install dependencies
   * Use terminal, navigate to `scilla-mobile/scilla-mobile/`
-  * Run `npm install`
-* To start serving the javascript code, use `npm run start`. 
+  * Run `npm install expo`
+  * Run `expo install`
+* To start serving the javascript code, use `expo start -c`. 
 
 ### Running on iOS
 * Start expo server 
@@ -66,62 +67,14 @@ We develop this mobile application with an ejected version of Expo. Expo can be 
     * or `expo start -c --localhost` 
     * or `expo start -c --lan` (Use this at home)
     * or `expo start -c --tunnel` (I have to use it when working at a caffe.)
-* Use XCode to open `scilla-mobile.xcworkspace`
+* Use XCode to open `scillamobile.xcworkspace`
 * Navigate to the `ios/` folder under terminal. Install dependency via Cocoapods. (`pod install`)
-* Build and run the ios code on a simulator. 
+* Build and run the ios code on a simulator or on a device. 
 
 ### Running on Android
 * Use Android Studio to open the `android` folder. 
 * Disable Instant Run (In Preferences > Build, Execution, Deployment)
 * Run the code. 
-
-## Unitesting (with Jest)
-* Run all unittests with autowatch `npm run test:all`
-* Run unittest once `npm run test`
-* Run unittest in debug mode (allow the `debugger` keyword): `npm run test:debug`
-  * Go to `chrome://inspect` in Chrome. 
-* Run unittest with specific module `npm run test -- [module name]`
-  * E.g., `npm run test -- FirebaseDS --watch`
-  * To show `console.log` under this mode, we cannot use watch (not sure why). Thus, just run `npm run test -- Firebase` for example. 
-
-## Using Flow static type checker
-* add `// @flow` at the beginning of a `js` file. 
-* We use `eslint` with a flow support. 
-* Flow warnings and errors should show in the IDE (VSCode), under Problems. 
-* You can also run `npx flow`. 
-
-## Publishing/Deployment
-* Overview: 
-  * The iOS and Android app uses a different URL to load the code in development and production. 
-  * Under development setting, the code is load from a server running locally (started with `npm run start` or `expo start`)
-  * Under production setting, the code uses the URL specifies in `app.json` to fetch the published code on Expo. This allows over the air update. 
-* `npx expo publish`
-  * This will publish the JS asset to the Expo server. 
-* Then, for iOS, build the project with `Release` settings. Or just Archive and publish it. 
-
-### Publish Android release built on TestFairy
-* I edited the `build.gradle`file to include signing for the release built. 
-  * As suggested in this [React Native doc](https://facebook.github.io/react-native/docs/signed-apk-android)
-* To build the app, use Android Studio, use `prodMinSdkProdKernelRelease` as the build variant. 
-* Click `build`. DO NOT USE `Generate Signed Bindles/SDK`. I don't know why but it does correctly sign my release built. 
-* Once built, the `apk` should be located at `/android/app/build/outputs/apk/prodMinSdkProdKernel/release` with a name `app-prodMinSdk-prodKernel-release.apk`. 
-  * Note that the release built uses a keystore located in `/android/app/`
-* Sign in to TestFairy, upload this apk. 
-* On the Android end, click on the email received from TestFairy, download the apk, and install. 
-* You will need to set your Android to allow unknown sources:
-  * Settings > Security & fingerprint > Unknown sources (turn this on)
-
-## Debugging
-### iOS
-* Show the debugging menu on iPhone
-  * `cmd + D`
-
-## Expo Upgrade Guide
-* Expo typically release upgrade walkthrough for sdk update. 
-  * Usually we need to change package.json to point to the new versions of react and expo. 
-  * `rm -rf node_modules`
-  * `npm install`
-
 
 ## Project Structure
 * `App.js`: entry point of the mobile app. 
@@ -161,5 +114,3 @@ We develop this mobile application with an ejected version of Expo. Expo can be 
   * Podfile for Expo is setup so that we will fetch `ExpoKit` (the core ExpoKit library) from github using a certain release, and the rest of expo modules (e.g., EXGL) from node_modules. 
 
 
-## Flow
-* flow-typed create-stub <package_name>
