@@ -3,18 +3,15 @@ import 'react-native-gesture-handler';
 import React from 'react';
 import { 
   AppState, 
-  Platform, 
-  StatusBar, 
-  StyleSheet, 
+  StyleSheet,
   View,
-  Text } from 'react-native';
-
-// A React component that tells Expo to keep the app loading 
-// screen open if it is the first and only component rendered in your app. 
-import { AppLoading } from 'expo';
+  Text 
+} from 'react-native';
+import * as SplashScreen from 'expo-splash-screen';
 import { Asset } from "expo-asset";
 import * as Font from "expo-font";
 import * as Icon from '@expo/vector-icons'
+import AppContainer from "./src/navigation/AppNavigatorV2";
 
 const SCOPE = "App";
 
@@ -24,14 +21,36 @@ export default class App extends React.Component<any, any> {
     appState: AppState.currentState
   };
 
-  constructor(props: any) {
-    super(props);
-  }
+  async componentDidMount() {
+    AppState.addEventListener('change', this._handleAppStateChange);
 
-  componentDidMount() {
+    try {
+      // TODO: SplashScreen auto hide issue
+      // It shows an error "Native splash screen is already hidden"
+      // Still not sure what it means. Need to fix this. 
+      // await SplashScreen.preventAutoHideAsync();
+    } catch (e) {
+      console.warn(e);
+    }
+
+    this._loadResourcesAsync();
   }
 
   componentWillUnmount() {
+    AppState.removeEventListener('change', this._handleAppStateChange);
+  }
+
+  render() {
+    if (!this.state.isLoadingComplete && !this.props.skipLoadingScreen) {
+      return null;
+    }
+    
+    return (
+      <View style={styles.container}>
+        <AppContainer/>
+      </View>
+    )
+    
   }
 
   _handleAppStateChange = (nextAppState: string) => {
@@ -47,7 +66,7 @@ export default class App extends React.Component<any, any> {
 
   _loadResourcesAsync = async () => {
 
-    return Promise.all([
+    await Promise.all([
       Asset.loadAsync([
         require('./assets/images/scilla-icon.png'),
       ]),
@@ -61,35 +80,18 @@ export default class App extends React.Component<any, any> {
         'open-sans': require('./assets/fonts/OpenSans-Regular.ttf'),
       }),
     ]);
-  };
 
-
-  _handleLoadingError = (error: any) => {
-    // In this case, you might want to report the error to your error
-    // reporting service, for example Sentry
-    console.warn(error);
-  };
-
-  _handleFinishLoading = () => {
-    this.setState({ isLoadingComplete: true });
-  };
-
-  render() {
-    if (!this.state.isLoadingComplete && !this.props.skipLoadingScreen) {
-      return (
-        <AppLoading
-          startAsync={this._loadResourcesAsync}
-          onError={this._handleLoadingError}
-          onFinish={this._handleFinishLoading}
-        />
-      );
-    } else {
-      return (
-        <View>
-          <Text>Test</Text>
-        </View>
-      )
-    }
-  }
+    this.setState({ isLoadingComplete: true}, async () => {
+      await SplashScreen.hideAsync();
+    })
+  };  
 
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1, 
+    // alignItems: 'center',
+    // justifyContent: 'center'
+  }
+})
