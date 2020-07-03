@@ -13,20 +13,30 @@ import { Asset } from "expo-asset";
 import * as Font from "expo-font";
 import * as Icon from '@expo/vector-icons'
 import AppContainer from "./src/navigation/AppNavigatorV2";
+import AppInitializer from "./src/services/AppInitializer";
 
 const SCOPE = "App";
 
 export default class App extends React.Component<any, any> {
+  appInitializer = new AppInitializer();
   state = {
     isLoadingComplete: false,
     appState: AppState.currentState
   };
 
+  constructor(props: any) {
+    super(props);
+
+    this.appInitializer.onAppStart();
+  }
+
   async componentDidMount() {
     // FIXME: NativeBase has an issue with the latest React Native. 
     // A fix is in NativeBase but the new version is not yet released. 
-    YellowBox.ignoreWarnings(['Animated: `useNativeDriver`']);
-
+    YellowBox.ignoreWarnings([
+      'Animated: `useNativeDriver`',
+    ]);
+    
     AppState.addEventListener('change', this._handleAppStateChange);
 
     try {
@@ -64,7 +74,7 @@ export default class App extends React.Component<any, any> {
       this.state.appState.match(/inactive|background/) &&
       nextAppState === "active"
     ) {
-      // this.appInitializer.onEnterForeground();
+      this.appInitializer.onEnterForeground();
     }
 
     this.setState({appState: nextAppState});

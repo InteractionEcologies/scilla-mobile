@@ -1,6 +1,6 @@
 // @flow
 import React from "react";
-import { createStackNavigator } from "react-navigation";
+import { createStackNavigator } from "react-navigation-stack";
 import TabBarIcon from "../components/TabBarIcon";
 import { Platform } from "react-native";
 import ReportMainScreen from "../screens/reports/ReportMainScreen";

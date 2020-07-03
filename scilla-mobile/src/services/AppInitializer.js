@@ -23,7 +23,7 @@ export default class AppInitializer {
   appService = new AppService(); // this will init ds and auth services. 
   appStore = new AppStore();
   appClock = new AppClock();
-  appNotiManager = new AppNotificationManager();
+  // appNotiManager = new AppNotificationManager();
   logger = new UsageLogger();
 
   constructor() {

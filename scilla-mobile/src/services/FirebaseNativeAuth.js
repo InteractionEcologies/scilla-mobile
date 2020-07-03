@@ -1,8 +1,7 @@
 /* eslint-disable no-useless-constructor */
 // @flow
 import { IAuth } from "../libs/scijs";
-import firebase from "@react-native-firebase/app";
-import '@react-native-firebase/auth';
+import auth from "@react-native-firebase/auth";
 
 export class FirebaseNativeAuth implements IAuth {
   constructor(
@@ -15,8 +14,7 @@ export class FirebaseNativeAuth implements IAuth {
     email: string, 
     password: string
   ): Promise<any> {
-    return firebase
-      .auth()
+    return auth()
       .createUserWithEmailAndPassword(email, password);
   }
 
@@ -24,13 +22,12 @@ export class FirebaseNativeAuth implements IAuth {
     email: string, 
     password: string
   ): Promise<any> {
-    return firebase
-      .auth()
-      .signInAndRetrieveDataWithEmailAndPassword(email, password);
+    return auth()
+      .signInWithEmailAndPassword(email, password);
   }
 
   signOut(): Promise<any> {
-    return firebase.auth().signOut();
+    return auth().signOut();
   }
 
   onAuthStateChanged(
@@ -38,11 +35,11 @@ export class FirebaseNativeAuth implements IAuth {
     error?: (any) => void,
     completed?: () => void
   ): Promise<any> {
-    return firebase.auth().onAuthStateChanged(nextOrObserver, error, completed);
+    return auth().onAuthStateChanged(nextOrObserver, error, completed);
   }
 
   get currentUser(): any {
-    return firebase.auth().currentUser;
+    return auth().currentUser;
   }
 
 }
