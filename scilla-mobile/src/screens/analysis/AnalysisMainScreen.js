@@ -4,7 +4,7 @@ import moment from "moment";
 
 import React, { Fragment } from "react";
 import { StyleSheet, ScrollView  } from 'react-native';
-import { View } from "native-base";
+import { View, Spinner } from "native-base";
 import { Title, AppText } from "../../components";
 import AppStore from "../../services/AppStore";
 
@@ -47,7 +47,8 @@ const MAX_MEASUREMENT_SCORE = 5;
 type State = {
   trackedMeasurementTypes: MeasurementType[],
   selectedMeasurementTypes: string[],
-  hasRegimen: boolean
+  hasRegimen: boolean,
+  isLoading: boolean
 }
 
 const SCOPE = "AnalysisMainScreen";
@@ -61,7 +62,8 @@ export default class AnalysisMainScreen extends React.Component<any, State> {
   state = {
     trackedMeasurementTypes: [],
     selectedMeasurementTypes: [],
-    hasRegimen: false
+    hasRegimen: false,
+    isLoading: true
   }
 
   dailyEvalDataFrame = new DailyEvalDataFrame()
@@ -95,6 +97,7 @@ export default class AnalysisMainScreen extends React.Component<any, State> {
 
       this.setState({
         hasRegimen: true,
+        isLoading: false,
         trackedMeasurementTypes: regimen.getTrackedMeasurementTypes(),
         selectedMeasurementTypes: [regimen.getTrackedMeasurementTypes()[0]],
       })
@@ -102,7 +105,8 @@ export default class AnalysisMainScreen extends React.Component<any, State> {
     } catch(e) {
       console.log(e);
       this.setState({
-        hasRegimen: false
+        hasRegimen: false,
+        isLoading: false
       })
     }
   }
@@ -287,14 +291,22 @@ export default class AnalysisMainScreen extends React.Component<any, State> {
 
 
   render() {
-    const { hasRegimen } = this.state;
+    const { hasRegimen, isLoading } = this.state;
+    // let isLoading = true;
+    // if (hasRegimen === true || hasRegimen == false) {
+    //   isLoading = false;
+    // }
     return (
       <ScrollView contentContainerStyle={styles.content}>
-        {/* <Title style = {styles.title}>Symptom Trend</Title>  */}
-        {!hasRegimen && 
+        {isLoading && 
+          <Spinner
+            color={Colors.primaryColor}
+          />
+        }
+        {(!isLoading && !hasRegimen) && 
           <AppText>You do not have a regimen yet. Please redeem one first.</AppText>
         }
-        {hasRegimen &&
+        {(!isLoading && hasRegimen) &&
           <Fragment>
             {this.renderSelectionButtons()}
             {this.renderChart()}
