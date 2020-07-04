@@ -1,7 +1,7 @@
 // @flow
 import type { ReminderConfigObject } from "../libs/scijs";
 import { ReminderTypeOptions } from "../libs/scijs";
-import { Notifications } from "expo";
+import * as Notifications from 'expo-notifications';
 import { Platform } from "react-native";
 import * as Permissions from "expo-permissions";
 import { AlarmTime } from "../libs/scijs";
@@ -66,33 +66,19 @@ export default class AppNotificationManager {
   }
 
   setup() {
-    Notifications.addListener(this.didReceiveNotification);
+    Notifications.addNotificationReceivedListener(
+      this.didReceiveNotification
+    );
+    // TODO: Add logging to capture if users responded to notifications.
+    // Notifications.addNotificationResponseReceivedListene();
     
-    this.initCategories();
     this.initAndroidChannels();
   }
 
-  async initCategories() {
-    await Notifications.createCategoryAsync(
-      AppNotificationManager.categoryOptions.treatment, 
-      [
-        AppNotificationManager.actionOptions.take, 
-        AppNotificationManager.actionOptions.skip
-      ]
-    )
-
-    await Notifications.createCategoryAsync(
-      AppNotificationManager.categoryOptions.dailyEval, 
-      [
-        AppNotificationManager.actionOptions.report, 
-        AppNotificationManager.actionOptions.ignore
-      ]
-    )
-  }
-
   async initAndroidChannels() {
-    let channel = {
+    let channel: Notifications.NotificationChannelInput = {
       name: "Scilla", 
+      importance: Notifications.AndroidImportance.MAX,
       description: "Scilla's Notifications", 
       sound: true, 
       vibrate: true, 
@@ -100,7 +86,7 @@ export default class AppNotificationManager {
     }
     
     if (Platform.OS === "android") {
-      await Notifications.createChannelAndroidAsync(
+      await Notifications.setNotificationChannelAsync(
         AppNotificationManager.androidChannelId, 
         channel
       )
@@ -112,15 +98,22 @@ export default class AppNotificationManager {
   }
 
   async requestPermission() {
-    const { status, permissions } = await Permissions
-      .askAsync(Permissions.USER_FACING_NOTIFICATIONS);
+    // const { status, permissions } = await Permissions
+    //   .askAsync(Permissions.USER_FACING_NOTIFICATIONS);
 
-      if (status === 'granted') {
-        console.log(status);
-        return 
-      } else {
-        throw new Error("Notification permission not granted.")
+    //   if (status === 'granted') {
+    //     console.log(status);
+    //     return 
+    //   } else {
+    //     throw new Error("Notification permission not granted.")
+    //   }
+    return await Notifications.requestPermissionsAsync({
+      ios: {
+        allowAlert: true, 
+        allowBadge: true, 
+        allowSound: true, 
       }
+    })
   }
 
   async getPermission() {
@@ -130,26 +123,31 @@ export default class AppNotificationManager {
 
   async sendImmediately() {
     console.log("Send a notification");
-    await Notifications.presentLocalNotificationAsync({
+    await Notifications.presentNotificationAsync({
       title: "test", 
       body: "test"
     })
   }
 
   async sendWithDelaySec(sec: number) {
-    const localNotification = {
+    const content = {
       title: "Remember to take your medication",
       body: "Remember to take your medication."
     }
-    const options = {
-      time: (new Date()).getTime() + (sec * 1000)
+    const trigger = {
+      seconds: sec,
+      repeats: false
     }
-    await Notifications.scheduleLocalNotificationAsync(localNotification, options);
+    await Notifications.scheduleNotificationAsync({
+      content: content, 
+      trigger: trigger
+    });
   }
 
   async setNotificationsByReminderConfigs(configs: ReminderConfigObject[]) {
     
     await this._cancelScheduledNotifications();
+    console.log(SCOPE, "ReminderConfigs", configs);
 
     for(let config of configs) {
       config = (config: ReminderConfigObject);
@@ -157,39 +155,41 @@ export default class AppNotificationManager {
       // removed disabled notifications. 
       if (config.enabled === false) continue;
 
-      let alarmTime = new AlarmTime(config.time, appClock.now());
+      let alarmTime: AlarmTime = new AlarmTime(config.time, appClock.now());
       let time = alarmTime.toMoment().toDate();
       
-      let localNotification: Object = {}			
-      let options: Object = {
-        time: time, 
-        repeat: 'day',
-        ios: {
-          sound: true
-        },
-        android: {
-          channelId: AppNotificationManager.androidChannelId
-        }
+      let content: Notifications.NotificationContent = {}			
+      let trigger: Notifications.DailyNotificationTrigger = {
+        type: "daily",
+        hour: alarmTime.hour,
+        minute: alarmTime.minute
       }
 
 			switch (config.type) {
 				case ReminderTypeOptions.dailyEval:
-						localNotification.title = "Report your symptoms";
-            localNotification.body = "Tap to report your symptoms today."
-            options.categoryId = AppNotificationManager.categoryOptions.dailyEval;
-						break;
+          content.title = "Report your symptoms";
+          content.body = "Tap to report your symptoms today."
+          break;
 				case ReminderTypeOptions.treatment:
-            localNotification.title = "Remember to take your medication";
-            localNotification.body = "Tap to see medication schedule.";
-            options.categoryId = AppNotificationManager.categoryOptions.treatment;
-						break;
+          content.title = "Remember to take your medication";
+          content.body = "Tap to see medication schedule.";
+          break;
 				default:
-						break; 
+          break; 
 			} 
 
-      let nid = await Notifications.scheduleLocalNotificationAsync(localNotification, options);
-      console.log(SCOPE, "Scheduled notification", nid);
-      this.scheduledNotificationIds.push(nid);
+      try {
+        let nid = await Notifications.scheduleNotificationAsync(
+          {
+            content: content, 
+            trigger: trigger
+          }
+        );
+        console.log(SCOPE, "Scheduled notification", nid);
+        this.scheduledNotificationIds.push(nid);
+      } catch (err) {
+        console.warn(err)
+      }
     }
     
   }

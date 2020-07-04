@@ -176,6 +176,7 @@ export default class ReportSelectionScreen extends React.Component<any, State> {
                 key={i}
                 style={styles.optionButton}
                 full
+                
                 onPress={() => this._goToMeasurementScreen(type) }
             >
               <AppText>{type}</AppText>

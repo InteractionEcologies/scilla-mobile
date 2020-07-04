@@ -15,12 +15,13 @@ import { Asset } from "expo-asset";
 import * as Font from "expo-font";
 import * as Icon from '@expo/vector-icons'
 
-import { StyleProvider, Container, Root } from "native-base";
+import { StyleProvider, Root } from "native-base";
 import getTheme from "./src/constants/native-base-theme/components";
 import commonColor from "./src/constants/native-base-theme/variables/commonColor";
 
 import AppContainer from "./src/navigation/AppNavigator";
 import AppInitializer from "./src/services/AppInitializer";
+import NavigationService from "./src/navigation/NavigationService";
 
 const SCOPE = "App";
 
@@ -69,7 +70,7 @@ export default class App extends React.Component<any, any> {
     }
     
     return (
-      
+      <StyleProvider style={getTheme(commonColor)}>
         <View style={styles.container}>
           {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
           {/* Root is used to support ActionSheet and Toast. */}
@@ -78,13 +79,14 @@ export default class App extends React.Component<any, any> {
             {/* <Container> */}
               {/* React Navigation Container */}
               <AppContainer 
-                // ref={navigatorRef => {
-                //   NavigationService.setTopLevelNavigator(navigatorRef);
-                // }}
+                ref={navigatorRef => {
+                  NavigationService.setTopLevelNavigator(navigatorRef);
+                }}
               />
             {/* </Container> */}
           </Root>
         </View>
+      </StyleProvider>
     )
 
   }

@@ -1,6 +1,10 @@
 // @flow
 // Reference
 // https://material.io/tools/color/#!/?view.left=0&view.right=0&primary.color=9CCC65&secondary.color=A1887F
+//
+// This file defines the colors used in the project. These color definitions 
+// also used in native-base-theme to customize the style of native base
+// components. 
 const primaryColor = "#42a5f5";
 const primaryDarkColor = "#0077c2";
 const primaryLightColor = "#80d6ff";

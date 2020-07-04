@@ -38,7 +38,8 @@
     "android": {
       "package": "com.intecolab.scilla",
       "publishBundlePath": "android/app/src/main/assets/shell-app.bundle",
-      "publishManifestPath": "android/app/src/main/assets/shell-app-manifest.json"
+      "publishManifestPath": "android/app/src/main/assets/shell-app-manifest.json",
+      "useNextNotificationsApi": true
     },
     "entryPoint": "node_modules/expo/AppEntry.js"
   }
