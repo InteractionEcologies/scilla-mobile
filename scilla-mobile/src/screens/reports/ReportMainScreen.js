@@ -58,7 +58,7 @@ export default class ReportMainScreen extends Component<any, State> {
     );
   }
 
-  async componentWillMount() {
+  async componentDidMount() {
 
   }
 

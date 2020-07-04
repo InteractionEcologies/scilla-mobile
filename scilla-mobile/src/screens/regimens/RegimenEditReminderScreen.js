@@ -24,6 +24,10 @@ const initialState = {
 }
 
 export default class RegimenEditReminderScreen extends Component<any, any> {
+  static navigationOptions: any = {
+    title: 'Reminders'
+  };
+
   constructor(props: any) {
     super(props);
 

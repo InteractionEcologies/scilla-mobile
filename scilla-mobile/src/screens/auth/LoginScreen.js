@@ -2,13 +2,19 @@
 import React from "react";
 import { StyleSheet } from 'react-native';
 import {
-  Content, Container,Text, View, Button, Form, Item, Label, Input
+  Content, 
+  Container,
+  Button, 
+  Form, 
+  Item, 
+  Label, 
+  Input
 } from 'native-base'; 
 import { AppText, Title } from "../../components";
 
 import { ScreenNames } from "../../constants/Screens";
 import Colors from "../../constants/Colors";
-import { Styles as AppStyles } from "../../constants/Styles";
+// import { Styles as AppStyles } from "../../constants/Styles";
 import AppService from "../../services/AppService";
 const appService = new AppService();
 

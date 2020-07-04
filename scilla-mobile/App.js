@@ -5,7 +5,6 @@ import {
   AppState, 
   StyleSheet,
   View,
-  Text,
   Platform,
   YellowBox,
   StatusBar

@@ -62,7 +62,12 @@ export default class AppStore implements IAppStore {
     } 
     return AppStore.instance;
   }
-
+  /**
+   * Initialize data related to a user. This is called 
+   * after user login, currently in DashboardMainScreen. 
+   * @param  {moment=appClock.now(} today
+   * @returns Promise
+   */
   initialize(today: moment = appClock.now()): Promise<void> {
     console.log(SCOPE, "initialize");
     return Promise.all([
@@ -365,6 +370,15 @@ export default class AppStore implements IAppStore {
   updateDailyEval(obj: DailyEvaluationObject): Promise<void> {
     return this.appService.ds
       .upsertDailyEval(obj);
+  }
+
+  async signOut() {
+    await this.appService.auth.signOut();
+    // Make sure we clean up observers. 
+    if(this.complianceReportObserver) {
+      this.complianceReportObserver();
+      this.complianceReportObserver = null;
+    }
   }
 
 }

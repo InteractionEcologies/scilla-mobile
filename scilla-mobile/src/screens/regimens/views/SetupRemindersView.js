@@ -37,7 +37,7 @@ class SetupRemindersView extends Component<Props, State> {
     this.state = initialState;
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.setState({reminders: this.props.regimen.reminderConfigs});
   }
 

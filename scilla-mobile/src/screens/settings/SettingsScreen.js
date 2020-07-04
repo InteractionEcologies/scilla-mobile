@@ -34,9 +34,11 @@ export default class SettingsScreen extends React.Component<any, any> {
     super(props);
   }
 
-  signOut = () => {
-    appService.auth.signOut()
-      .then( () => this.props.navigation.navigate("Auth") );
+  signOut = async () => {
+    // appService.auth.signOut()
+    //   .then( () => this.props.navigation.navigate("Auth") );
+    await appStore.signOut()
+    this.props.navigation.navigate("Auth")
   }
 
   // Debug use

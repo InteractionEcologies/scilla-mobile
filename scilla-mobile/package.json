@@ -23,7 +23,9 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^10.0.0",
+    "@react-native-community/datetimepicker": "2.4.0",
     "@react-native-community/masked-view": "^0.1.10",
+    "@react-native-community/slider": "3.0.0",
     "@react-native-firebase/app": "^7.3.1",
     "@react-native-firebase/auth": "^8.0.8",
     "@react-native-firebase/firestore": "^7.2.2",
@@ -54,7 +56,6 @@
     "react-native-easy-grid": "^0.2.0",
     "react-native-gesture-handler": "^1.6.1",
     "react-native-modal": "^11.1.0",
-    "react-native-modal-datetime-picker": "^7.4.2",
     "react-native-reanimated": "^1.9.0",
     "react-native-safe-area-context": "3.0.2",
     "react-native-screens": "^2.9.0",
@@ -91,8 +92,7 @@
     "victory-voronoi-container": "^30.3.1",
     "victory-zoom-container": "^30.3.1",
     "xdate": "^0.8.2",
-    "xstate": "^3.3.3",
-    "@react-native-community/slider": "3.0.0"
+    "xstate": "^3.3.3"
   },
   "devDependencies": {
     "flow": "^0.2.3",

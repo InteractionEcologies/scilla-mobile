@@ -1,7 +1,6 @@
 // @flow
 import AppService from "./AppService";
 import AppStore from './AppStore';
-import moment from "moment";
 import { ScreenNames } from "../constants/Screens";
 import NavigationService from "../navigation/NavigationService";
 import { IRegimen } from "../libs/scijs";
@@ -43,12 +42,12 @@ export default class AppInitializer {
     // as currently there is not way to define constructor interface. 
     this.appService.initialize();
 
-    // 
+    // Simulate time
     // this.appClock.setCurrentDatetime(moment("2019-07-18"));
   }
 
   /**
-   * When the app first stated, it won't call onEnterForeground. 
+   * When the app first started, it won't call onEnterForeground. 
    */
   onAppStart = async () => {
     console.log(SCOPE, "onAppStart");
@@ -73,7 +72,7 @@ export default class AppInitializer {
       // await this.appNotiManager.sendImmediately();
       // await this.appNotiManager.sendWithDelaySec(5);
       // let configs = [{
-      //   id: '0', 
+      //   id: '0',  
       //   reminderSlotId: '0',
       //   type: 'treatment',
       //   time: '10:39', 

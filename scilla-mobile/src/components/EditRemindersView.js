@@ -7,7 +7,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import type { ReminderConfigObject } from "../libs/scijs";
 import { AlarmTime, Utils, ReminderTypeOptions } from "../libs/scijs"; 
 import { AppText } from "./StyledText";
-import DateTimePicker from "react-native-modal-datetime-picker";
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 import _ from "lodash";
 import moment from "moment";
@@ -67,12 +67,12 @@ export class EditRemindersView extends Component<Props, State> {
     }
   }
 
-  handleTimePicked = (time: any) => {
+  handleTimePicked = (event: any, time: any) => {
     const { selectedReminderId } = this.state;
     const { reminders } = this.props;
 
     // console.log(SCOPE, "selected reminder id:", selectedReminderId);
-    // Does find returns a reference?
+    // Find the associated reminder config
     let foundConfig = _.find(reminders, (config) => {
       return config.id === selectedReminderId;
     })
@@ -122,12 +122,14 @@ export class EditRemindersView extends Component<Props, State> {
         </View>
         {this._renderReminderConfigs(false)}
         <DateTimePicker
+          mode="time"
+          value={timePickerTime}
+          
           isVisible={isTimePickerVisible}
           is24Hour={false}
-          mode="time"
-          date={timePickerTime}
-          onCancel={this.onTimePickerDismissed}
-          onConfirm={this.handleTimePicked}
+          // onCancel={this.onTimePickerDismissed}
+          // onConfirm={this.handleTimePicked}
+          onChange={this.handleTimePicked}
         />
       </View>
     )

@@ -156,7 +156,7 @@ export default class AppNotificationManager {
       if (config.enabled === false) continue;
 
       let alarmTime: AlarmTime = new AlarmTime(config.time, appClock.now());
-      let time = alarmTime.toMoment().toDate();
+      // let time = alarmTime.toMoment().toDate();
       
       let content: Notifications.NotificationContent = {}			
       let trigger: Notifications.DailyNotificationTrigger = {
