@@ -1,6 +1,6 @@
 // @flow
 import React, { Component, Fragment } from "react";
-import { StyleSheet } from "react-native";
+import { Platform, StyleSheet } from "react-native";
 
 import { View, Button } from "native-base";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -8,7 +8,7 @@ import type { ReminderConfigObject } from "../libs/scijs";
 import { AlarmTime, Utils, ReminderTypeOptions } from "../libs/scijs"; 
 import { AppText } from "./StyledText";
 import DateTimePicker from '@react-native-community/datetimepicker';
-
+import Modal from 'react-native-modal';
 import _ from "lodash";
 import moment from "moment";
 
@@ -55,7 +55,7 @@ export class EditRemindersView extends Component<Props, State> {
       return id.toString() === config.id.toString();
     })
 
-    // console.log(SCOPE, "foundConfig", foundConfig);
+    console.log(SCOPE, "foundConfig", foundConfig);
 
     if(foundConfig) {
       let alarmTime = new AlarmTime(foundConfig.time);
@@ -71,6 +71,8 @@ export class EditRemindersView extends Component<Props, State> {
     const { selectedReminderId } = this.state;
     const { reminders } = this.props;
 
+    this.setState({timePickerTime: time})
+
     // console.log(SCOPE, "selected reminder id:", selectedReminderId);
     // Find the associated reminder config
     let foundConfig = _.find(reminders, (config) => {
@@ -84,9 +86,9 @@ export class EditRemindersView extends Component<Props, State> {
       this.props.updateReminderConfig(foundConfig.id, foundConfig);
     }
 
-    this.setState({
-      isTimePickerVisible: false
-    });
+    // this.setState({
+    //   isTimePickerVisible: false
+    // });
 
     // console.log("Picked time:", time);
   }
@@ -121,16 +123,9 @@ export class EditRemindersView extends Component<Props, State> {
           </AppText>
         </View>
         {this._renderReminderConfigs(false)}
-        <DateTimePicker
-          mode="time"
-          value={timePickerTime}
-          
-          isVisible={isTimePickerVisible}
-          is24Hour={false}
-          // onCancel={this.onTimePickerDismissed}
-          // onConfirm={this.handleTimePicked}
-          onChange={this.handleTimePicked}
-        />
+        {this._renderDateTimePicker()}
+        
+        
       </View>
     )
   }
@@ -232,6 +227,56 @@ export class EditRemindersView extends Component<Props, State> {
     })
 
     return configViews;
+  }
+
+  _renderDateTimePicker = () => {
+    const { isTimePickerVisible, timePickerTime } = this.state;
+    
+
+    if (Platform.OS === "ios") {
+      return (
+        <Modal 
+          isVisible={this.state.isTimePickerVisible}
+          onBackdropPress={() => this.setState({ isTimePickerVisible: false })}
+        >
+          <DateTimePicker
+            mode="time"
+            style={{
+              width: '100%',
+              backgroundColor: "white"
+            }}
+            value={timePickerTime}
+            // minuteInterval={5}
+            is24Hour={false}
+            // onCancel={this.onTimePickerDismissed}
+            // onConfirm={this.handleTimePicked}
+            onChange={this.handleTimePicked}
+          />
+          <Button
+            full
+            onPress={() => {this.setState({ isTimePickerVisible: false} )}}
+          >
+            <AppText>Confirm</AppText>
+          </Button>
+        </Modal>
+      )
+    } else { //Android
+      return (
+        <DateTimePicker
+          mode="time"
+          style={{
+            width: '100%',
+            backgroundColor: "white"
+          }}
+          value={timePickerTime}
+          // minuteInterval={5}
+          is24Hour={false}
+          // onCancel={this.onTimePickerDismissed}
+          // onConfirm={this.handleTimePicked}
+          onChange={this.handleTimePicked}
+        />
+      )
+    }
   }
 }
 
