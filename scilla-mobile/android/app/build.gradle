@@ -1,4 +1,6 @@
 apply plugin: "com.android.application"
+// Firebase
+apply plugin: 'com.google.gms.google-services'
 
 import com.android.build.OutputFile
 
@@ -85,6 +87,7 @@ apply from: '../../node_modules/react-native-unimodules/gradle.groovy'
 apply from: "../../node_modules/react-native/react.gradle"
 apply from: "../../node_modules/expo-updates/scripts/create-manifest-android.gradle"
 
+
 /**
  * Set this to true to create two separate APKs instead of one:
  *   - An APK that only works on ARM devices
@@ -128,6 +131,12 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    dexOptions {
+        incremental = true
+        preDexLibraries = false
+        javaMaxHeapSize "4g" // 2g should be also OK
     }
 
     defaultConfig {
@@ -204,6 +213,7 @@ dependencies {
         exclude group:'com.facebook.flipper'
     }
     addUnimodulesDependencies()
+
 
     if (enableHermes) {
         def hermesPath = "../../node_modules/hermes-engine/android/";

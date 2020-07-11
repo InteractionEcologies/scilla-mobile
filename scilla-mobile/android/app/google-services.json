@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "609249543436",
+    "firebase_url": "https://inteco-scilla.firebaseio.com",
+    "project_id": "inteco-scilla",
+    "storage_bucket": "inteco-scilla.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:609249543436:android:1e84fc196ea84d3c",
+        "android_client_info": {
+          "package_name": "com.intecolab.scilla"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "609249543436-tcq0oniph22jdqgvgj3qttn655u991gi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDftvGKQ12tawEmeck65plrO0MmcRNTEUc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "609249543436-tcq0oniph22jdqgvgj3qttn655u991gi.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "609249543436-7ud20kp4gni6oc62huo0d4jatmjh8ki7.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.ccjeffhuang.scilla"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
