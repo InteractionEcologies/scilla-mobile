@@ -72,8 +72,12 @@ We develop this mobile application with an ejected version of Expo. Expo can be 
 
 ### Running on Android
 * Use Android Studio to open the `android` folder. 
-* Disable Instant Run (In Preferences > Build, Execution, Deployment)
+* Start react native
+  * `react-native start`
 * Run the code. 
+* Assume you connect the mobile device to your laptop, and the Scilla app failed to 
+  load the JS file from the local server (on laptop), you will need to type 
+  `adb reverse tcp:8081 tcp:8081`
 
 ## Project Structure
 * `App.js`: entry point of the mobile app. 

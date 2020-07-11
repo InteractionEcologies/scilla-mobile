@@ -1,11 +1,10 @@
 // @flow
 import _ from "lodash";
-import moment from "moment";
 
 import React, { Fragment } from "react";
 import { StyleSheet, ScrollView  } from 'react-native';
 import { View, Spinner } from "native-base";
-import { Title, AppText } from "../../components";
+import { AppText } from "../../components";
 import AppStore from "../../services/AppStore";
 
 import type {
@@ -222,7 +221,7 @@ export default class AnalysisMainScreen extends React.Component<any, State> {
     let meanDataPointsByType = this.dailyEvalDataFrame
                                   .getMeanDataPointsByTypes(this.state.selectedMeasurementTypes)
 
-    if (this.state.selectedMeasurementTypes.length == 0) {
+    if (this.state.selectedMeasurementTypes.length === 0) {
       return (
         <View style={styles.warningView}>
           <AppText>

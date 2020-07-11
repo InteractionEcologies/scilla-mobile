@@ -1,10 +1,9 @@
 // @flow
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 import type { IRegimen, ReminderConfigObject } from "../../libs/scijs";
-import { View, Spinner, Content, Card, CardItem, Button } from "native-base";
+import { View, Spinner, Card, CardItem, Button } from "native-base";
 import { Title, AppText } from "../../components";
 import { Styles as AppStyles } from "../../constants/Styles";
-import SetupReminderView from "./views/SetupRemindersView";
 import { EditRemindersView } from "../../components/EditRemindersView";
 import AppStore from "../../services/AppStore";
 import AppNotificationManager from "../../services/AppNotificationManager";
@@ -23,7 +22,7 @@ const initialState = {
   reminders: []
 }
 
-export default class RegimenEditReminderScreen extends Component<any, any> {
+export default class RegimenEditReminderScreen extends Component<any, State> {
   static navigationOptions: any = {
     title: 'Reminders'
   };

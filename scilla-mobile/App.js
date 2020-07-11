@@ -50,7 +50,7 @@ export default class App extends React.Component<any, any> {
       // TODO: SplashScreen auto hide issue
       // It shows an error "Native splash screen is already hidden"
       // Still not sure what it means. Need to fix this. 
-      // await SplashScreen.preventAutoHideAsync();
+      await SplashScreen.preventAutoHideAsync();
       // Also a relevant issue: https://github.com/expo/expo/issues/7689
     } catch (e) {
       console.warn(e);

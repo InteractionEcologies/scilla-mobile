@@ -7,12 +7,10 @@ import AppStore from "../../services/AppStore";
 import AppService from "../../services/AppService";
 
 
-import { View, Text, StyleSheet, ActivityIndicator, 
-  StatusBar, AsyncStorage, Image
+import { StyleSheet, Image
 } from "react-native";
 import { Content, Container  } from "native-base";
 
-import { AppText, Title } from "../../components";
 import { Styles as AppStyles } from "../../constants/Styles";
 import Colors from "../../constants/Colors";
 
@@ -22,9 +20,9 @@ export default class AuthLoadingScreen extends React.Component<any, any> {
   
   componentDidMount() {
     appService.auth.onAuthStateChanged(async (user) => {
-      if(user) {
-        await this._initializeAppStore();
-      }
+      // if(user) {
+      //   await this._initializeAppStore();
+      // }
       this.props.navigation.navigate(user ? ScreenNames.Main: ScreenNames.Login);
     })
   }

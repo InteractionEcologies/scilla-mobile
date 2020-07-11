@@ -127,7 +127,6 @@ export class EditRemindersView extends Component<Props, State> {
   }
 
   render() {
-    const { isTimePickerVisible, timePickerTime } = this.state;
     return (
       <View style={customStyles.main}>
         {/* Treatments */}

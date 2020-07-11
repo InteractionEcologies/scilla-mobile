@@ -2,7 +2,6 @@
 import React from "react";
 import { StyleSheet } from "react-native";
 import { Text } from "native-base";
-import { AppText } from "./StyledText";
 import Fonts from "../constants/Fonts";
 
 export class Title extends React.Component<any, any> {
@@ -20,7 +19,7 @@ const styles = StyleSheet.create({
   title: {
     textAlign: 'center',
     fontFamily: Fonts.OpenSans,
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold'
   }
 });

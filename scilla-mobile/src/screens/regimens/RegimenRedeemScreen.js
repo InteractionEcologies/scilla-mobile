@@ -284,8 +284,6 @@ class RegimenRedeemScreen extends Component<any, State> {
 
   updateReminderConfig = (id: string, config: ReminderConfigObject) => {
     console.log(SCOPE, "updateReminderConfig");
-    // regimen.setReminderConfig(reminderId: string, newConfig: ReminderConfigObject)
-    // regimen.setReminderTime(reminderId: string, time: string)
     const { regimen } = this.state;
     if (regimen) {
       regimen.setReminderConfig(id, config);

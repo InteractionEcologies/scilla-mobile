@@ -11,11 +11,9 @@ import {
 } from "../../components";
 import { Styles as AppStyles } from "../../constants/Styles";
 
-// import { ExpoConfigView } from '@expo/samples';
-// import Auth from "../libs/Auth";
 import AppService from "../../services/AppService";
 import AppStore from "../../services/AppStore";
-import { AlarmTime, IRegimen } from '../../libs/scijs';
+import { IRegimen } from '../../libs/scijs';
 import AppClock from "../../services/AppClock";
 import AppNotificationManager from "../../services/AppNotificationManager";
 
@@ -30,13 +28,7 @@ export default class SettingsScreen extends React.Component<any, any> {
     title: 'Settings',
   };
 
-  constructor(props: any) {
-    super(props);
-  }
-
   signOut = async () => {
-    // appService.auth.signOut()
-    //   .then( () => this.props.navigation.navigate("Auth") );
     await appStore.signOut()
     this.props.navigation.navigate("Auth")
   }
