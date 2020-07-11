@@ -65,10 +65,6 @@ export default class RegimenEditReminderScreen extends Component<any, any> {
             <CardItem header bordered>
               <Title>Edit Reminders</Title>
             </CardItem>
-              {/* <SetupReminderView 
-                regimen={regimen}
-                updateReminderConfig={this.updateReminderConfig}
-              /> */}
             <CardItem>
               <EditRemindersView
                 updateReminderConfig={this.updateReminderConfig}
