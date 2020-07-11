@@ -33,7 +33,10 @@ const initialState: State = {
 const SCOPE = "EditRemindersView";
 
 export class EditRemindersView extends Component<Props, State> {
-
+  
+  /**
+   * @param  {Props} props
+   */
   constructor(props: Props) {
     super(props);
 
@@ -67,30 +70,46 @@ export class EditRemindersView extends Component<Props, State> {
     }
   }
 
-  handleTimePicked = (event: any, time: any) => {
+  /**
+   * In iOS, handleTimePicked is called whenever the user 
+   * selects an hour or minute option. In Android, this is 
+   * called whenever the user presses OK in date time picker. 
+   * Due to the different behaviors, we have to control the 
+   * visibility of date time picker differently. 
+   * @param  {any} event
+   * @param  {Date} time
+   */
+  handleTimePicked = (event: any, time: Date) => {
+    console.log(SCOPE, "handleTimePicked", event, time)
     const { selectedReminderId } = this.state;
     const { reminders } = this.props;
 
-    this.setState({timePickerTime: time})
+    if(Platform.OS === 'ios') {
+      console.log(SCOPE, "iOS");
+      // User needs to press the "Done" button to dismiss
+      // the time picker, merely changing the time in 
+      // time picker should not cause the picker to be dismissed. 
+      this.setState({timePickerTime: time})
+    } else { // android
+      console.log("Dismiss date time picker.")
+      this.setState({
+        isTimePickerVisible: false
+      });
+    }
 
-    // console.log(SCOPE, "selected reminder id:", selectedReminderId);
-    // Find the associated reminder config
     let foundConfig = _.find(reminders, (config) => {
       return config.id === selectedReminderId;
     })
-    
-    // console.log(SCOPE, "foundConfig", foundConfig);
-
-    if(foundConfig) {
+    if(foundConfig == null) {
+      console.log("Reminder configuration does not exist, cannot set reminder time.");
+      return;
+    } else {
+      console.log("Update reminder config");
       foundConfig.time = moment(time).format("HH:mm");
+      // Calling this will cause the picker view to be re-rendered. 
       this.props.updateReminderConfig(foundConfig.id, foundConfig);
     }
-
-    // this.setState({
-    //   isTimePickerVisible: false
-    // });
-
-    // console.log("Picked time:", time);
+    
   }
 
   toggleReminder = (id: string) => {
@@ -111,18 +130,25 @@ export class EditRemindersView extends Component<Props, State> {
     const { isTimePickerVisible, timePickerTime } = this.state;
     return (
       <View style={customStyles.main}>
+        {/* Treatments */}
         <View style={customStyles.headerRow}>
           <AppText style={customStyles.headerText}>
             Medicine Intake
           </AppText>
         </View>
+        {/* Reminder configs for treatments */}
         {this._renderReminderConfigs(true)}
+        
+        {/* Daily Evaluation */}
         <View style={customStyles.headerRow}>
           <AppText style={[customStyles.headerText, {marginTop: 0}]}>
             Daily Evaluation
           </AppText>
         </View>
+        {/* Reminder configs for daily evaluation */}
         {this._renderReminderConfigs(false)}
+
+        {/* DateTimePicker */}
         {this._renderDateTimePicker()}
         
         
@@ -130,7 +156,10 @@ export class EditRemindersView extends Component<Props, State> {
     )
   }
 
-
+  /**
+   * @param  {boolean=true} forTreatment - A flag determines to show 
+   *  treatment-related reminders or daily evaluation related reminders.
+   */
   _renderReminderConfigs = (forTreatment: boolean = true) => {
     const { reminders } = this.props;
     
@@ -231,12 +260,10 @@ export class EditRemindersView extends Component<Props, State> {
 
   _renderDateTimePicker = () => {
     const { isTimePickerVisible, timePickerTime } = this.state;
-    
-
     if (Platform.OS === "ios") {
       return (
         <Modal 
-          isVisible={this.state.isTimePickerVisible}
+          isVisible={isTimePickerVisible}
           onBackdropPress={() => this.setState({ isTimePickerVisible: false })}
         >
           <DateTimePicker
@@ -246,10 +273,7 @@ export class EditRemindersView extends Component<Props, State> {
               backgroundColor: "white"
             }}
             value={timePickerTime}
-            // minuteInterval={5}
             is24Hour={false}
-            // onCancel={this.onTimePickerDismissed}
-            // onConfirm={this.handleTimePicked}
             onChange={this.handleTimePicked}
           />
           <Button
@@ -261,21 +285,21 @@ export class EditRemindersView extends Component<Props, State> {
         </Modal>
       )
     } else { //Android
-      return (
-        <DateTimePicker
-          mode="time"
-          style={{
-            width: '100%',
-            backgroundColor: "white"
-          }}
-          value={timePickerTime}
-          // minuteInterval={5}
-          is24Hour={false}
-          // onCancel={this.onTimePickerDismissed}
-          // onConfirm={this.handleTimePicked}
-          onChange={this.handleTimePicked}
-        />
-      )
+      if(isTimePickerVisible) {
+        return (
+          <DateTimePicker
+            testID="dateTimePicker"
+            mode="time"
+            style={{
+              width: '100%',
+              backgroundColor: "white"
+            }}
+            value={timePickerTime}
+            is24Hour={false}
+            onChange={this.handleTimePicked}
+          />
+        )
+      } 
     }
   }
 }

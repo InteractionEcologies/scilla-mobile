@@ -98,15 +98,6 @@ export default class AppNotificationManager {
   }
 
   async requestPermission() {
-    // const { status, permissions } = await Permissions
-    //   .askAsync(Permissions.USER_FACING_NOTIFICATIONS);
-
-    //   if (status === 'granted') {
-    //     console.log(status);
-    //     return 
-    //   } else {
-    //     throw new Error("Notification permission not granted.")
-    //   }
     return await Notifications.requestPermissionsAsync({
       ios: {
         allowAlert: true, 
@@ -120,7 +111,8 @@ export default class AppNotificationManager {
     const { status } = await Permissions.getAsync(Permissions.USER_FACING_NOTIFICATIONS);
     return status;
   }
-
+  /** Send a test notification.
+   */
   async sendImmediately() {
     console.log("Send a notification");
     await Notifications.presentNotificationAsync({
@@ -129,6 +121,8 @@ export default class AppNotificationManager {
     })
   }
 
+  /** Send a notification with delay
+   */
   async sendWithDelaySec(sec: number) {
     const content = {
       title: "Remember to take your medication",
@@ -144,6 +138,9 @@ export default class AppNotificationManager {
     });
   }
 
+  /**
+   * @param {ReminderConfigObject[]} configs - reminder configurations. 
+   */
   async setNotificationsByReminderConfigs(configs: ReminderConfigObject[]) {
     
     await this._cancelScheduledNotifications();
@@ -152,17 +149,19 @@ export default class AppNotificationManager {
     for(let config of configs) {
       config = (config: ReminderConfigObject);
 
-      // removed disabled notifications. 
+      // remove disabled notifications. E.g., if user only needs to take
+      // the medicine in the morning, we ignore the reminder configs in 
+      // the afternoon and in the evening. 
       if (config.enabled === false) continue;
 
       let alarmTime: AlarmTime = new AlarmTime(config.time, appClock.now());
-      // let time = alarmTime.toMoment().toDate();
       
       let content: Notifications.NotificationContent = {}			
-      let trigger: Notifications.DailyNotificationTrigger = {
-        type: "daily",
+
+      let trigger: Notifications.DailyTriggerInput = {
         hour: alarmTime.hour,
-        minute: alarmTime.minute
+        minute: alarmTime.minute,
+        repeats: true
       }
 
 			switch (config.type) {
