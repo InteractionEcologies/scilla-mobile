@@ -53,6 +53,7 @@ local.properties
 /scilla-mobile/android/expoview/libs/ReactAndroid-temp
 /scilla-mobile/android/versioned-react-native/ReactAndroid
 ReactAndroid-temp.aar
+.hprof
 
 # Node
 node_modules
