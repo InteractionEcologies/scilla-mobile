@@ -258,7 +258,6 @@ class RegimenRedeemScreen extends Component<any, State> {
   saveRegimen = async () => {
     console.log(SCOPE, "saveRegimen");
     let { regimen } = this.state;
-
     if(regimen) {
       let userProfile = await appStore.getUserProfile();
       regimen.setUserId(userProfile.uid);
@@ -283,7 +282,7 @@ class RegimenRedeemScreen extends Component<any, State> {
   }
 
   updateReminderConfig = (id: string, config: ReminderConfigObject) => {
-    console.log(SCOPE, "updateReminderConfig");
+    console.log(SCOPE, "updateReminderConfig", config);
     const { regimen } = this.state;
     if (regimen) {
       regimen.setReminderConfig(id, config);

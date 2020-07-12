@@ -80,7 +80,6 @@ export class EditRemindersView extends Component<Props, State> {
    * @param  {Date} time
    */
   handleTimePicked = (event: any, time: Date) => {
-    console.log(SCOPE, "handleTimePicked", event, time)
     const { selectedReminderId } = this.state;
     const { reminders } = this.props;
 
@@ -91,7 +90,7 @@ export class EditRemindersView extends Component<Props, State> {
       // time picker should not cause the picker to be dismissed. 
       this.setState({timePickerTime: time})
     } else { // android
-      console.log("Dismiss date time picker.")
+      console.log(SCOPE, "Dismiss date time picker.")
       this.setState({
         isTimePickerVisible: false
       });
@@ -101,10 +100,10 @@ export class EditRemindersView extends Component<Props, State> {
       return config.id === selectedReminderId;
     })
     if(foundConfig == null) {
-      console.log("Reminder configuration does not exist, cannot set reminder time.");
+      console.log(SCOPE, "Reminder configuration does not exist, cannot set reminder time.");
       return;
     } else {
-      console.log("Update reminder config");
+      console.log(SCOPE, "Update reminder config");
       foundConfig.time = moment(time).format("HH:mm");
       // Calling this will cause the picker view to be re-rendered. 
       this.props.updateReminderConfig(foundConfig.id, foundConfig);

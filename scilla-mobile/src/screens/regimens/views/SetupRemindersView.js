@@ -42,6 +42,7 @@ class SetupRemindersView extends Component<Props, State> {
   }
 
   updateReminderConfig = (reminderId: string, newConfig: ReminderConfigObject) => {
+    console.log(SCOPE, "updateReminderConfig")
     const { regimen  } = this.props;
     regimen.setReminderConfig(reminderId, newConfig);
     this.setState({reminders: regimen.reminderConfigs});
