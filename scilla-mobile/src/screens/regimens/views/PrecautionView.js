@@ -17,9 +17,6 @@ class PrecautionView extends Component<Props, any> {
         <DotPageIndicator 
           totalDots={this.props.numStates}
           activeDotIndex={this.props.currentStateIndex}
-          // dotColor='grey'
-          // activeDotColor='black'  
-
           style={{marginBottom: 10}}
         />
         <View style={{alignItems: "flex-start"}}>

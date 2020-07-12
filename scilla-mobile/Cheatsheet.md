@@ -26,11 +26,17 @@
 * Then, for iOS, build the project with `Release` settings. Or just Archive and publish it. 
 
 ### Publish Android release built on TestFairy
+* Edit `build.gradle` to change build version
+  * Check `defaultConfig` -> `versionName`
 * I edited the `build.gradle`file to include signing for the release built. 
   * As suggested in this [React Native doc](https://facebook.github.io/react-native/docs/signed-apk-android)
-* To build the app, use Android Studio, use `prodMinSdkProdKernelRelease` as the build variant. 
-* Click `build`. DO NOT USE `Generate Signed Bindles/SDK`. I don't know why but it does correctly sign my release built. 
-* Once built, the `apk` should be located at `/android/app/build/outputs/apk/prodMinSdkProdKernel/release` with a name `app-prodMinSdk-prodKernel-release.apk`. 
+* Click `build` in the menu, then `Generate Signed Bindles/SDK`. 
+  * Select the APK option > Next
+  * Type in the key store path (<yourpath>/scilla-mobile.keystore) and other info. > Next
+  * Select `release` 
+  * Make sure you select both `V1 (Jar Signature)` and `V2 (Full APK Signature)` in Signature Versions. 
+  * Click Finish. 
+* Once built, the `apk` should be located at `/android/app/release` with a name `app-release.apk`. 
   * Note that the release built uses a keystore located in `/android/app/`
 * Sign in to TestFairy, upload this apk. 
 * On the Android end, click on the email received from TestFairy, download the apk, and install. 

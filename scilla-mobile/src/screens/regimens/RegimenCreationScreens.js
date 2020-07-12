@@ -3,10 +3,9 @@
 import React from "react";
 // import { Machine, State } from "xstate";
 import { Action, withStateMachine } from "react-automata";
-import { Icon, Button, Container, Content
+import { Icon, Button
 } from 'native-base';
 import { View } from "react-native";
-import moment from "moment";
 import type { 
   RegimenType
 } from "../../libs/scijs";
