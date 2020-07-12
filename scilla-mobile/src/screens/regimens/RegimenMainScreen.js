@@ -208,10 +208,6 @@ export default class RegimenMainScreen extends React.Component<any, State> {
   }
 
   // MARK: - Navigation
-  goToCreateRegimen = () => {
-    this.props.navigation.navigate(ScreenNames.RegimenCreation);
-  }
-
   goToRedeemRegimen = () => {
     this.props.navigation.navigate(ScreenNames.RegimenRedeem);
   }
@@ -328,14 +324,6 @@ export default class RegimenMainScreen extends React.Component<any, State> {
         </Card>
 
       </View>
-    )
-  }
-
-  _renderRegimenCreation() {
-    return (
-      <Button full onPress={this.goToCreateRegimen}>
-        <AppText>Create Regimen</AppText>
-      </Button>
     )
   }
 

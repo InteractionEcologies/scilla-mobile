@@ -5,7 +5,6 @@ import { createStackNavigator } from "react-navigation-stack";
 import TabBarIcon from '../components/TabBarIcon';
 
 import RegimenMainScreen from "../screens/regimens/RegimenMainScreen";
-import RegimenCreationScreens from "../screens/regimens/RegimenCreationScreens";
 import RegimenRedeemScreen from "../screens/regimens/RegimenRedeemScreen";
 import RegimenEditScreen from "../screens/regimens/RegimenEditScreen";
 import RegimenEditReminderScreen from "../screens/regimens/RegimenEditReminderScreen";
@@ -20,7 +19,6 @@ import {ScreenNames} from "../constants/Screens";
 let RegimenStack = createStackNavigator(
   {
     [ScreenNames.RegimenMain]: RegimenMainScreen, 
-    [ScreenNames.RegimenCreation]: RegimenCreationScreens,
     [ScreenNames.RegimenRedeem]: RegimenRedeemScreen,
     [ScreenNames.RegimenEdit]: RegimenEditScreen, 
     [ScreenNames.RegimenEditReminders]: RegimenEditReminderScreen,

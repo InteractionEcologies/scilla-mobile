@@ -20,7 +20,6 @@ export const ScreenNames = {
 
   // Regimen 
   RegimenMain: "RegimenMain",
-  RegimenCreation: 'RegimenCreation',
   RegimenRedeem: "RegimenRedeem",
   RegimenEdit: "RegimenEdit",
   RegimenEditReminders: "RegimenEditReminders",

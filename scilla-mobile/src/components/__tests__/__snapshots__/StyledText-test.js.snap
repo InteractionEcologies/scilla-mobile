@@ -12,6 +12,7 @@ exports[`renders correctly 1`] = `
       undefined,
       Object {
         "fontFamily": "open-sans",
+        "fontSize": 15,
       },
     ]
   }

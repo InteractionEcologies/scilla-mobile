@@ -1,7 +1,7 @@
 // @flow
 import * as firebase from "firebase";
-import { FirebaseDS, FirebaseAuth, PersistenceTypes,
-  Utils, DateFormatISO8601, NotExistError
+import { FirebaseDS,
+  Utils, DateFormatISO8601,
 } from "../libs/scijs"
 import { FirebaseConfig } from "../constants/FirebaseConfig";
 import { 
