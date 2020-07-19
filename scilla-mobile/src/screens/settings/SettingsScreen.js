@@ -16,6 +16,8 @@ import AppStore from "../../services/AppStore";
 import { IRegimen } from '../../libs/scijs';
 import AppClock from "../../services/AppClock";
 import AppNotificationManager from "../../services/AppNotificationManager";
+import Constants from "expo-constants";
+import * as Updates from 'expo-updates';
 
 const appService = new AppService();
 const appStore = AppStore.instance;
@@ -52,6 +54,8 @@ export default class SettingsScreen extends React.Component<any, any> {
 
         <ScrollView contentContainerStyle={styles.content}>
           <View style={[AppStyles.contentBody, styles.contentBody]}>
+            <AppText>JS Version: {Updates.manifest["version"]}</AppText>
+            <AppText style={{marginBottom: 20}}>Native Build Version: {Constants.nativeBuildVersion}</AppText>
             <Button onPress={this.signOut} block>
               <AppText>Sign Out</AppText>
             </Button>

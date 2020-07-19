@@ -1,5 +1,6 @@
 // @flow
-import firebase from "@react-native-firebase/app";
+// import firebase from "@react-native-firebase/app";
+import analytics from '@react-native-firebase/analytics';
 // import '@react-native-firebase/analytics';
 
 export default class UsageLogger {
@@ -10,7 +11,7 @@ export default class UsageLogger {
   constructor() {
     if (!UsageLogger.instance) {
 
-      // this.logger = firebase.analytics();
+      this.logger = analytics();
 
       UsageLogger.instance = this;
     }
@@ -19,16 +20,16 @@ export default class UsageLogger {
   }
 
   logEvent(event: string, params: ?Object = null) {
-    // console.log("logEvent", event);
-    // if(params) {
-    //   this.logger.logEvent(event, params);
-    // } else {
-    //   this.logger.logEvent(event);
-    // }
+    console.log("logEvent", event);
+    if(params) {
+      this.logger.logEvent(event, params);
+    } else {
+      this.logger.logEvent(event);
+    }
   }
 
   setUserId(id: string) {
-    // this.logger.setUserId(id);
+    this.logger.setUserId(id);
   }
 }
 
