@@ -379,6 +379,10 @@ export default class AppStore implements IAppStore {
       this.complianceReportObserver();
       this.complianceReportObserver = null;
     }
+    
+    if(this.latestRegimen) {
+      this.latestRegimen = null;
+    }
   }
 
 }
