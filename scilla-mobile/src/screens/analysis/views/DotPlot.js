@@ -64,7 +64,13 @@ export class DotPlot extends React.Component<Props, any> {
     return (
       <VictoryAxis
         tickValues={dosages}
-        tickFormat = {(tick)=> `${tick}mg`}
+        tickFormat = {(tick)=> {
+          if (tick % 10 === 0) {
+            return `${tick}mg`
+          } else {
+            return `${tick}`
+          }
+        }}
         standalone={false}
         domain={this.props.xDomain}
       />

@@ -7,6 +7,7 @@ import { IRegimen } from "../libs/scijs";
 import AppClock from "./AppClock";
 import AppNotificationManager from "./AppNotificationManager";
 import UsageLogger from "./UsageLogger";
+import moment from "moment";
 
 const SCOPE = "AppInitializer:";
 
@@ -43,7 +44,7 @@ export default class AppInitializer {
     this.appService.initialize();
 
     // Simulate time
-    // this.appClock.setCurrentDatetime(moment("2019-07-18"));
+    // this.appClock.setCurrentDatetime(moment("2020-08-30"));
   }
 
   /**

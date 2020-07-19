@@ -39,6 +39,8 @@ export type MeanDataSummary = {
   [key: MeasurementType]: Point2D[]
 }
 
+
+const SCOPE = "DailyEvalDataFrame";
 // Summary of each phase's measurement reports
 export class DailyEvalDataFrame {
   points: DailyEvalDataPoint[] = []

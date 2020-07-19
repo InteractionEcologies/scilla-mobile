@@ -220,7 +220,14 @@ export default class AnalysisMainScreen extends React.Component<any, State> {
     console.log(SCOPE, "renderChart");
     let meanDataPointsByType = this.dailyEvalDataFrame
                                   .getMeanDataPointsByTypes(this.state.selectedMeasurementTypes)
-
+    let dosages = this.dailyEvalDataFrame.getDosages();
+    let minDosage = _.min(dosages) || 0
+    let maxDosage = _.max(dosages) || 30
+    if(maxDosage < minDosage + 30) {
+      maxDosage = minDosage + 30
+    }
+    // FIXME: this will only work for 5mg increment regimen. 
+    let xTicks = _.range(minDosage, maxDosage+5, 5);
     if (this.state.selectedMeasurementTypes.length === 0) {
       return (
         <View style={styles.warningView}>
@@ -248,12 +255,12 @@ export default class AnalysisMainScreen extends React.Component<any, State> {
           height={400}
           selectedMeasurementTypes={this.state.selectedMeasurementTypes}
           meanDataPoints={meanDataPointsByType}
-          xDomain={[0 - X_AXIS_PADDING, 30 + X_AXIS_PADDING]}
+          xDomain={[minDosage - X_AXIS_PADDING, maxDosage + X_AXIS_PADDING]}
           yDomain={[
             MIN_MEASUREMENT_SCORE - Y_AXIS_PADDING, 
             MAX_MEASUREMENT_SCORE + Y_AXIS_PADDING
           ]}
-          xTicks={[0, 5, 10, 15, 20, 25, 30]}
+          xTicks={xTicks}
         />
       }      
     } else {
@@ -277,12 +284,12 @@ export default class AnalysisMainScreen extends React.Component<any, State> {
             selectedMeasurementTypes={this.state.selectedMeasurementTypes}
             meanDataPoints={meanDataPointsByType}
             dotDataPoints={dataPoints}
-            xDomain={[0 - X_AXIS_PADDING, 30 + X_AXIS_PADDING]}
+            xDomain={[minDosage - X_AXIS_PADDING, maxDosage + X_AXIS_PADDING]}
             yDomain={[
               MIN_MEASUREMENT_SCORE - Y_AXIS_PADDING, 
               MAX_MEASUREMENT_SCORE + Y_AXIS_PADDING
             ]}
-            xTicks={[0, 5, 10, 15, 20, 25, 30]}
+            xTicks={xTicks}
           />
         }
     }
@@ -325,12 +332,12 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.surfaceColor
   },
   btnView:{
-    height: 50,
+    // height: 50,
     width: 340,
     flexDirection: "row",
     flexWrap: 'wrap',
     marginTop: 20,
-    marginBottom: 50,
+    // marginBottom: 50,
   },
   btn: {
     // height: 50,
