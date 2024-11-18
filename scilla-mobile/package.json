@@ -40,7 +40,7 @@
     "expo-splash-screen": "~0.3.1",
     "expo-status-bar": "^1.0.0",
     "expo-updates": "~0.2.10",
-    "firebase": "7.9.0",
+    "firebase": "10.9.0",
     "idx": "^2.4.0",
     "indexeddbshim": "^3.8.0",
     "lodash": "^4.17.10",
